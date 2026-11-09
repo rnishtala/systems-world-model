@@ -1,0 +1,53 @@
+.........                                                                [100%]
+9 passed in 0.22s
+Observations
+  vector           Space(float32, shape=(9,), low=-inf, high=inf)
+  reward           Space(float32, shape=(), low=-inf, high=inf)
+  is_first         Space(bool, shape=(), low=False, high=True)
+  is_last          Space(bool, shape=(), low=False, high=True)
+  is_terminal      Space(bool, shape=(), low=False, high=True)
+Actions
+  action           Space(int32, shape=(), low=0, high=7)
+Extras
+  consec           Space(int32, shape=(), low=-2147483648, high=2147483647)
+  stepid           Space(uint8, shape=(20,), low=0, high=255)
+  dyn/deter        Space(float32, shape=(512,), low=-inf, high=inf)
+  dyn/stoch        Space(float32, shape=(32, 4), low=-inf, high=inf)
+JAX devices (1): [TFRT_CPU_0]
+Policy devices: TFRT_CPU_0
+Train devices:  TFRT_CPU_0
+Initializing parameters...
+Optimizer opt has 638,671 params:
+       364,480 dyn
+        66,111 val
+        57,663 rew
+        50,121 dec
+        49,991 pol
+        41,153 con
+         9,152 enc
+Done initializing!
+Compiling 1 checkpoint groups...
+Largest checkpoint group: 0 GB
+Compiling train and report...
+Train cost analysis:
+  FLOPS:            2.2e+09
+  Memory (temp):    3.3e+07
+  Memory (inputs):  8.3e+06
+  Memory (outputs): 8.3e+06
+  Memory (code):    1.2e+06
+
+Report cost analysis:
+No available
+Done compiling!
+Loading checkpoint: /results/combined-v4/final-0/20261109T210936F130755
+Loaded checkpoint.
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/results/work-planner/experiment/evaluate_planner.py", line 16, in <module>
+    rows=evaluation(planner,a.eval_offset+c.seed,False,a.episodes)+evaluation(planner,a.eval_offset+100000+c.seed,True,a.episodes)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/results/work-planner/experiment/run.py", line 46, in evaluation
+    carry, acts, _ = agent.policy(carry, inp, mode='eval')
+                     ^^^^^^^^^^^^
+AttributeError: 'WorldModelPlanner' object has no attribute 'policy'

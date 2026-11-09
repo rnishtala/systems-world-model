@@ -99,3 +99,32 @@ Active jobs have a two-hour deadline. If intervention is needed, delete only the
 named experiment job in the confirmed lab namespace. Completed jobs use no CPU.
 Keep the PVC for reproducibility; export evidence before any explicit deletion.
 Do not change cluster settings or workloads in any other namespace.
+
+## Frozen follow-up and confirmation
+
+The selected development configuration uses 100,000 steps,
+`--abstention-penalty 2.0 --inspection-coverage 0.5`, and the native
+16-particle inference wrapper. Original evaluation rewards are unchanged.
+See `reports/FOLLOWUP_PROTOCOL.md`; development success is not confirmation.
+
+`deploy/confirmation-quota.yaml` retains the four-CPU / 6 GiB limits and permits
+three pods. `deploy/confirmation.yaml` assigns each independent seed 1333m CPU
+and 2 GiB RAM, separate source/replay/checkpoint directories, and fresh evaluation
+seeds. It uses the frozen `experiment-source-v7` bundle and existing dependency
+venv. Wait for prior jobs/collectors to finish before applying these manifests.
+For a new reproduction, create that ConfigMap from the desired pinned bundle and
+use fresh job names/output directories; never overwrite recorded experiments.
+
+The confirmation evidence retains both sampled native-actor results and the
+particle-vote controller. Validate the gate with `scripts/summarize_followup.py`;
+only seeds 10, 11 and 12 together can pass the frozen confirmation gate.
+
+For a human-readable demonstration from a saved checkpoint:
+
+```sh
+python -m experiment.diagnose --config /results/confirmation-v4/train-10/config.yaml \
+  --checkpoint /results/confirmation-v4/final-10 --controller particles --all-faults
+```
+
+This is simulated diagnosis, not a production incident or remediation service.
+The native model weights are unchanged by inference voting.

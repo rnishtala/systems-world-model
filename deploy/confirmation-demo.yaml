@@ -1,0 +1,62 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: dreamer-confirm-demo-v1
+  namespace: systems-world-model-lab
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 600
+  template:
+    metadata:
+      labels:
+        app: dreamer-poc
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: Never
+      nodeSelector:
+        kubernetes.io/hostname: amd-halo
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: experiment
+          image: python:3.11-slim
+          resources:
+            requests: {cpu: '2', memory: 4Gi}
+            limits: {cpu: '4', memory: 6Gi}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          env:
+            - {name: PYTHONUNBUFFERED, value: '1'}
+            - {name: HOME, value: /results}
+            - {name: OMP_NUM_THREADS, value: '4'}
+            - {name: OPENBLAS_NUM_THREADS, value: '1'}
+            - {name: XLA_FLAGS, value: '--xla_cpu_multi_thread_eigen=false intra_op_parallelism_threads=4'}
+          command: [/bin/sh, -ec]
+          args:
+            - |
+              cd /results/confirm-work-10
+              export PYTHONPATH=/results/confirm-work-10:/results/confirm-work-10/upstream
+              export DREAMER_SOURCE=/results/confirm-work-10/upstream
+              /results/venv/bin/python /source/diagnose.py --config /results/confirmation-v4/train-10/config.yaml --checkpoint /results/confirmation-v4/final-10 --controller particles --all-faults --out /results/confirmation-v4/demo.json
+          volumeMounts:
+            - {name: source, mountPath: /source, readOnly: true}
+            - {name: results, mountPath: /results}
+            - {name: temp, mountPath: /tmp}
+      volumes:
+        - name: source
+          configMap:
+            name: experiment-demo-v1
+        - name: results
+          persistentVolumeClaim:
+            claimName: results
+        - name: temp
+          emptyDir:
+            sizeLimit: 1Gi

@@ -1,5 +1,6 @@
 """Render the one-page research proposal; targets are prospective, not results."""
 from pathlib import Path
+import json
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
@@ -32,11 +33,16 @@ p('Smallest credible proof','HeadX')
 p('Start with a bounded queue simulator: healthy operation, CPU bottleneck and downstream slowdown. The two faults share passive symptoms; paid inspections reveal distinguishing evidence. Compare the learned policy with fixed and adaptive checklists and random actions on fresh, balanced episodes, including higher loads.')
 p('<b>Prospective success gate:</b> at least 95% diagnosis accuracy at familiar load and 90% at shifted load, no more than two inspections per episode on average, and no more than 5% unresolved familiar-load cases, across three fresh training seeds. Report per-seed failures and compare costs at matched accuracy; beating expert rules is a separate claim.')
 p('Immediate experiment and current evidence','HeadX')
-p('The runnable baseline is complete, but it diagnosed only 0.2% of cases and escalated over 99%; the adaptive checklist achieved 100%. Next, isolate the escalation incentive, then test exploration or training-data coverage if needed. Keep evaluation scoring fixed, preserve failed runs, and use new held-out seeds for final confirmation. Passing a simulator gate does not establish real-system transfer.')
+gate_file=root/'reports/evidence/followup/confirmation-particle-gate.json'
+confirmation='Three fresh training seeds are being tested before claiming repeatability.'
+if gate_file.exists():
+    confirmed=json.loads(gate_file.read_text())['methods']['dreamer_particle_actor']['confirmation_gate_passed']
+    confirmation=('Three fresh training seeds met the prespecified synthetic gate.' if confirmed else 'Fresh-seed confirmation did not meet every prespecified threshold; further work remains.')
+p('The initial agent mostly escalated. Correcting training incentives and diagnostic coverage, then voting across 16 native latent-state/actor samples, achieved 100% development accuracy with one inspection per incident. '+confirmation+' All failed trials are retained. The next scientific gate is transfer to independent dynamics and real lab services.')
 p('Path to end-to-end resolution','HeadX')
 p('After the synthetic gate, validate on real services confined to the lab namespace. A frozen LLM can then explain the diagnostic evidence and propose a bounded repair. A separate approval/execution layer applies the change, and independent health checks verify recovery. LLM integration and real-service recovery are subsequent gates, not capabilities demonstrated today.')
 p('Execution, isolation and deliverables','HeadX')
-p('Run sequential jobs on AMD Halo in <b>systems-world-model-lab</b>, capped at four CPUs and 6 GiB RAM, with default-deny networking, no cluster credentials or host mounts, and no changes to other workloads. Retain checkpoints, code, episode-level evidence and a research PDF. Track shared-host health; namespace isolation alone cannot prove zero contention.')
+p('Run bounded jobs on AMD Halo in <b>systems-world-model-lab</b>, capped at four CPUs and 6 GiB RAM, with default-deny networking, no cluster credentials or host mounts, and no changes to other workloads. Retain checkpoints, code, episode-level evidence and a research PDF. Track shared-host health; namespace isolation alone cannot prove zero contention.')
 p('Project: <link href="https://github.com/rnishtala/systems-world-model" color="#087E8B">github.com/rnishtala/systems-world-model</link> | Method: <link href="https://danijar.com/project/dreamerv3/" color="#087E8B">DreamerV3</link> | Experimental proposal, not a claim of production readiness.','SmallX')
 out=root/'output/pdf/systems-world-model-proposal.pdf';out.parent.mkdir(parents=True,exist_ok=True)
 SimpleDocTemplate(str(out),pagesize=(612,792),leftMargin=48,rightMargin=48,topMargin=34,bottomMargin=30,title='Systems World Model: One-page Research Proposal',author='Systems World Model project').build(story)

@@ -33,8 +33,8 @@ fault classes and seven actions. Each seed is evaluated on 150 familiar-load
 and 150 shifted-load episodes per method. Fixed and adaptive checklists and a
 uniform random policy use the same observation/action interface.
 
-**Measured result (9 November 2026):** the integration runs, but the learned
-policy does not yet perform useful diagnosis. Across 450 episodes per load regime:
+**Original baseline (9 November 2026):** the integration ran, but this initial learned
+policy did not perform useful diagnosis. Across 450 episodes per load regime:
 
 | Method | Familiar-load accuracy | Shifted-load accuracy | Familiar-load inspections |
 |---|---:|---:|---:|
@@ -46,8 +46,8 @@ Dreamer escalated 99.3% / 99.6% of familiar / shifted episodes. Training took
 18.54 minutes total for the three main seeds. The 4,000-step pilot had 25.6%
 familiar-load accuracy; more training converged toward abstention. This is a
 negative learning result, not evidence that the method is effective in real triage.
-The next controlled experiment should isolate abstention reward and inspection
-exploration, with fresh evaluation seeds.
+The follow-up below tests abstention reward and inspection exploration, retaining
+this baseline as historical evidence.
 
 [Read the four-page research report](output/pdf/dreamerv3-system-triage-poc.pdf).
 Episode-level results, configurations and logs are under `reports/evidence/`. See [the protocol](reports/PROTOCOL.md) for budgets and limits;
@@ -62,11 +62,20 @@ three-seed confirmation required by the [follow-up protocol](reports/FOLLOWUP_PR
 |---|---:|---:|---|
 | Escalation penalty only | 32.0% | 34.0% | Guessing without inspections |
 | Inspection coverage only | 0.0% | 0.0% | Escalates despite diagnostic experience |
+| Combined correction, native actor | 93.3% | 94.7% | About one inspection |
+| Combined correction, 16-particle native actor vote | 100.0% | 100.0% | One inspection |
 
 A separate 90-episode probe **forced both inspections**. The learned world model
 ranked the correct diagnosis first in 76.7% of cases, but the actor made no correct
 diagnoses. Predicted rewards were still too pessimistic: this probe is not evidence
-of autonomous triage. A combined correction with a 100,000-step budget is running.
+of autonomous triage. After the combined correction and 100,000 training steps,
+the same probe reached 100% world-model ranking accuracy (reward RMSE 0.103).
+
+The particle controller keeps 16 latent-state/actor samples of **one model**,
+executes their majority action once, and feeds that action back to every sample.
+It adds no diagnosis rules or extra sensor observations. Three fresh training
+seeds (10, 11, 12) are now running the frozen confirmation protocol, with fresh
+evaluation streams. Development success alone is not a confirmation result.
 
 ## Run and inspect
 

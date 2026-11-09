@@ -8,5 +8,7 @@
   },
   "note": "v2 source is archived under penalty-source; v3 uses these source file hashes. Original upstream revision unchanged.",
   "coverage_v3a_bundle_sha256": "15d1a1791bf3aeb5e60eef5747e511eaac33b45cca175d1fa94cd92a5d337236",
-  "integration_fix": "Explicit device_put for overridden recurrent previous actions, required by upstream JAX transfer_guard. v3 failed before useful training; v3a preserves the prescribed experiment and uses fresh outputs."
+  "integration_fix": "Explicit device_put for overridden recurrent previous actions, required by upstream JAX transfer_guard. v3 failed before useful training; v3a preserves the prescribed experiment and uses fresh outputs.",
+  "frozen_confirmation_bundle_sha256": "00406d19e7966eae430cc71efab9a3bf4affadf78d03938f63a11d61eaaf13a3",
+  "confirmation_source": "experiment-source-v7: same training code as combined-v4 plus native 16-particle inference; each seed gets its own source copy."
 }

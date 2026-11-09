@@ -1,5 +1,5 @@
 """Diagnostic probe, not autonomous success: force checks, then inspect policy/model."""
-import argparse,json,os,sys
+import argparse,json,os,sys,statistics
 from pathlib import Path
 import numpy as np
 sys.path.insert(0,os.environ.get('DREAMER_SOURCE','/results/work/upstream'))
@@ -11,6 +11,14 @@ p=argparse.ArgumentParser();p.add_argument('--config',required=True)
 p.add_argument('--checkpoint',required=True);p.add_argument('--out',required=True)
 p.add_argument('--episodes',type=int,default=90);a=p.parse_args()
 c=elements.Config.load(elements.Path(a.config))
+result_file=Path(a.checkpoint).parent/f'results-{c.seed}.json'
+if result_file.exists():
+    completed=json.loads(result_file.read_text())
+    summary=[]
+    for shifted in (False,True):
+        cases=[r for r in completed['rows'] if r['method']=='dreamer' and r['shifted']==shifted]
+        summary.append(dict(shifted=shifted,accuracy=statistics.mean(r['correct'] for r in cases),checks=statistics.mean(r['checks'] for r in cases),unresolved=statistics.mean(r['diagnosis']==-1 for r in cases)))
+    print('AUTONOMOUS_RESULT',json.dumps(summary),flush=True)
 upstream.make_env=lambda config,index,**kw:upstream.wrap_env(DreamerEnv(0),config)
 agent=upstream.make_agent(c)
 cp=elements.Checkpoint(elements.Path(a.checkpoint));cp.agent=agent;cp.load(keys=['agent'])
@@ -48,6 +56,7 @@ with jax.transfer_guard('allow'):
 result={'scope':'Forced two-inspection probe; NOT autonomous diagnostic accuracy.',
         'policy_accuracy_after_checks':float(np.mean([r['policy_correct'] for r in rows])),
         'world_model_reward_ranking_accuracy_after_checks':float(np.mean([r['model_correct'] for r in rows])),
+        'imagination_reward_rmse':float(np.sqrt(np.mean([(pred-(1.95 if i==r['fault'] else -2.05))**2 for r in rows for i,pred in enumerate(r['predicted_diagnosis_rewards'])]))),
         'rows':rows}
 Path(a.out).write_text(json.dumps(result,indent=2))
 print('PROBE_RESULT',json.dumps({k:v for k,v in result.items() if k!='rows'}),flush=True)

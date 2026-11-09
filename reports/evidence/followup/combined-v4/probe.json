@@ -1,0 +1,1088 @@
+{
+  "scope": "Forced two-inspection probe; NOT autonomous diagnostic accuracy.",
+  "policy_accuracy_after_checks": 0.9888888888888889,
+  "world_model_reward_ranking_accuracy_after_checks": 1.0,
+  "imagination_reward_rmse": 0.10265111558849331,
+  "rows": [
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.7628103494644165,
+        -1.9256789684295654,
+        -2.03316068649292
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0387840270996094,
+        1.9430570602416992,
+        -2.0226149559020996
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0311472415924072,
+        -2.0366737842559814,
+        1.9385603666305542
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.8728854656219482,
+        -2.0389692783355713,
+        -2.0353612899780273
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.032305955886841,
+        1.9388821125030518,
+        -2.030648946762085
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0387816429138184,
+        -2.039562463760376,
+        1.9390342235565186
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.9387595653533936,
+        -2.0368757247924805,
+        -2.0379459857940674
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -1.9740426540374756,
+        1.9144738912582397,
+        -1.9092754125595093
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.039447546005249,
+        -2.0287399291992188,
+        1.9368499517440796
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.8161871433258057,
+        -2.0010385513305664,
+        -1.9627779722213745
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.037931442260742,
+        1.9401623010635376,
+        -2.036721706390381
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0393614768981934,
+        -2.0379133224487305,
+        1.9257760047912598
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.9283344745635986,
+        -2.0368142127990723,
+        -2.0212252140045166
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0367584228515625,
+        1.9279683828353882,
+        -2.0018160343170166
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.039691686630249,
+        -2.0269224643707275,
+        1.9391045570373535
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.9366732835769653,
+        -2.012848138809204,
+        -2.0365991592407227
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -1.9965993165969849,
+        1.9398713111877441,
+        -2.0325028896331787
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0388433933258057,
+        -2.0138955116271973,
+        1.939723253250122
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.941454529762268,
+        -2.025956392288208,
+        -2.0386784076690674
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0339481830596924,
+        1.9415513277053833,
+        -2.018355131149292
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0408217906951904,
+        -2.0384042263031006,
+        1.9335492849349976
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.9313009977340698,
+        -2.030510425567627,
+        -2.0269405841827393
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0409979820251465,
+        1.9414747953414917,
+        -2.040489673614502
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0401535034179688,
+        -2.040257692337036,
+        1.939305305480957
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.9094560146331787,
+        -2.0245201587677,
+        -1.9079492092132568
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.013699531555176,
+        1.8977493047714233,
+        -1.3949559926986694
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0351645946502686,
+        -2.0297200679779053,
+        1.9394659996032715
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.9325495958328247,
+        -2.028269052505493,
+        -2.0295729637145996
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.034019708633423,
+        1.9401708841323853,
+        -2.0256764888763428
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0389060974121094,
+        -2.0151619911193848,
+        1.940024495124817
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.9118354320526123,
+        -2.0381720066070557,
+        -2.037644624710083
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0338783264160156,
+        1.9228461980819702,
+        -1.963154673576355
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.038935661315918,
+        -2.0340938568115234,
+        1.9342896938323975
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.9369075298309326,
+        -2.0370962619781494,
+        -2.0321624279022217
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.041558265686035,
+        1.9370499849319458,
+        -2.0159552097320557
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0381662845611572,
+        -2.030121088027954,
+        1.939215898513794
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.9189516305923462,
+        -2.0386555194854736,
+        -2.036991834640503
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.025609254837036,
+        1.9405767917633057,
+        -2.0345544815063477
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0369439125061035,
+        -2.030780553817749,
+        1.936837077140808
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.9282673597335815,
+        -2.0401999950408936,
+        -2.029414176940918
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -1.9596035480499268,
+        1.939756989479065,
+        -2.01908016204834
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0412356853485107,
+        -2.0408480167388916,
+        1.9413446187973022
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.9303799867630005,
+        -2.028137683868408,
+        -1.9733386039733887
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0367777347564697,
+        1.9392207860946655,
+        -2.03515887260437
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0393433570861816,
+        -2.0376267433166504,
+        1.9382189512252808
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 1,
+      "policy_correct": false,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.9325175285339355,
+        -2.0010931491851807,
+        -2.0281383991241455
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0319342613220215,
+        1.9410847425460815,
+        -2.0336544513702393
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.024210214614868,
+        -2.0342721939086914,
+        1.9342880249023438
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.9347058534622192,
+        -2.035362958908081,
+        -2.028834342956543
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0393052101135254,
+        1.9386177062988281,
+        -2.0318307876586914
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.040632486343384,
+        -2.028505563735962,
+        1.941577434539795
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.9412322044372559,
+        -2.0369203090667725,
+        -2.037710666656494
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.035749673843384,
+        1.9401816129684448,
+        -2.034266471862793
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.039578437805176,
+        -2.0368218421936035,
+        1.9405072927474976
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.9213881492614746,
+        -2.036776542663574,
+        -2.036736249923706
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0402092933654785,
+        1.94109308719635,
+        -2.029494285583496
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0413291454315186,
+        -2.036680221557617,
+        1.9362717866897583
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.9408782720565796,
+        -2.0327842235565186,
+        -2.035552740097046
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -1.9716640710830688,
+        1.9246906042099,
+        -1.940819263458252
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0208399295806885,
+        -2.0275237560272217,
+        1.9378693103790283
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.9379740953445435,
+        -2.036343812942505,
+        -2.0325541496276855
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.039882183074951,
+        1.9396601915359497,
+        -2.030275583267212
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0358083248138428,
+        -2.025963544845581,
+        1.9408843517303467
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.9405878782272339,
+        -2.035250425338745,
+        -2.020198106765747
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0383589267730713,
+        1.9394588470458984,
+        -2.0371387004852295
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.038177251815796,
+        -2.037682056427002,
+        1.940261721611023
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.9370794296264648,
+        -2.033914566040039,
+        -2.032442331314087
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0368971824645996,
+        1.9413560628890991,
+        -2.0399603843688965
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0373339653015137,
+        -2.03549861907959,
+        1.9375699758529663
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.940218210220337,
+        -2.0329036712646484,
+        -2.0290911197662354
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.034926652908325,
+        1.9405509233474731,
+        -2.0338737964630127
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0331273078918457,
+        -2.034341812133789,
+        1.9258005619049072
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.9322019815444946,
+        -2.0393543243408203,
+        -2.0322070121765137
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0392541885375977,
+        1.9389238357543945,
+        -2.038756847381592
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0349795818328857,
+        -2.0393259525299072,
+        1.9412809610366821
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.906691551208496,
+        -2.034392833709717,
+        -2.036822557449341
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.039849042892456,
+        1.9182707071304321,
+        -2.0340213775634766
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0332133769989014,
+        -2.0230374336242676,
+        1.9421740770339966
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.9421576261520386,
+        -2.033369541168213,
+        -2.0372486114501953
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0321385860443115,
+        1.944058895111084,
+        -2.0347812175750732
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0164284706115723,
+        -0.6308247447013855,
+        1.57307767868042
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.9208261966705322,
+        -1.9974629878997803,
+        -2.006945848464966
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0403177738189697,
+        1.9380700588226318,
+        -2.034142255783081
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0397210121154785,
+        -2.0371081829071045,
+        1.9350945949554443
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.9144967794418335,
+        -2.0399069786071777,
+        -2.007502794265747
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0318169593811035,
+        1.9395674467086792,
+        -2.0335850715637207
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0285487174987793,
+        -2.0283987522125244,
+        1.9377834796905518
+      ]
+    },
+    {
+      "fault": 0,
+      "policy_action": 3,
+      "policy_correct": true,
+      "model_choice": 0,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        1.9386835098266602,
+        -2.035919666290283,
+        -2.0287487506866455
+      ]
+    },
+    {
+      "fault": 1,
+      "policy_action": 4,
+      "policy_correct": true,
+      "model_choice": 1,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0334439277648926,
+        1.9402532577514648,
+        -2.0351107120513916
+      ]
+    },
+    {
+      "fault": 2,
+      "policy_action": 5,
+      "policy_correct": true,
+      "model_choice": 2,
+      "model_correct": true,
+      "predicted_diagnosis_rewards": [
+        -2.0372679233551025,
+        -2.0387167930603027,
+        1.9416221380233765
+      ]
+    }
+  ]
+}
