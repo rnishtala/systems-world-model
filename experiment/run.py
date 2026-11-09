@@ -9,6 +9,7 @@ import numpy as np
 
 sys.path.insert(0, os.environ.get('DREAMER_SOURCE', '/work/upstream'))
 from experiment.environment import DreamerEnv, QueueTriage
+from experiment.exploration import InspectionCoverage
 import elements
 import embodied
 from dreamerv3 import main as upstream
@@ -64,16 +65,22 @@ def evaluation(agent, seed, shifted, n=150):
 def main():
     p=argparse.ArgumentParser();p.add_argument('--seed',type=int,default=0)
     p.add_argument('--steps',type=int,default=4000);p.add_argument('--out',default='/results')
+    p.add_argument('--abstention-penalty',type=float,default=.5)
+    p.add_argument('--inspection-coverage',type=float,default=0.)
     a=p.parse_args();out=Path(a.out)
     if (out/f'train-{a.seed}').exists() or (out/f'results-{a.seed}.json').exists():
         p.error('This seed already has output; choose a fresh --out directory')
     out.mkdir(parents=True,exist_ok=True)
     c=configuration(a.seed,out/f'train-{a.seed}',a.steps)
-    upstream.make_env=lambda config,index,**kw: upstream.wrap_env(DreamerEnv(config.seed*1000+index),config)
+    upstream.make_env=lambda config,index,**kw: upstream.wrap_env(DreamerEnv(config.seed*1000+index, abstention_penalty=a.abstention_penalty),config)
     captured={}
     make=upstream.make_agent
     def build():
-        agent=make(c);captured['agent']=agent;return agent
+        agent=make(c);captured['agent']=agent
+        if a.inspection_coverage:
+            coverage=InspectionCoverage(agent.policy,a.seed+9000,a.inspection_coverage)
+            agent.policy=coverage;captured['coverage']=coverage
+        return agent
     args=elements.Config(**c.run,replica=0,replicas=1,logdir=c.logdir,
         batch_size=c.batch_size,batch_length=c.batch_length,report_length=c.report_length,
         consec_train=c.consec_train,consec_report=c.consec_report,replay_context=c.replay_context)
@@ -88,6 +95,9 @@ def main():
     rows=evaluation(captured['agent'],offset+a.seed,False)
     rows+=evaluation(captured['agent'],offset+100000+a.seed,True)
     result=dict(training_seed=a.seed,steps=a.steps,train_seconds=train_seconds,
+        training_abstention_penalty=a.abstention_penalty, evaluation_abstention_penalty=.5,
+        inspection_coverage=a.inspection_coverage,
+        coverage_stats=captured['coverage'].stats if 'coverage' in captured else None,
         upstream_revision='e01491fad6434b2245a3b8ca201dd7faedcc458c',rows=rows)
     (out/f'results-{a.seed}.json').write_text(json.dumps(result,indent=2))
     print('EXPERIMENT_COMPLETE',json.dumps({k:v for k,v in result.items() if k!='rows'}),flush=True)

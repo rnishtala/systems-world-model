@@ -6,8 +6,9 @@ class QueueTriage:
     # Wait, inspect CPU, inspect dependency, diagnose healthy/CPU/downstream, escalate.
     ACTIONS = ('wait', 'cpu', 'dependency', 'healthy', 'cpu_fault', 'downstream_fault', 'escalate')
 
-    def __init__(self, seed=0, shifted=False):
+    def __init__(self, seed=0, shifted=False, abstention_penalty=.5):
         self.rng = np.random.default_rng(seed)
+        self.abstention_penalty = float(abstention_penalty)
         self.shifted = shifted
         self.done = True
 
@@ -54,19 +55,19 @@ class QueueTriage:
             self.done = True
         elif action == 6:
             self.choice = -1
-            reward -= .5
+            reward -= self.abstention_penalty
             self.done = True
         if self.t >= 6 and not self.done:
             self.done = True
             self.choice = -1
-            reward -= .5
+            reward -= self.abstention_penalty
         return self.observe(), reward, self.done
 
 
 class DreamerEnv:
-    def __init__(self, seed=0, shifted=False):
+    def __init__(self, seed=0, shifted=False, abstention_penalty=.5):
         import elements
-        self.sim = QueueTriage(seed, shifted)
+        self.sim = QueueTriage(seed, shifted, abstention_penalty)
         self.obs_space = dict(vector=elements.Space(np.float32, (9,)),
                               reward=elements.Space(np.float32),
                               is_first=elements.Space(bool), is_last=elements.Space(bool),

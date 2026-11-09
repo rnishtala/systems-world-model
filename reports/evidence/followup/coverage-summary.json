@@ -1,0 +1,104 @@
+{
+  "runs": 1,
+  "training_seconds": [
+    374.4230659008026
+  ],
+  "groups": [
+    {
+      "method": "dreamer",
+      "shifted": false,
+      "episodes": 150,
+      "accuracy": 0,
+      "accuracy_by_training_seed": [
+        0
+      ],
+      "checks": 0,
+      "reward": -0.55,
+      "escalation": 1
+    },
+    {
+      "method": "checklist",
+      "shifted": false,
+      "episodes": 150,
+      "accuracy": 1,
+      "accuracy_by_training_seed": [
+        1
+      ],
+      "checks": 2,
+      "reward": 1.5499999999999998,
+      "escalation": 0
+    },
+    {
+      "method": "adaptive",
+      "shifted": false,
+      "episodes": 150,
+      "accuracy": 1,
+      "accuracy_by_training_seed": [
+        1
+      ],
+      "checks": 1.6666666666666667,
+      "reward": 1.6166666666666665,
+      "escalation": 0
+    },
+    {
+      "method": "random",
+      "shifted": false,
+      "episodes": 150,
+      "accuracy": 0.26666666666666666,
+      "accuracy_by_training_seed": [
+        0.26666666666666666
+      ],
+      "checks": 0.43333333333333335,
+      "reward": -0.6526666666666666,
+      "escalation": 0.2866666666666667
+    },
+    {
+      "method": "dreamer",
+      "shifted": true,
+      "episodes": 150,
+      "accuracy": 0,
+      "accuracy_by_training_seed": [
+        0
+      ],
+      "checks": 0,
+      "reward": -0.55,
+      "escalation": 1
+    },
+    {
+      "method": "checklist",
+      "shifted": true,
+      "episodes": 150,
+      "accuracy": 1,
+      "accuracy_by_training_seed": [
+        1
+      ],
+      "checks": 2,
+      "reward": 1.5499999999999998,
+      "escalation": 0
+    },
+    {
+      "method": "adaptive",
+      "shifted": true,
+      "episodes": 150,
+      "accuracy": 1,
+      "accuracy_by_training_seed": [
+        1
+      ],
+      "checks": 1.6666666666666667,
+      "reward": 1.6166666666666665,
+      "escalation": 0
+    },
+    {
+      "method": "random",
+      "shifted": true,
+      "episodes": 150,
+      "accuracy": 0.24666666666666667,
+      "accuracy_by_training_seed": [
+        0.24666666666666667
+      ],
+      "checks": 0.4533333333333333,
+      "reward": -0.8353333333333333,
+      "escalation": 0.22
+    }
+  ]
+}

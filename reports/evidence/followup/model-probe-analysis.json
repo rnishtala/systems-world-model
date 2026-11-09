@@ -1,0 +1,8 @@
+{
+  "scope": "Forced two-inspection probe; NOT autonomous diagnostic accuracy.",
+  "policy_accuracy_after_checks": 0.0,
+  "world_model_reward_ranking_accuracy_after_checks": 0.7666666666666667,
+  "imagination_reward_rmse": 1.8276097569724867,
+  "mean_predicted_correct_diagnosis_reward": -0.6167353398270077,
+  "mean_predicted_wrong_diagnosis_reward": -0.7431652814149856
+}

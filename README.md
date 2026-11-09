@@ -53,6 +53,21 @@ exploration, with fresh evaluation seeds.
 Episode-level results, configurations and logs are under `reports/evidence/`. See [the protocol](reports/PROTOCOL.md) for budgets and limits;
 all seeds, including unsuccessful policies, are retained.
 
+## Follow-up experiments
+
+These are development results (one seed, 150 episodes per load regime), not the
+three-seed confirmation required by the [follow-up protocol](reports/FOLLOWUP_PROTOCOL.md).
+
+| Training change | Familiar accuracy | Shifted accuracy | Observed behavior |
+|---|---:|---:|---|
+| Escalation penalty only | 32.0% | 34.0% | Guessing without inspections |
+| Inspection coverage only | 0.0% | 0.0% | Escalates despite diagnostic experience |
+
+A separate 90-episode probe **forced both inspections**. The learned world model
+ranked the correct diagnosis first in 76.7% of cases, but the actor made no correct
+diagnoses. Predicted rewards were still too pessimistic: this probe is not evidence
+of autonomous triage. A combined correction with a 100,000-step budget is running.
+
 ## Run and inspect
 
 - [RUNBOOK.md](RUNBOOK.md): exact upstream pin, dependencies, deployment and reproduction.

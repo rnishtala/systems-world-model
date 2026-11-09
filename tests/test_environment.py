@@ -26,3 +26,14 @@ def test_episodes_are_bounded_and_diagnosis_is_scored():
     a.reset(2)
     for _ in range(6):a.step(0)
     assert a.done and a.choice==-1
+
+
+def test_abstention_ablation_changes_only_abstention_reward():
+    a,b=QueueTriage(42),QueueTriage(42,abstention_penalty=2.)
+    np.testing.assert_array_equal(a.reset(1),b.reset(1))
+    x,ra,_=a.step(1);y,rb,_=b.step(1)
+    np.testing.assert_array_equal(x,y)
+    assert ra==rb
+    x,ra,_=a.step(6);y,rb,_=b.step(6)
+    np.testing.assert_array_equal(x,y)
+    assert np.isclose(ra-rb,1.5)
