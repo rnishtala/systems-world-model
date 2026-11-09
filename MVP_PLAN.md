@@ -1,158 +1,203 @@
-# Systems World Model: MVP plan
+# Systems World Model: DreamerV3 triage MVP
 
-**Status:** exploratory plan. No model trained or cluster deployment performed.
+**Status:** plan only. No implementation installed, model trained, or lab deployed.
 
-Build a small, independent system that learns how services behave over time,
-then uses that understanding to diagnose faults and choose what to inspect next.
-The question is whether this improves triage over rules and an LLM alone.
+Reuse the [DreamerV3 implementation](https://github.com/danijar/dreamerv3), train
+it on a small system-triage environment, and test whether its learned behavior
+improves diagnosis. Then add a frozen LLM and a controlled execution workflow to
+demonstrate end-to-end resolution in an independent lab.
+
+## What we reuse and what we build
+
+**Reuse DreamerV3's world model, replay/training machinery, and actor-critic policy
+learning from imagined trajectories.** Train weights from scratch on system
+observations and diagnostic actions; do not assume game-trained weights transfer.
+Pin an upstream revision and preserve its license when implementing. The linked
+repository describes itself as a DreamerV3 reimplementation, not a Google/DeepMind
+supported product.
+
+Build the environment adapter, telemetry/action contract, fault scenarios,
+evaluation, and later the LLM/execution integration. We are not replacing Dreamer
+with a custom neural world model, adding a BayesNet, or fine-tuning an LLM.
 
 ## Architecture
 
 ```mermaid
 flowchart TD
-    subgraph Lab[Independent test environment]
-        S[1. Frontend → Payments → Ledger]
-        C[Controlled workload and faults] --> S
+    subgraph Training[Learning in the simulator]
+        E[1. Service simulator with hidden faults]
+        A[2. Environment adapter]
+        E -->|Observations, rewards and episode boundaries| A
+        A --> D[3. DreamerV3 world model and actor-critic training]
+        D -->|Diagnostic actions| A
+        A --> E
+        D --> C[Evaluated model and policy checkpoint]
     end
 
-    S --> O[2. Observe metrics, traces, configuration and applied actions]
-    O --> D[Recorded experiments]
-    D --> T[3. Train and evaluate offline]
-    T --> M[Versioned world model]
+    subgraph Triage[Inference in simulation, then the isolated real lab]
+        S[4. System telemetry] --> I[Dreamer state estimate and diagnostic policy]
+        C --> I
+        I --> Q[Read-only inspection]
+        Q --> S
+        I --> B[5. Diagnosis and evidence bundle, or escalation]
+    end
 
-    O --> W[4. Estimate current state and predict possible futures]
-    M --> W
-    W --> P[5. Rank likely causes and select the next check]
-    P --> Q[Read-only diagnostic check]
-    Q --> S
-    P --> R[6. Explain findings and uncertainty]
-    R --> H[Human reviews diagnosis and suggested response]
+    subgraph Resolution[Later end-to-end resolution extension]
+        B --> L[6. Frozen LLM explains and proposes a fix]
+        L --> V[Tests, policy checks and human review]
+        V --> X[7. Scoped executor applies the exact approved change]
+        X --> S
+        S --> R[8. Independent recovery verification]
+        R -->|Still unhealthy: investigate or reviewed rollback| B
+        R -->|Sustained recovery| F[Record outcome and close]
+    end
 ```
 
-The diagram separates **learning from recorded experiments** from **using the
-trained model during an incident**. New observations update the model's estimate
-of the current situation; they do not retrain its weights on every request.
+Training changes model and policy weights. Inference uses a fixed checkpoint,
+updating its internal state as observations arrive. Recovery evidence can become
+future training data after review; it does not automatically retrain the live model.
 
-## Walk through an incident
+## Walk through the smallest triage experiment
 
-### 1. Create a small system that can break in known ways
+### 1. Make a small environment with ambiguous symptoms
 
-Run our own frontend, payments service, ledger service, and disposable database.
-Generate traffic and introduce controlled faults such as a small connection pool,
-slow queries, CPU contention, or dependency delays. Include healthy traffic
-spikes so the model cannot simply equate high load with a fault.
+Start with one simulated request-processing service, a queue, and a simplified
+downstream dependency. Two hidden faults—CPU bottleneck and downstream slowdown—
+can both raise latency and queue depth. Include healthy operation and traffic
+spikes. Faults are controlled by the experiment, never chosen by the diagnostic
+policy. No LLM, real microservices, or Kubernetes is required for this first test.
 
-For example, reduce the ledger connection pool until checkout requests begin
-timing out. The experiment controller knows the injected fault; the triage
-system must infer it from observations without seeing that answer.
+### 2. Give Dreamer observations and meaningful choices
 
-### 2. Observe what happened over time
+Expose request rate, latency, errors, queue depth, and results of inspections.
+Include time, measurement age, and missing-value indicators. Detailed CPU or
+downstream measurements become visible only after the corresponding inspection.
+Retain collected evidence so repeated checks are not rewarded unnecessarily.
 
-Collect the service relationships, configuration, traffic, latency, errors,
-resource usage, and selected traces. Record when a change actually took effect
-and what happened afterward. Keep missing or stale measurements explicit.
+Actions are finite: wait, inspect CPU, inspect downstream latency, submit one
+of the known diagnoses, or escalate as unknown. Each action consumes time and
+may carry a cost. An inspection reveals information; it does not repair the
+service. The adapter maps these observations/actions and episode boundaries to
+the pinned Dreamer implementation's interface.
 
-These are the model's inputs. A compact learned representation summarizes them,
-but that representation alone is not the world model: the model must also learn
-how the system changes over time.
+Reward correct diagnosis, penalize wrong conclusions, and charge for checks and
+delay. Bound episode length and make escalation preferable to unsupported guesses,
+without making always-escalate an easy winning policy. Ground-truth faults are
+used for scoring only, never included in inference observations. Test that reward
+values and identifiers cannot leak the hidden answer before diagnosis.
 
-### 3. Learn system behavior from experiments
+### 3. Learn a world model and a diagnostic policy
 
-Train a small predictive model on sequences of observations, applied changes,
-and subsequent outcomes. Start with a fast simulator, then test and refine the
-approach using real lab services. Success in simulation alone is insufficient.
+Dreamer gathers experience, learns to predict its environment, and trains a
+policy using imagined trajectories. Here a useful imagined trajectory is:
+inspect CPU, observe the result, inspect downstream if necessary, then diagnose.
 
-The model learns patterns such as how limited ledger capacity affects payment
-latency as traffic increases. A diagnostic component learns to associate those
-patterns with known fault types. Keep unseen experiments separate for evaluation.
+The trained policy selects diagnostic actions; we do not require a separate
+hand-built information-gain planner. Check that it actually learns diagnostic
+structure rather than exploiting simulator shortcuts. Dreamer's action scores
+are not automatically calibrated probabilities of root causes.
 
-### 4. Estimate the current situation and predict what comes next
+### 4. Prove useful triage before adding integration
 
-During triage, the model reads recent observations and maintains an estimate of
-the system's state, including uncertainty. It predicts how symptoms may evolve
-under the current workload and, where training evidence supports it, under a
-candidate change.
+On unseen episodes, the agent should distinguish the two faults with fewer
+checks or better accuracy than a fixed checklist. Show the observation timeline,
+selected checks, final diagnosis, and actual fault in an evaluation report.
 
-In our example, it might predict growing payment queues while ledger capacity
-remains constrained. Predictions are estimates to test, not proof of a cause or
-a guarantee that a proposed fix will work.
+Then replace the simulator behind the same contract with isolated lab services
+on AMD. Collect real trajectories and evaluate transfer; retrain or adapt on
+separate training episodes if necessary. Simulator success is not evidence of
+real-system effectiveness. Unfamiliar faults should trigger escalation.
 
-### 5. Compare explanations and choose the next diagnostic check
+## How an LLM extends this to end-to-end resolution
 
-Rank a small set of known explanations, with an unknown option. For checkout
-timeouts, candidates might include pool exhaustion, slow queries, or CPU pressure.
+The LLM is a complementary reasoning and coding component, not Dreamer's trainer
+or a source of ground-truth diagnoses. Keep it frozen initially.
 
-Choose a read-only check that can distinguish them—for example, inspect pool
-occupancy and database query duration. Feed the returned observations back into
-step 4, then update the diagnosis. The planner uses the model's predictions of
-possible check results; if those predictions are unreliable, use a fixed checklist.
+### 5. Pass a structured evidence bundle
 
-This loop is the central MVP experiment: can the system reach a better diagnosis
-with fewer checks? Comparing possible fixes is a secondary, advisory capability.
+Give the LLM the selected diagnosis, timestamped measurements and references,
+checks performed, known limitations, current configuration/code revision, and
+missing information. Pass only interpretable outputs—not an unexplained latent
+embedding. Only expose confidence measures if separately validated.
 
-### 6. Explain the result to a human
+For example, the policy identifies downstream slowdown after observing normal
+CPU and a slow dependency measurement. That identifies where to investigate;
+it does not prove which line of code or setting is responsible.
 
-Return the likely cause, supporting and conflicting evidence, uncertainty, and
-recommended next step. An optional frozen LLM turns these structured results
-into a clear explanation. A deterministic report works without an LLM.
+### 6. Let the LLM propose a concrete repair
 
-The model does not approve changes or execute production remediation. Controlled
-lab interventions remain separate from the read-only diagnostic loop.
+The LLM reads permitted lab configuration, logs, and code to narrow the mechanism,
+then proposes a small change with supporting evidence, tests, expected recovery,
+and a rollback plan. For the first resolution demo, use a bounded configuration
+fault and one allowlisted repair. Arbitrary generated code fixes come later.
 
-## What is being built—and how Dreamer inspires it
+If evidence conflicts with the diagnosis, the LLM requests more investigation or
+escalates. It must not convert a broad symptom classification into a certain fix.
+Additional LLM tool calls are tracked and count toward evaluation cost.
 
-This is **a separately trained predictive model plus a diagnostic planning
-harness**. It is not LLM fine-tuning. The LLM, if used, remains unchanged.
+### 7. Execute through explicit controls
 
-Dreamer provides the inspiration: learn a compact representation of an environment,
-predict how it evolves under actions, and use imagined futures to guide decisions.
-Here the environment is a service chain rather than a game or robot.
+A separate workflow validates the proposal, runs checks, obtains review for the
+exact revision, and applies it through a namespace-scoped executor. For the first
+lab demo this can be a reviewed configuration artifact; GitHub PR/merge and Slack
+are optional later interfaces, not prerequisites for proving the approach.
 
-The MVP borrows that approach but does not implement Dreamer's full actor-critic
-reinforcement-learning loop. It does not require a BayesNet. Full policy learning
-and support for arbitrary service topologies are possible later experiments.
+The LLM and Dreamer do not hold unrestricted deployment authority. Persist action
+identities and execution receipts; reconcile an uncertain write before retrying
+so a crash cannot silently apply a change twice.
 
-## Build sequence
+### 8. Verify actual recovery and close the loop
 
-| Stage | Outcome |
+A verifier checks the applied revision, workload health, latency/error recovery
+over a declared observation window, and absence of regressions under comparable
+load. Neither a successful deployment nor a favorable model prediction counts
+as resolution. If recovery fails, return the observed evidence for investigation
+or execute a separately authorized rollback. Record failed fixes as well as
+successes, and restore experiment state at the end.
+
+**Important boundary:** the initial Dreamer policy is trained on diagnostic
+checks, not deployment actions. It cannot meaningfully simulate an arbitrary
+LLM-generated patch. Predicting repair outcomes requires expanding the action
+space and collecting corresponding intervention trajectories in a later phase.
+The first end-to-end demo verifies repairs through actual lab execution.
+
+## Build stages and success criteria
+
+| Stage | Deliverable and decision |
 | --- | --- |
-| Establish the lab and baselines | Repeatable faults, recorded observations, and rules/LLM triage to compare against |
-| Train a small world model | Predictions of system behavior on unseen experiments |
-| Add diagnostic planning | Ranked causes, useful next checks, and explicit uncertainty |
-| Validate on AMD | The same experiment works on real services in an isolated namespace |
-| Demonstrate and decide | A small API/CLI and report show whether the approach earns further investment |
+| 1. Simulator and adapter | Repeatable ambiguous faults, bounded diagnostic actions, and a fixed-checklist baseline |
+| 2. DreamerV3 training | Reused upstream model and actor-critic learn useful triage on unseen episodes |
+| 3. Real AMD lab | Demonstrate diagnosis on held-out real experiments; measure and address transfer failures |
+| 4. LLM resolution demo | One diagnosis-to-reviewed-repair-to-verified-recovery scenario, including failure and rollback paths |
 
-Start with the experiment and baseline, not a large model. The initial planning
-estimate is roughly 2–3 engineering weeks, subject to data quality and available
-lab capacity; useful model performance is not guaranteed.
+Keep stage 2 usable without an LLM. Evaluate diagnosis accuracy, checks/cost,
+time to diagnosis, healthy false alarms, escalation behavior, prediction quality,
+compute, and variability across seeds. Split by whole experiment and hold out
+workloads/configurations, not random windows from the same run.
+
+For the extension, compare checklist + the same LLM, LLM-only investigation and
+repair, and Dreamer + LLM under equal evidence/action budgets. Measure verified
+resolution rate, time, unnecessary changes, failed fixes, and rollback behavior.
+Choose numerical acceptance thresholds before the final held-out evaluation.
+Proceed only if Dreamer improves accuracy or cost without hiding failures through
+excessive escalation. If it does not, retain and report the negative result.
 
 ## Deployment and independence
 
-Use the proposed AMD namespace **`systems-world-model-lab`**, with its own services,
-data, model artifacts, and deployment configuration. Keep the repository and
-runtime independent of AutoSRE and existing BearBank demos.
+Own the simulator, services, data, artifacts, and deployment in this repository;
+no AutoSRE imports, databases, credentials, or existing demo dependencies.
+Proposed AMD namespace: **`systems-world-model-lab`**. Use separate storage,
+restricted network access, namespace-only permissions, resource limits, experiment
+deadlines, and cleanup. Do not touch AutoSRE, BearBank, or staging workloads.
 
-Confirm AMD capacity before deployment. Bound CPU, memory, storage, and experiment
-duration; restrict network access and permissions to the lab. Do not assume GPU
-availability. Start with local development and CPU-compatible smoke tests.
-
-## How we decide whether it works
-
-Evaluate on whole experiments held out from training, including different loads
-and configurations. Compare against rules, a simple diagnostic classifier, simple
-forecasting, and a frozen LLM given the same evidence and check budget.
-
-Look for better root-cause accuracy or fewer diagnostic checks at comparable
-accuracy. Also measure prediction quality, confidence calibration, healthy-system
-false alarms, inference time, and behavior on unfamiliar faults. Report uncertainty
-in the results and whether simulator performance transfers to the real lab.
-
-The model must not see hidden fault labels during triage or future observations
-before they occur. If it cannot outperform a simpler approach, document that
-result rather than expanding the architecture to conceal it.
+Check JAX/runtime compatibility and AMD capacity before choosing training hardware.
+CPU smoke tests do not establish practical training throughput, and AMD GPU
+support is not assumed. Local simulation comes first; real lab deployment follows
+a measured capacity and compatibility check. Estimate schedule after the adapter
+and first training run establish sample requirements and training speed.
 
 ## References
 
 - [DreamerV3 project](https://danijar.com/project/dreamerv3/)
-- [Official DreamerV3 implementation](https://github.com/danijar/dreamerv3)
+- [DreamerV3 code to reuse](https://github.com/danijar/dreamerv3)
 - [World Models: representation, prediction, and control](https://worldmodels.github.io/)

@@ -1,13 +1,16 @@
 # Systems World Model
 
-An independent research MVP for diagnosing distributed-system faults using a learned,
-action-conditioned world model. Inspired by Dreamer; not an AutoSRE component,
-Dreamer reproduction, or production remediation agent.
+An independent research MVP that reuses DreamerV3's implementation to learn
+system triage: which diagnostic check to perform and when to make a diagnosis.
+Train on our own simulator and system data, rather than reuse game-trained weights.
 
-**Status:** planning only. No model trained, application implemented, or cluster resources deployed.
+A later extension pairs the trained agent with a frozen LLM, reviewed execution,
+and independent recovery verification for end-to-end resolution in an isolated lab.
 
-Read [MVP_PLAN.md](MVP_PLAN.md) for an architecture walkthrough, build stages,
-success criteria, and proposed isolated deployment on AMD.
+**Status:** planning only. No Dreamer dependency installed, model trained,
+application implemented, or cluster resources deployed.
 
-The central experiment: can learning how a system evolves improve root-cause
-ranking and selection of the next diagnostic check over rules and an LLM alone?
+Read [MVP_PLAN.md](MVP_PLAN.md) for the architecture walkthrough, smallest experiment,
+LLM resolution flow, evaluation, and proposed independent AMD deployment.
+
+This is not an AutoSRE component or a production remediation agent.
