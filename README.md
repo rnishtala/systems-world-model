@@ -1,5 +1,7 @@
 # Systems World Model
 
+[One-page research proposal](output/pdf/systems-world-model-proposal.pdf)
+
 A standalone, executable DreamerV3 experiment for active systems diagnosis.
 The first POC trains the project-linked DreamerV3 implementation from scratch
 on a partially observed queue simulator. It runs on **AMD Halo, CPU only**, in
