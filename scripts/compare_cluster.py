@@ -13,6 +13,7 @@ def inventory(path):
     return out
 before,after=map(inventory,sys.argv[1:3]);common=set(before)&set(after)
 print(json.dumps({'before_running':len(before),'after_running':len(after),
+ 'after_unready':sorted(k for k,v in after.items() if not v['ready']),
  'readiness_regressions':[k for k in common if before[k]['ready'] and not after[k]['ready']],
  'restart_increases':[k for k in common if after[k]['restarts']>before[k]['restarts']],
  'missing_pods':sorted(set(before)-set(after)), 'new_pods':sorted(set(after)-set(before)),

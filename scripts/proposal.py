@@ -35,10 +35,12 @@ p('<b>Prospective success gate:</b> at least 95% diagnosis accuracy at familiar 
 p('Immediate experiment and current evidence','HeadX')
 gate_file=root/'reports/evidence/followup/confirmation-particle-gate.json'
 confirmation='Three fresh training seeds are being tested before claiming repeatability.'
+next_gate='The next scientific gate is transfer to independent dynamics and real lab services.'
 if gate_file.exists():
     confirmed=json.loads(gate_file.read_text())['methods']['dreamer_particle_actor']['confirmation_gate_passed']
+    if not confirmed:next_gate='The immediate next gate is repeatable synthetic diagnosis before real-service transfer.'
     confirmation=('Three fresh training seeds met the prespecified synthetic gate.' if confirmed else 'Fresh-seed confirmation did not meet every prespecified threshold; further work remains.')
-p('The initial agent mostly escalated. Correcting training incentives and diagnostic coverage, then voting across 16 native latent-state/actor samples, achieved 100% development accuracy with one inspection per incident. '+confirmation+' All failed trials are retained. The next scientific gate is transfer to independent dynamics and real lab services.')
+p('The initial agent mostly escalated. Correcting training incentives and diagnostic coverage, then voting across 16 native latent-state/actor samples, achieved 100% development accuracy with one inspection per incident. '+confirmation+' All failed trials are retained. '+next_gate)
 p('Path to end-to-end resolution','HeadX')
 p('After the synthetic gate, validate on real services confined to the lab namespace. A frozen LLM can then explain the diagnostic evidence and propose a bounded repair. A separate approval/execution layer applies the change, and independent health checks verify recovery. LLM integration and real-service recovery are subsequent gates, not capabilities demonstrated today.')
 p('Execution, isolation and deliverables','HeadX')

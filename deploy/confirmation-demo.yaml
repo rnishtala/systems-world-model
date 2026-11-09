@@ -35,7 +35,7 @@ spec:
               drop: [ALL]
           env:
             - {name: PYTHONUNBUFFERED, value: '1'}
-            - {name: HOME, value: /results}
+            - {name: XDG_CACHE_HOME, value: /tmp/cache}
             - {name: OMP_NUM_THREADS, value: '4'}
             - {name: OPENBLAS_NUM_THREADS, value: '1'}
             - {name: XLA_FLAGS, value: '--xla_cpu_multi_thread_eigen=false intra_op_parallelism_threads=4'}

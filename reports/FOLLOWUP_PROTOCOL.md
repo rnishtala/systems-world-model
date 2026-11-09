@@ -33,7 +33,7 @@ These two experiments isolate different candidate causes; they are not a full
 factorial study. Changes beyond them must be logged as new development trials,
 with fresh confirmation data. Do not claim causal certainty from one seed.
 
-## Boundaries
+## Initial boundaries (concurrency amendment recorded below)
 
 Use only systems-world-model-lab, sequential jobs, the existing four-CPU / 6 GiB
 quota and default-deny networking. No dependency downloads are needed. Keep
@@ -106,3 +106,15 @@ the same frozen bundle (Python bytecode writes disabled); each seed has separate
 logs, replay and checkpoints. This
 changes execution concurrency, not the frozen model or learning configuration.
 Do not tune against confirmation results or silently replace failed seeds.
+
+## Recorded confirmation outcome (after the frozen evaluation)
+
+All three seeds met every threshold: 100% familiar and shifted accuracy, one
+inspection per incident, zero unresolved cases, 150 episodes per regime per seed.
+The batch completed in 26.7 minutes. The unchanged native sampled actor reached
+90.0% / 93.8% aggregate accuracy; the confirmed result specifically includes
+16-particle inference. The separate saved-checkpoint demo diagnosed all three
+fault classes correctly. See `evidence/followup/confirmation-particle-gate.json`
+and `evidence/followup/confirmation/` for the complete episode records.
+
+This closes the synthetic POC gate, not real-service transfer or LLM resolution.

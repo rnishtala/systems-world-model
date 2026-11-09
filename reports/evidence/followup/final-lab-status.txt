@@ -1,0 +1,27 @@
+pod "results-reader" deleted from systems-world-model-lab namespace
+NAME                                READY   STATUS      RESTARTS   AGE
+pod/dreamer-combined-v4-wdrwx       0/1     Completed   0          53m
+pod/dreamer-confirm-10-v4-54znf     0/1     Completed   0          28m
+pod/dreamer-confirm-11-v4-xtd9m     0/1     Completed   0          28m
+pod/dreamer-confirm-12-v4-5ghd9     0/1     Completed   0          28m
+pod/dreamer-confirm-demo-v1-ntwpz   0/1     Completed   0          77s
+pod/dreamer-coverage-v3-zhmqr       0/1     Error       0          63m
+pod/dreamer-coverage-v3a-jw4b7      0/1     Completed   0          61m
+pod/dreamer-greedy-v6-55rzp         0/1     Completed   0          34m
+pod/dreamer-main-v1-j8b75           0/1     Completed   0          100m
+pod/dreamer-model-probe-v1-2vt6j    0/1     Completed   0          55m
+pod/dreamer-model-probe-v4-dvhgn    0/1     Completed   0          40m
+pod/dreamer-particles-v7-2xktk      0/1     Completed   0          31m
+pod/dreamer-penalty-v2-vpwb8        0/1     Completed   0          70m
+pod/dreamer-planner-v5-pjk6f        0/1     Error       0          39m
+pod/dreamer-planner-v5a-5p4qv       0/1     Completed   0          37m
+pod/dreamer-poc-v1-fm7wr            0/1     Completed   0          104m
+
+NAME                       REQUEST                                                                                                          LIMIT                                   AGE
+resourcequota/lab-budget   persistentvolumeclaims: 1/1, pods: 0/3, requests.cpu: 0/4, requests.memory: 0/6Gi, requests.storage: 10Gi/10Gi   limits.cpu: 0/4, limits.memory: 0/6Gi   104m
+
+NAME                                              POD-SELECTOR   AGE
+networkpolicy.networking.k8s.io/deny-by-default   <none>         104m
+
+NAME                            STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/results   Bound    pvc-e8730b2a-03b4-4df2-9363-44995024b9d0   10Gi       RWO            local-path     <unset>                 104m

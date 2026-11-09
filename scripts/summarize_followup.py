@@ -11,6 +11,18 @@ for method in methods:
         for shifted in (False,True):
             rows=[r for r in run['rows'] if r['method']==method and r['shifted']==shifted]
             if not rows:raise ValueError('Missing evaluation regime')
+            if len({r['episode'] for r in rows}) != len(rows):
+                raise ValueError('Duplicate episode identifiers')
+            if any(r['correct'] != (r['diagnosis'] == r['fault']) for r in rows):
+                raise ValueError('Correctness flag disagrees with diagnosis and ground truth')
+            if len(rows)==150 and any(sum(r['fault']==f for r in rows)!=50 for f in (0,1,2)):
+                raise ValueError('Expected balanced fault classes')
+            if any(not 0 <= r['checks'] <= r['steps'] <= 6 for r in rows):
+                raise ValueError('Invalid bounded episode accounting')
+            if len(runs)==3 and set(out['training_seeds'])=={10,11,12}:
+                expected_seed=4000000+run['training_seed']+100000*shifted
+                if any(r['eval_seed']!=expected_seed for r in rows):
+                    raise ValueError('Confirmation evaluation stream differs from frozen protocol')
             m=dict(training_seed=run['training_seed'],shifted=shifted,episodes=len(rows),
                    accuracy=statistics.mean(r['correct'] for r in rows),
                    checks=statistics.mean(r['checks'] for r in rows),

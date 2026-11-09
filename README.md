@@ -7,6 +7,35 @@ The first POC trains the project-linked DreamerV3 implementation from scratch
 on a partially observed queue simulator. It runs on **AMD Halo, CPU only**, in
 its own Kubernetes namespace: `systems-world-model-lab`.
 
+## Confirmed synthetic POC result
+
+**Passed the frozen confirmation gate on 9 November 2026.** Three freshly trained
+models (seeds 10, 11, 12) each achieved **100% accuracy at both familiar and shifted
+load**, with **one inspection per incident and zero unresolved cases**. That is
+900 held-out incidents in total. All three saved-model demonstration cases also
+passed. The three training/evaluation jobs completed in 26.7 minutes elapsed.
+
+| Confirmation method | Familiar accuracy | Shifted accuracy | Inspections (familiar) |
+|---|---:|---:|---:|
+| Native sampled Dreamer actor | 90.0% | 93.8% | 0.99 |
+| Native actor with 16-particle voting | 100.0% | 100.0% | 1.00 |
+| Adaptive checklist | 100.0% | 100.0% | 1.67 |
+| Fixed checklist | 100.0% | 100.0% | 2.00 |
+
+The confirmed configuration trains from scratch for 100,000 steps, uses a higher
+training abstention cost and training-only inspection coverage, and votes across
+16 native latent-state/actor samples during inference. No expert diagnosis rules
+or hidden fault labels are supplied at inference. Voting changes inference, not
+model weights. This small synthetic result does **not** establish real-system
+transfer, superiority to optimal expert rules, or LLM-assisted repair.
+
+[Read the five-page follow-up research report](output/pdf/dreamerv3-triage-followup.pdf).
+The [confirmation gate](reports/evidence/followup/confirmation-particle-gate.json),
+[three-incident trace](reports/evidence/followup/confirmation/demo.json), failed
+trials, and every seed's episode-level evidence are preserved. Runtime tests:
+**10 passed**. Experiment processes and the temporary collector have stopped;
+checkpoints remain in the isolated lab PVC.
+
 ## What is implemented
 
 ```mermaid
@@ -26,7 +55,7 @@ is model training for a new environment, not LLM fine-tuning. No BayesNet is use
 fault injection, code repairs, or real-service recovery are claimed. The later
 LLM resolution architecture remains in [MVP_PLAN.md](MVP_PLAN.md).
 
-## Experiment
+## Original baseline experiment
 
 Three 4,000-step pilot runs and three fresh 50,000-step main runs, with three
 fault classes and seven actions. Each seed is evaluated on 150 familiar-load
@@ -73,9 +102,9 @@ the same probe reached 100% world-model ranking accuracy (reward RMSE 0.103).
 
 The particle controller keeps 16 latent-state/actor samples of **one model**,
 executes their majority action once, and feeds that action back to every sample.
-It adds no diagnosis rules or extra sensor observations. Three fresh training
-seeds (10, 11, 12) are now running the frozen confirmation protocol, with fresh
-evaluation streams. Development success alone is not a confirmation result.
+It adds no diagnosis rules or extra sensor observations. The subsequent frozen
+confirmation used seeds 10, 11, 12 and untouched evaluation streams; all three
+passed, as reported above. No tuning was performed against confirmation results.
 
 ## Run and inspect
 
@@ -84,7 +113,9 @@ evaluation streams. Development success alone is not a confirmation result.
 - `experiment/environment.py`: bounded partially observed simulator.
 - `experiment/run.py`: real upstream training and held-out evaluation.
 - `experiment/diagnose.py`: load a saved checkpoint and print a simulated incident trace.
-- `scripts/paper.py`: regenerate the research PDF from measured evidence.
+- `scripts/followup_paper.py`: regenerate the current research PDF from measured evidence.
+- `scripts/proposal.py`: regenerate the one-page proposal.
+- `scripts/paper.py`: regenerate the historical baseline report.
 
 The lab has a four-core / 6 GiB memory limit, default-deny networking after
 installation, no Kubernetes API credentials, and no host mounts. Training jobs
