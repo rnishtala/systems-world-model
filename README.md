@@ -6,8 +6,8 @@ Dreamer reproduction, or production remediation agent.
 
 **Status:** planning only. No model trained, application implemented, or cluster resources deployed.
 
-Read [MVP_PLAN.md](MVP_PLAN.md) for the architecture, experimental design,
-acceptance gates, and proposed isolated deployment on AMD.
+Read [MVP_PLAN.md](MVP_PLAN.md) for an architecture walkthrough, build stages,
+success criteria, and proposed isolated deployment on AMD.
 
 The central experiment: can learning how a system evolves improve root-cause
 ranking and selection of the next diagnostic check over rules and an LLM alone?
