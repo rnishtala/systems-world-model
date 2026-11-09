@@ -161,6 +161,8 @@ LLM-generated patch. Predicting repair outcomes requires expanding the action
 space and collecting corresponding intervention trajectories in a later phase.
 The first end-to-end demo verifies repairs through actual lab execution.
 
+The concrete next-stage design is in [MICROSERVICE_MVP.md](MICROSERVICE_MVP.md).
+
 ## Build stages and success criteria
 
 | Stage | Deliverable and decision |
