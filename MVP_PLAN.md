@@ -1,6 +1,6 @@
 # Systems World Model: DreamerV3 triage MVP
 
-**Status:** plan only. No implementation installed, model trained, or lab deployed.
+**Status:** the bounded synthetic DreamerV3 POC has been implemented and deployed on AMD Halo in `systems-world-model-lab`. See [README.md](README.md) for measured results and [RUNBOOK.md](RUNBOOK.md) for reproduction. Real-service transfer and the LLM resolution stage below remain future work.
 
 Reuse the [DreamerV3 implementation](https://github.com/danijar/dreamerv3), train
 it on a small system-triage environment, and test whether its learned behavior

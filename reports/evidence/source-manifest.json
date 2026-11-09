@@ -1,0 +1,9 @@
+{
+  "experiment/environment.py": "319eecf1720f08714480064b6eb3461dc529161842d642e48bea8e0bf87b6cb5",
+  "experiment/run.py": "662f822265f2e9ba3269c2eb1e98cee9179f6a3b8223022524ca29602dda9b7d",
+  "requirements-cpu.txt": "423a9ef7e5d8aeab4259ba298af3f927aee02d6dae0f65eb8e0b5a229f3b8c3f",
+  "deploy/lab.yaml": "839094e71079bc439e7cdee31e1d3d4a25f7820dfe5ab743134d463c32533789",
+  "deploy/main-job.yaml": "47114a4eb9cac358536bd79010d0832881582c96340d03c7f8d97ac807134e00",
+  "initial_source_bundle_sha256": "4e83ae5e4344a4f776cb508e02ac1306d7ad5c2d6df425ddb23ead3416f30992",
+  "note": "Hashes identify executed training source. Main used the evaluation-seed-offset update; pilot used the initial bundle. The committed runner additionally refuses existing per-seed output directories, a post-experiment guard that does not change training or evaluation."
+}

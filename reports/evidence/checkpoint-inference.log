@@ -1,0 +1,63 @@
+Observations
+  vector           Space(float32, shape=(9,), low=-inf, high=inf)
+  reward           Space(float32, shape=(), low=-inf, high=inf)
+  is_first         Space(bool, shape=(), low=False, high=True)
+  is_last          Space(bool, shape=(), low=False, high=True)
+  is_terminal      Space(bool, shape=(), low=False, high=True)
+Actions
+  action           Space(int32, shape=(), low=0, high=7)
+Extras
+  consec           Space(int32, shape=(), low=-2147483648, high=2147483647)
+  stepid           Space(uint8, shape=(20,), low=0, high=255)
+  dyn/deter        Space(float32, shape=(512,), low=-inf, high=inf)
+  dyn/stoch        Space(float32, shape=(32, 4), low=-inf, high=inf)
+JAX devices (1): [TFRT_CPU_0]
+Policy devices: TFRT_CPU_0
+Train devices:  TFRT_CPU_0
+Initializing parameters...
+Optimizer opt has 638,671 params:
+       364,480 dyn
+        66,111 val
+        57,663 rew
+        50,121 dec
+        49,991 pol
+        41,153 con
+         9,152 enc
+Done initializing!
+Compiling 1 checkpoint groups...
+Largest checkpoint group: 0 GB
+Compiling train and report...
+Train cost analysis:
+  FLOPS:            2.2e+09
+  Memory (temp):    3.3e+07
+  Memory (inputs):  8.3e+06
+  Memory (outputs): 8.3e+06
+  Memory (code):    1.2e+06
+
+Report cost analysis:
+No available
+Done compiling!
+Loading checkpoint: /results/main/final-0/20261109T201548F476505
+Loaded checkpoint.
+{
+  "trace": [
+    {
+      "observations": [
+        0.5572985410690308,
+        0.018631625920534134,
+        0.12235794961452484,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "action": "escalate"
+    }
+  ],
+  "diagnosis": -1,
+  "ground_truth": 2,
+  "correct": false,
+  "checks": 0
+}

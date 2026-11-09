@@ -10,3 +10,6 @@ checkpoints/
 *.pt
 *.ckpt
 .DS_Store
+.pytest_cache/
+upstream/
+tmp/

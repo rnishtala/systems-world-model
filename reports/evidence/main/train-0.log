@@ -1,0 +1,156 @@
+Observations
+  vector           Space(float32, shape=(9,), low=-inf, high=inf)
+  reward           Space(float32, shape=(), low=-inf, high=inf)
+  is_first         Space(bool, shape=(), low=False, high=True)
+  is_last          Space(bool, shape=(), low=False, high=True)
+  is_terminal      Space(bool, shape=(), low=False, high=True)
+Actions
+  action           Space(int32, shape=(), low=0, high=7)
+Extras
+  consec           Space(int32, shape=(), low=-2147483648, high=2147483647)
+  stepid           Space(uint8, shape=(20,), low=0, high=255)
+  dyn/deter        Space(float32, shape=(512,), low=-inf, high=inf)
+  dyn/stoch        Space(float32, shape=(32, 4), low=-inf, high=inf)
+JAX devices (1): [TFRT_CPU_0]
+Policy devices: TFRT_CPU_0
+Train devices:  TFRT_CPU_0
+Initializing parameters...
+Optimizer opt has 638,671 params:
+       364,480 dyn
+        66,111 val
+        57,663 rew
+        50,121 dec
+        49,991 pol
+        41,153 con
+         9,152 enc
+Done initializing!
+Compiling 1 checkpoint groups...
+Largest checkpoint group: 0 GB
+Compiling train and report...
+Train cost analysis:
+  FLOPS:            2.2e+09
+  Memory (temp):    3.3e+07
+  Memory (inputs):  8.3e+06
+  Memory (outputs): 8.3e+06
+  Memory (code):    1.2e+06
+
+Report cost analysis:
+No available
+Done compiling!
+Did not find any checkpoint.
+Saving checkpoint: /results/main/train-0/ckpt/20261109T200952F055166
+Saved checkpoint.
+Start training loop
+Start JAX profiler: /results/main/train-0
+2026-11-09 20:09:58.514234: E external/xla/xla/python/profiler/internal/python_hooks.cc:400] Can't import tensorflow.python.profiler.trace
+Stop JAX profiler
+2026-11-09 20:09:59.955154: E external/xla/xla/python/profiler/internal/python_hooks.cc:400] Can't import tensorflow.python.profiler.trace
+
+--------------------[Agent Step 3_940]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 1.95 / episode/length 2 / train/loss/con 0.63 / train/loss/dyn 2.21 / train/loss/policy -4.8e-4 / train/loss/rep 2.21 / train/loss/repval 6.76 / train/loss/rew 5.32 / train/loss/value 0.81 / train/loss/vector 1.4 / train/rand/action 1 / replay/replay_ratio 16.5 / fps/policy 127.51 / fps/train 1967.67
+
+Writing metrics: /results/main/train-0/scores.jsonlSaving checkpoint: /results/main/train-0/ckpt/20261109T201022F929609
+
+Writing metrics: /results/main/train-0/metrics.jsonl
+Saved checkpoint.
+
+--------------------[Agent Step 8_210]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score -2.05 / episode/length 2 / train/loss/con 0.16 / train/loss/dyn 1.01 / train/loss/policy -2.6e-3 / train/loss/rep 1.01 / train/loss/repval 4.74 / train/loss/rew 3.66 / train/loss/value 0.48 / train/loss/vector 0.17 / train/rand/action 0.99 / replay/replay_ratio 17.01 / fps/policy 142.19 / fps/train 2276.09
+
+Saving checkpoint: /results/main/train-0/ckpt/20261109T201052F949557Writing metrics: /results/main/train-0/scores.jsonl
+
+Writing metrics: /results/main/train-0/metrics.jsonl
+Saved checkpoint.
+
+--------------------[Agent Step 12_480]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score -0.55 / episode/length 2 / train/loss/con 0.03 / train/loss/dyn 1 / train/loss/policy -3.3e-3 / train/loss/rep 1 / train/loss/repval 2.72 / train/loss/rew 1.99 / train/loss/value 0.16 / train/loss/vector 0.06 / train/rand/action 0.85 / replay/replay_ratio 17.01 / fps/policy 142.24 / fps/train 2276.94
+
+Writing metrics: /results/main/train-0/metrics.jsonlSaving checkpoint: /results/main/train-0/ckpt/20261109T201122F968993
+Writing metrics: /results/main/train-0/scores.jsonl
+
+Saved checkpoint.
+
+--------------------[Agent Step 16_750]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score -2.05 / episode/length 2 / train/loss/con 0.02 / train/loss/dyn 1 / train/loss/policy -1.1e-3 / train/loss/rep 1 / train/loss/repval 1.92 / train/loss/rew 1.37 / train/loss/value 0.08 / train/loss/vector 0.02 / train/rand/action 0.77 / replay/replay_ratio 16.98 / fps/policy 142.33 / fps/train 2274.11
+
+Saving checkpoint: /results/main/train-0/ckpt/20261109T201152F969380
+Writing metrics: /results/main/train-0/metrics.jsonlWriting metrics: /results/main/train-0/scores.jsonl
+
+Saved checkpoint.
+
+--------------------[Agent Step 21_000]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score -0.55 / episode/length 2 / train/loss/con 0.01 / train/loss/dyn 1 / train/loss/policy -2.5e-3 / train/loss/rep 1 / train/loss/repval 1.62 / train/loss/rew 0.95 / train/loss/value 0.08 / train/loss/vector 0.01 / train/rand/action 0.61 / replay/replay_ratio 17.02 / fps/policy 141.44 / fps/train 2266.23
+
+Saving checkpoint: /results/main/train-0/ckpt/20261109T201223F017802
+Writing metrics: /results/main/train-0/scores.jsonl
+Writing metrics: /results/main/train-0/metrics.jsonl
+Saved checkpoint.
+
+--------------------[Agent Step 25_250]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score -0.55 / episode/length 2 / train/loss/con 0.01 / train/loss/dyn 1 / train/loss/policy -4.1e-4 / train/loss/rep 1 / train/loss/repval 1.29 / train/loss/rew 0.64 / train/loss/value 0.07 / train/loss/vector 7.5e-3 / train/rand/action 0.17 / replay/replay_ratio 16.99 / fps/policy 141.56 / fps/train 2263.91
+
+Saving checkpoint: /results/main/train-0/ckpt/20261109T201253F039951
+Writing metrics: /results/main/train-0/metrics.jsonl
+Writing metrics: /results/main/train-0/scores.jsonl
+Saved checkpoint.
+
+--------------------[Agent Step 29_490]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score -0.55 / episode/length 2 / train/loss/con 0.01 / train/loss/dyn 1 / train/loss/policy -3.5e-4 / train/loss/rep 1 / train/loss/repval 0.92 / train/loss/rew 0.42 / train/loss/value 0.05 / train/loss/vector 6.3e-3 / train/rand/action 0.08 / replay/replay_ratio 17 / fps/policy 141.19 / fps/train 2259.1
+
+Saving checkpoint: /results/main/train-0/ckpt/20261109T201323F070388
+Writing metrics: /results/main/train-0/scores.jsonl
+Writing metrics: /results/main/train-0/metrics.jsonl
+Saved checkpoint.
+
+--------------------[Agent Step 33_730]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score -0.55 / episode/length 2 / train/loss/con 0.01 / train/loss/dyn 1 / train/loss/policy -2.9e-4 / train/loss/rep 1 / train/loss/repval 0.67 / train/loss/rew 0.33 / train/loss/value 0.04 / train/loss/vector 5.7e-3 / train/rand/action 0.05 / replay/replay_ratio 17 / fps/policy 141.33 / fps/train 2261.24
+
+Saving checkpoint: /results/main/train-0/ckpt/20261109T201353F071077
+Writing metrics: /results/main/train-0/scores.jsonl
+Writing metrics: /results/main/train-0/metrics.jsonl
+Saved checkpoint.
+
+--------------------[Agent Step 37_980]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score -0.55 / episode/length 2 / train/loss/con 0.01 / train/loss/dyn 1 / train/loss/policy -2.2e-4 / train/loss/rep 1 / train/loss/repval 0.62 / train/loss/rew 0.3 / train/loss/value 0.04 / train/loss/vector 5.3e-3 / train/rand/action 0.04 / replay/replay_ratio 16.99 / fps/policy 141.67 / fps/train 2265.6
+
+Writing metrics: /results/main/train-0/scores.jsonl
+Writing metrics: /results/main/train-0/metrics.jsonl
+Saving checkpoint: /results/main/train-0/ckpt/20261109T201423F141526
+Saved checkpoint.
+
+--------------------[Agent Step 42_200]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score -0.55 / episode/length 2 / train/loss/con 0.01 / train/loss/dyn 1 / train/loss/policy -2.1e-4 / train/loss/rep 1 / train/loss/repval 0.59 / train/loss/rew 0.29 / train/loss/value 0.04 / train/loss/vector 4.9e-3 / train/rand/action 0.03 / replay/replay_ratio 17.02 / fps/policy 140.49 / fps/train 2249.96
+
+Writing metrics: /results/main/train-0/scores.jsonlWriting metrics: /results/main/train-0/metrics.jsonl
+
+Saving checkpoint: /results/main/train-0/ckpt/20261109T201453F174698
+Saved checkpoint.
+
+--------------------[Agent Step 46_440]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score -0.55 / episode/length 2 / train/loss/con 0.01 / train/loss/dyn 1 / train/loss/policy -1.5e-4 / train/loss/rep 1 / train/loss/repval 0.58 / train/loss/rew 0.28 / train/loss/value 0.04 / train/loss/vector 4.5e-3 / train/rand/action 0.02 / replay/replay_ratio 17 / fps/policy 141.33 / fps/train 2261.31
+
+Writing metrics: /results/main/train-0/metrics.jsonlWriting metrics: /results/main/train-0/scores.jsonl
+
+Saving checkpoint: /results/main/train-0/ckpt/20261109T201523F183722
+Saved checkpoint.
+
+--------------------[Agent Step 49_999]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score -0.55 / episode/length 2
+
+Writing metrics: /results/main/train-0/metrics.jsonlWriting metrics: /results/main/train-0/scores.jsonl
+
+Saving checkpoint: /results/main/final-0/20261109T201548F476505
+Saved checkpoint.
+EXPERIMENT_COMPLETE {"training_seed": 0, "steps": 50000, "train_seconds": 368.7457492351532, "upstream_revision": "e01491fad6434b2245a3b8ca201dd7faedcc458c"}

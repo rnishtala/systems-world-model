@@ -1,0 +1,122 @@
+{
+  "runs": 3,
+  "training_seconds": [
+    368.7457492351532,
+    371.80212688446045,
+    371.6220829486847
+  ],
+  "groups": [
+    {
+      "method": "dreamer",
+      "shifted": false,
+      "episodes": 450,
+      "accuracy": 0.0022222222222222222,
+      "accuracy_by_training_seed": [
+        0,
+        0.006666666666666667,
+        0
+      ],
+      "checks": 0,
+      "reward": -0.5511111111111111,
+      "escalation": 0.9933333333333333
+    },
+    {
+      "method": "checklist",
+      "shifted": false,
+      "episodes": 450,
+      "accuracy": 1,
+      "accuracy_by_training_seed": [
+        1,
+        1,
+        1
+      ],
+      "checks": 2,
+      "reward": 1.5499999999999998,
+      "escalation": 0
+    },
+    {
+      "method": "adaptive",
+      "shifted": false,
+      "episodes": 450,
+      "accuracy": 1,
+      "accuracy_by_training_seed": [
+        1,
+        1,
+        1
+      ],
+      "checks": 1.6666666666666667,
+      "reward": 1.6166666666666665,
+      "escalation": 0
+    },
+    {
+      "method": "random",
+      "shifted": false,
+      "episodes": 450,
+      "accuracy": 0.2688888888888889,
+      "accuracy_by_training_seed": [
+        0.25333333333333335,
+        0.2733333333333333,
+        0.28
+      ],
+      "checks": 0.48,
+      "reward": -0.729111111111111,
+      "escalation": 0.23555555555555555
+    },
+    {
+      "method": "dreamer",
+      "shifted": true,
+      "episodes": 450,
+      "accuracy": 0.0022222222222222222,
+      "accuracy_by_training_seed": [
+        0,
+        0.006666666666666667,
+        0
+      ],
+      "checks": 0,
+      "reward": -0.547888888888889,
+      "escalation": 0.9955555555555555
+    },
+    {
+      "method": "checklist",
+      "shifted": true,
+      "episodes": 450,
+      "accuracy": 1,
+      "accuracy_by_training_seed": [
+        1,
+        1,
+        1
+      ],
+      "checks": 2,
+      "reward": 1.5499999999999998,
+      "escalation": 0
+    },
+    {
+      "method": "adaptive",
+      "shifted": true,
+      "episodes": 450,
+      "accuracy": 1,
+      "accuracy_by_training_seed": [
+        1,
+        1,
+        1
+      ],
+      "checks": 1.6666666666666667,
+      "reward": 1.6166666666666665,
+      "escalation": 0
+    },
+    {
+      "method": "random",
+      "shifted": true,
+      "episodes": 450,
+      "accuracy": 0.24,
+      "accuracy_by_training_seed": [
+        0.28,
+        0.22666666666666666,
+        0.21333333333333335
+      ],
+      "checks": 0.4488888888888889,
+      "reward": -0.8286666666666667,
+      "escalation": 0.24222222222222223
+    }
+  ]
+}

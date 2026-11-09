@@ -1,0 +1,16 @@
+jax==0.4.35
+jaxlib==0.4.35
+numpy==1.26.4
+chex==0.1.88
+optax==0.2.4
+ninjax==3.5.1
+elements==3.19.1
+portal==3.5.0
+granular==0.20.3
+ruamel.yaml==0.18.10
+einops==0.8.1
+cloudpickle==3.1.1
+psutil==7.0.0
+av==14.2.0
+Pillow==11.1.0
+pytest==8.3.5
