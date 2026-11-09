@@ -1,0 +1,1259 @@
+{
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "v1",
+      "kind": "ResourceQuota",
+      "metadata": {
+        "name": "lab-budget",
+        "namespace": "systems-world-model-lab"
+      },
+      "spec": {
+        "hard": {
+          "requests.cpu": "4",
+          "limits.cpu": "4",
+          "requests.memory": "6Gi",
+          "limits.memory": "6Gi",
+          "pods": "8",
+          "persistentvolumeclaims": "1",
+          "requests.storage": "10Gi"
+        }
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "swm-checkout",
+        "namespace": "systems-world-model-lab"
+      },
+      "spec": {
+        "replicas": 1,
+        "strategy": {
+          "type": "Recreate"
+        },
+        "selector": {
+          "matchLabels": {
+            "swm-component": "checkout"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "swm-component": "checkout"
+            }
+          },
+          "spec": {
+            "automountServiceAccountToken": false,
+            "securityContext": {
+              "runAsNonRoot": true,
+              "runAsUser": 1000,
+              "runAsGroup": 1000,
+              "fsGroup": 1000,
+              "seccompProfile": {
+                "type": "RuntimeDefault"
+              }
+            },
+            "nodeSelector": {
+              "kubernetes.io/hostname": "amd-halo"
+            },
+            "initContainers": [
+              {
+                "name": "unpack",
+                "image": "python:3.11-slim",
+                "command": [
+                  "sh",
+                  "-ec",
+                  "tar xzf /source/app.tar.gz -C /app"
+                ],
+                "resources": {
+                  "requests": {
+                    "cpu": "50m",
+                    "memory": "64Mi"
+                  },
+                  "limits": {
+                    "cpu": "300m",
+                    "memory": "128Mi"
+                  }
+                },
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "readOnlyRootFilesystem": true,
+                  "capabilities": {
+                    "drop": [
+                      "ALL"
+                    ]
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "name": "source",
+                    "mountPath": "/source",
+                    "readOnly": true
+                  },
+                  {
+                    "name": "app",
+                    "mountPath": "/app"
+                  }
+                ]
+              }
+            ],
+            "containers": [
+              {
+                "name": "checkout",
+                "image": "python:3.11-slim",
+                "command": [
+                  "python",
+                  "/app/microservice/service.py"
+                ],
+                "env": [
+                  {
+                    "name": "SERVICE_ROLE",
+                    "value": "checkout"
+                  },
+                  {
+                    "name": "PYTHONDONTWRITEBYTECODE",
+                    "value": "1"
+                  },
+                  {
+                    "name": "PYTHONPATH",
+                    "value": "/app/deps"
+                  },
+                  {
+                    "name": "DOWNSTREAM",
+                    "value": "http://swm-payment:8080"
+                  }
+                ],
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "readOnlyRootFilesystem": true,
+                  "capabilities": {
+                    "drop": [
+                      "ALL"
+                    ]
+                  }
+                },
+                "resources": {
+                  "requests": {
+                    "cpu": "50m",
+                    "memory": "64Mi"
+                  },
+                  "limits": {
+                    "cpu": "300m",
+                    "memory": "128Mi"
+                  }
+                },
+                "readinessProbe": {
+                  "httpGet": {
+                    "path": "/health",
+                    "port": 8080
+                  },
+                  "periodSeconds": 3
+                },
+                "volumeMounts": [
+                  {
+                    "name": "app",
+                    "mountPath": "/app",
+                    "readOnly": true
+                  },
+                  {
+                    "name": "tmp",
+                    "mountPath": "/tmp"
+                  }
+                ]
+              }
+            ],
+            "volumes": [
+              {
+                "name": "source",
+                "configMap": {
+                  "name": "microservice-source-v1"
+                }
+              },
+              {
+                "name": "app",
+                "emptyDir": {
+                  "sizeLimit": "32Mi"
+                }
+              },
+              {
+                "name": "tmp",
+                "emptyDir": {
+                  "sizeLimit": "16Mi"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "swm-checkout",
+        "namespace": "systems-world-model-lab"
+      },
+      "spec": {
+        "selector": {
+          "swm-component": "checkout"
+        },
+        "ports": [
+          {
+            "name": "http",
+            "port": 8080
+          },
+          {
+            "name": "control",
+            "port": 9090
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "swm-payment",
+        "namespace": "systems-world-model-lab"
+      },
+      "spec": {
+        "replicas": 1,
+        "strategy": {
+          "type": "Recreate"
+        },
+        "selector": {
+          "matchLabels": {
+            "swm-component": "payment"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "swm-component": "payment"
+            }
+          },
+          "spec": {
+            "automountServiceAccountToken": false,
+            "securityContext": {
+              "runAsNonRoot": true,
+              "runAsUser": 1000,
+              "runAsGroup": 1000,
+              "fsGroup": 1000,
+              "seccompProfile": {
+                "type": "RuntimeDefault"
+              }
+            },
+            "nodeSelector": {
+              "kubernetes.io/hostname": "amd-halo"
+            },
+            "initContainers": [
+              {
+                "name": "unpack",
+                "image": "python:3.11-slim",
+                "command": [
+                  "sh",
+                  "-ec",
+                  "tar xzf /source/app.tar.gz -C /app"
+                ],
+                "resources": {
+                  "requests": {
+                    "cpu": "50m",
+                    "memory": "64Mi"
+                  },
+                  "limits": {
+                    "cpu": "600m",
+                    "memory": "256Mi"
+                  }
+                },
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "readOnlyRootFilesystem": true,
+                  "capabilities": {
+                    "drop": [
+                      "ALL"
+                    ]
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "name": "source",
+                    "mountPath": "/source",
+                    "readOnly": true
+                  },
+                  {
+                    "name": "app",
+                    "mountPath": "/app"
+                  }
+                ]
+              }
+            ],
+            "containers": [
+              {
+                "name": "payment",
+                "image": "python:3.11-slim",
+                "command": [
+                  "python",
+                  "/app/microservice/service.py"
+                ],
+                "env": [
+                  {
+                    "name": "SERVICE_ROLE",
+                    "value": "payment"
+                  },
+                  {
+                    "name": "PYTHONDONTWRITEBYTECODE",
+                    "value": "1"
+                  },
+                  {
+                    "name": "PYTHONPATH",
+                    "value": "/app/deps"
+                  },
+                  {
+                    "name": "DOWNSTREAM",
+                    "value": "http://swm-ledger:8080"
+                  }
+                ],
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "readOnlyRootFilesystem": true,
+                  "capabilities": {
+                    "drop": [
+                      "ALL"
+                    ]
+                  }
+                },
+                "resources": {
+                  "requests": {
+                    "cpu": "50m",
+                    "memory": "64Mi"
+                  },
+                  "limits": {
+                    "cpu": "600m",
+                    "memory": "256Mi"
+                  }
+                },
+                "readinessProbe": {
+                  "httpGet": {
+                    "path": "/health",
+                    "port": 8080
+                  },
+                  "periodSeconds": 3
+                },
+                "volumeMounts": [
+                  {
+                    "name": "app",
+                    "mountPath": "/app",
+                    "readOnly": true
+                  },
+                  {
+                    "name": "tmp",
+                    "mountPath": "/tmp"
+                  }
+                ]
+              }
+            ],
+            "volumes": [
+              {
+                "name": "source",
+                "configMap": {
+                  "name": "microservice-source-v1"
+                }
+              },
+              {
+                "name": "app",
+                "emptyDir": {
+                  "sizeLimit": "32Mi"
+                }
+              },
+              {
+                "name": "tmp",
+                "emptyDir": {
+                  "sizeLimit": "16Mi"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "swm-payment",
+        "namespace": "systems-world-model-lab"
+      },
+      "spec": {
+        "selector": {
+          "swm-component": "payment"
+        },
+        "ports": [
+          {
+            "name": "http",
+            "port": 8080
+          },
+          {
+            "name": "control",
+            "port": 9090
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "swm-ledger",
+        "namespace": "systems-world-model-lab"
+      },
+      "spec": {
+        "replicas": 1,
+        "strategy": {
+          "type": "Recreate"
+        },
+        "selector": {
+          "matchLabels": {
+            "swm-component": "ledger"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "swm-component": "ledger"
+            }
+          },
+          "spec": {
+            "automountServiceAccountToken": false,
+            "securityContext": {
+              "runAsNonRoot": true,
+              "runAsUser": 1000,
+              "runAsGroup": 1000,
+              "fsGroup": 1000,
+              "seccompProfile": {
+                "type": "RuntimeDefault"
+              }
+            },
+            "nodeSelector": {
+              "kubernetes.io/hostname": "amd-halo"
+            },
+            "initContainers": [
+              {
+                "name": "unpack",
+                "image": "python:3.11-slim",
+                "command": [
+                  "sh",
+                  "-ec",
+                  "tar xzf /source/app.tar.gz -C /app"
+                ],
+                "resources": {
+                  "requests": {
+                    "cpu": "50m",
+                    "memory": "64Mi"
+                  },
+                  "limits": {
+                    "cpu": "400m",
+                    "memory": "256Mi"
+                  }
+                },
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "readOnlyRootFilesystem": true,
+                  "capabilities": {
+                    "drop": [
+                      "ALL"
+                    ]
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "name": "source",
+                    "mountPath": "/source",
+                    "readOnly": true
+                  },
+                  {
+                    "name": "app",
+                    "mountPath": "/app"
+                  }
+                ]
+              }
+            ],
+            "containers": [
+              {
+                "name": "ledger",
+                "image": "python:3.11-slim",
+                "command": [
+                  "python",
+                  "/app/microservice/service.py"
+                ],
+                "env": [
+                  {
+                    "name": "SERVICE_ROLE",
+                    "value": "ledger"
+                  },
+                  {
+                    "name": "PYTHONDONTWRITEBYTECODE",
+                    "value": "1"
+                  },
+                  {
+                    "name": "PYTHONPATH",
+                    "value": "/app/deps"
+                  }
+                ],
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "readOnlyRootFilesystem": true,
+                  "capabilities": {
+                    "drop": [
+                      "ALL"
+                    ]
+                  }
+                },
+                "resources": {
+                  "requests": {
+                    "cpu": "50m",
+                    "memory": "64Mi"
+                  },
+                  "limits": {
+                    "cpu": "400m",
+                    "memory": "256Mi"
+                  }
+                },
+                "readinessProbe": {
+                  "httpGet": {
+                    "path": "/health",
+                    "port": 8080
+                  },
+                  "periodSeconds": 3
+                },
+                "volumeMounts": [
+                  {
+                    "name": "app",
+                    "mountPath": "/app",
+                    "readOnly": true
+                  },
+                  {
+                    "name": "tmp",
+                    "mountPath": "/tmp"
+                  }
+                ]
+              }
+            ],
+            "volumes": [
+              {
+                "name": "source",
+                "configMap": {
+                  "name": "microservice-source-v1"
+                }
+              },
+              {
+                "name": "app",
+                "emptyDir": {
+                  "sizeLimit": "32Mi"
+                }
+              },
+              {
+                "name": "tmp",
+                "emptyDir": {
+                  "sizeLimit": "16Mi"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "swm-ledger",
+        "namespace": "systems-world-model-lab"
+      },
+      "spec": {
+        "selector": {
+          "swm-component": "ledger"
+        },
+        "ports": [
+          {
+            "name": "http",
+            "port": 8080
+          },
+          {
+            "name": "control",
+            "port": 9090
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "swm-postgres",
+        "namespace": "systems-world-model-lab"
+      },
+      "spec": {
+        "replicas": 1,
+        "strategy": {
+          "type": "Recreate"
+        },
+        "selector": {
+          "matchLabels": {
+            "swm-component": "postgres"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "swm-component": "postgres"
+            }
+          },
+          "spec": {
+            "automountServiceAccountToken": false,
+            "securityContext": {
+              "runAsNonRoot": true,
+              "runAsUser": 999,
+              "runAsGroup": 999,
+              "fsGroup": 999,
+              "seccompProfile": {
+                "type": "RuntimeDefault"
+              }
+            },
+            "nodeSelector": {
+              "kubernetes.io/hostname": "amd-halo"
+            },
+            "containers": [
+              {
+                "name": "postgres",
+                "image": "postgres:16-bookworm",
+                "args": [
+                  "-c",
+                  "shared_buffers=32MB",
+                  "-c",
+                  "max_connections=32"
+                ],
+                "env": [
+                  {
+                    "name": "POSTGRES_HOST_AUTH_METHOD",
+                    "value": "trust"
+                  },
+                  {
+                    "name": "PGDATA",
+                    "value": "/var/lib/postgresql/data/pgdata"
+                  }
+                ],
+                "resources": {
+                  "requests": {
+                    "cpu": "50m",
+                    "memory": "128Mi"
+                  },
+                  "limits": {
+                    "cpu": "300m",
+                    "memory": "384Mi"
+                  }
+                },
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "readOnlyRootFilesystem": true,
+                  "capabilities": {
+                    "drop": [
+                      "ALL"
+                    ]
+                  }
+                },
+                "readinessProbe": {
+                  "exec": {
+                    "command": [
+                      "pg_isready",
+                      "-U",
+                      "postgres"
+                    ]
+                  },
+                  "periodSeconds": 3
+                },
+                "volumeMounts": [
+                  {
+                    "name": "data",
+                    "mountPath": "/var/lib/postgresql/data"
+                  },
+                  {
+                    "name": "run",
+                    "mountPath": "/var/run/postgresql"
+                  },
+                  {
+                    "name": "tmp",
+                    "mountPath": "/tmp"
+                  }
+                ]
+              }
+            ],
+            "volumes": [
+              {
+                "name": "data",
+                "emptyDir": {
+                  "sizeLimit": "512Mi"
+                }
+              },
+              {
+                "name": "run",
+                "emptyDir": {
+                  "sizeLimit": "16Mi"
+                }
+              },
+              {
+                "name": "tmp",
+                "emptyDir": {
+                  "sizeLimit": "16Mi"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "swm-postgres",
+        "namespace": "systems-world-model-lab"
+      },
+      "spec": {
+        "selector": {
+          "swm-component": "postgres"
+        },
+        "ports": [
+          {
+            "name": "postgres",
+            "port": 5432
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "name": "swm-checkout",
+        "namespace": "systems-world-model-lab"
+      },
+      "spec": {
+        "podSelector": {
+          "matchLabels": {
+            "swm-component": "checkout"
+          }
+        },
+        "policyTypes": [
+          "Ingress",
+          "Egress"
+        ],
+        "ingress": [
+          {
+            "from": [
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-role": "runner"
+                  }
+                }
+              },
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-role": "agent"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 8080
+              }
+            ]
+          },
+          {
+            "from": [
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-role": "runner"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 9090
+              }
+            ]
+          }
+        ],
+        "egress": [
+          {
+            "to": [
+              {
+                "namespaceSelector": {
+                  "matchLabels": {
+                    "kubernetes.io/metadata.name": "kube-system"
+                  }
+                },
+                "podSelector": {
+                  "matchLabels": {
+                    "k8s-app": "kube-dns"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "protocol": "UDP",
+                "port": 53
+              },
+              {
+                "protocol": "TCP",
+                "port": 53
+              }
+            ]
+          },
+          {
+            "to": [
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-component": "payment"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 8080
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "name": "swm-payment",
+        "namespace": "systems-world-model-lab"
+      },
+      "spec": {
+        "podSelector": {
+          "matchLabels": {
+            "swm-component": "payment"
+          }
+        },
+        "policyTypes": [
+          "Ingress",
+          "Egress"
+        ],
+        "ingress": [
+          {
+            "from": [
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-role": "runner"
+                  }
+                }
+              },
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-role": "agent"
+                  }
+                }
+              },
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-component": "checkout"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 8080
+              }
+            ]
+          },
+          {
+            "from": [
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-role": "runner"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 9090
+              }
+            ]
+          }
+        ],
+        "egress": [
+          {
+            "to": [
+              {
+                "namespaceSelector": {
+                  "matchLabels": {
+                    "kubernetes.io/metadata.name": "kube-system"
+                  }
+                },
+                "podSelector": {
+                  "matchLabels": {
+                    "k8s-app": "kube-dns"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "protocol": "UDP",
+                "port": 53
+              },
+              {
+                "protocol": "TCP",
+                "port": 53
+              }
+            ]
+          },
+          {
+            "to": [
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-component": "ledger"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 8080
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "name": "swm-ledger",
+        "namespace": "systems-world-model-lab"
+      },
+      "spec": {
+        "podSelector": {
+          "matchLabels": {
+            "swm-component": "ledger"
+          }
+        },
+        "policyTypes": [
+          "Ingress",
+          "Egress"
+        ],
+        "ingress": [
+          {
+            "from": [
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-role": "runner"
+                  }
+                }
+              },
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-role": "agent"
+                  }
+                }
+              },
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-component": "payment"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 8080
+              }
+            ]
+          },
+          {
+            "from": [
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-role": "runner"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 9090
+              }
+            ]
+          }
+        ],
+        "egress": [
+          {
+            "to": [
+              {
+                "namespaceSelector": {
+                  "matchLabels": {
+                    "kubernetes.io/metadata.name": "kube-system"
+                  }
+                },
+                "podSelector": {
+                  "matchLabels": {
+                    "k8s-app": "kube-dns"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "protocol": "UDP",
+                "port": 53
+              },
+              {
+                "protocol": "TCP",
+                "port": 53
+              }
+            ]
+          },
+          {
+            "to": [
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-component": "postgres"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 5432
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "name": "swm-postgres",
+        "namespace": "systems-world-model-lab"
+      },
+      "spec": {
+        "podSelector": {
+          "matchLabels": {
+            "swm-component": "postgres"
+          }
+        },
+        "policyTypes": [
+          "Ingress",
+          "Egress"
+        ],
+        "ingress": [
+          {
+            "from": [
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-component": "ledger"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 5432
+              }
+            ]
+          }
+        ],
+        "egress": []
+      }
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "name": "swm-runner",
+        "namespace": "systems-world-model-lab"
+      },
+      "spec": {
+        "podSelector": {
+          "matchLabels": {
+            "swm-role": "runner"
+          }
+        },
+        "policyTypes": [
+          "Ingress",
+          "Egress"
+        ],
+        "ingress": [],
+        "egress": [
+          {
+            "to": [
+              {
+                "namespaceSelector": {
+                  "matchLabels": {
+                    "kubernetes.io/metadata.name": "kube-system"
+                  }
+                },
+                "podSelector": {
+                  "matchLabels": {
+                    "k8s-app": "kube-dns"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "protocol": "UDP",
+                "port": 53
+              },
+              {
+                "protocol": "TCP",
+                "port": 53
+              }
+            ]
+          },
+          {
+            "to": [
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-component": "checkout"
+                  }
+                }
+              },
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-component": "payment"
+                  }
+                }
+              },
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-component": "ledger"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 8080
+              },
+              {
+                "port": 9090
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "name": "swm-agent",
+        "namespace": "systems-world-model-lab"
+      },
+      "spec": {
+        "podSelector": {
+          "matchLabels": {
+            "swm-role": "agent"
+          }
+        },
+        "policyTypes": [
+          "Ingress",
+          "Egress"
+        ],
+        "ingress": [],
+        "egress": [
+          {
+            "to": [
+              {
+                "namespaceSelector": {
+                  "matchLabels": {
+                    "kubernetes.io/metadata.name": "kube-system"
+                  }
+                },
+                "podSelector": {
+                  "matchLabels": {
+                    "k8s-app": "kube-dns"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "protocol": "UDP",
+                "port": 53
+              },
+              {
+                "protocol": "TCP",
+                "port": 53
+              }
+            ]
+          },
+          {
+            "to": [
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-component": "checkout"
+                  }
+                }
+              },
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-component": "payment"
+                  }
+                }
+              },
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-component": "ledger"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 8080
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

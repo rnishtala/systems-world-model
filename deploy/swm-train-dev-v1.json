@@ -1,0 +1,126 @@
+{
+  "apiVersion": "batch/v1",
+  "kind": "Job",
+  "metadata": {
+    "name": "swm-train-dev-v1",
+    "namespace": "systems-world-model-lab"
+  },
+  "spec": {
+    "backoffLimit": 0,
+    "activeDeadlineSeconds": 7200,
+    "template": {
+      "metadata": {
+        "labels": {
+          "swm-role": "trainer"
+        }
+      },
+      "spec": {
+        "restartPolicy": "Never",
+        "automountServiceAccountToken": false,
+        "nodeSelector": {
+          "kubernetes.io/hostname": "amd-halo"
+        },
+        "securityContext": {
+          "runAsNonRoot": true,
+          "runAsUser": 1000,
+          "runAsGroup": 1000,
+          "fsGroup": 1000,
+          "seccompProfile": {
+            "type": "RuntimeDefault"
+          }
+        },
+        "containers": [
+          {
+            "name": "experiment",
+            "image": "python:3.11-slim",
+            "securityContext": {
+              "allowPrivilegeEscalation": false,
+              "readOnlyRootFilesystem": true,
+              "capabilities": {
+                "drop": [
+                  "ALL"
+                ]
+              }
+            },
+            "resources": {
+              "requests": {
+                "cpu": "500m",
+                "memory": "512Mi"
+              },
+              "limits": {
+                "cpu": "4",
+                "memory": "6Gi"
+              }
+            },
+            "env": [
+              {
+                "name": "PYTHONUNBUFFERED",
+                "value": "1"
+              },
+              {
+                "name": "PYTHONDONTWRITEBYTECODE",
+                "value": "1"
+              },
+              {
+                "name": "OMP_NUM_THREADS",
+                "value": "1"
+              },
+              {
+                "name": "OPENBLAS_NUM_THREADS",
+                "value": "1"
+              },
+              {
+                "name": "XLA_FLAGS",
+                "value": "--xla_cpu_multi_thread_eigen=false intra_op_parallelism_threads=1"
+              },
+              {
+                "name": "XDG_CACHE_HOME",
+                "value": "/tmp/cache"
+              }
+            ],
+            "command": [
+              "sh",
+              "-ec",
+              "mkdir -p /results/swm-train-dev-v1-work\ntar xzf /source/app.tar.gz -C /results/swm-train-dev-v1-work\ncd /results/swm-train-dev-v1-work\nexport PYTHONPATH=/results/swm-train-dev-v1-work:/results/swm-train-dev-v1-work/deps:/results/work/upstream\nexport DREAMER_SOURCE=/results/work/upstream\n/results/venv/bin/python -m pytest tests -q && /results/venv/bin/python -m microservice.train --data /results/micro-v1/calibration-v1a.jsonl --out /results/micro-v1/development --seed 0 --steps 100000 > /results/micro-v1/development-train.log 2>&1"
+            ],
+            "volumeMounts": [
+              {
+                "name": "source",
+                "mountPath": "/source",
+                "readOnly": true
+              },
+              {
+                "name": "results",
+                "mountPath": "/results"
+              },
+              {
+                "name": "tmp",
+                "mountPath": "/tmp"
+              }
+            ]
+          }
+        ],
+        "volumes": [
+          {
+            "name": "source",
+            "configMap": {
+              "name": "microservice-source-v2"
+            }
+          },
+          {
+            "name": "results",
+            "persistentVolumeClaim": {
+              "claimName": "results"
+            }
+          },
+          {
+            "name": "tmp",
+            "emptyDir": {
+              "sizeLimit": "512Mi"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
