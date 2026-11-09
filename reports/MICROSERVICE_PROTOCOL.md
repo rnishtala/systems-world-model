@@ -60,13 +60,15 @@ Use 30 incidents/class at held-out loads and severities, scenario seed 4200.
 All models may inspect the same physical incident, in shuffled order: report
 120 physical incidents and 360 model-incident evaluations, not 360 independent
 physical incidents. A topology-aware checklist gets the same inspection access.
-Its initial thresholds are fixed before development evaluation; any tuning is
+Initial checklist thresholds (normalized units) are CPU 0.08, pool wait 0.02,
+and ledger trace duration 0.035. They are fixed before development evaluation; any tuning is
 recorded and frozen before confirmation. Inference compilation happens before
 injection and is excluded from diagnosis latency.
 
 Per-seed triage gate:
 - At least 90% exact diagnosis in each known fault class, including the cascade.
-- At most 5% false fault diagnoses for healthy/increased-traffic incidents.
+- At most 5% false fault diagnoses and at least 95% correct healthy diagnoses
+  for healthy/increased-traffic incidents.
 - At most three inspection actions on average; median diagnosis below 60 seconds.
 - Abstentions count as unsuccessful known-class diagnoses.
 
@@ -80,3 +82,9 @@ Include a separate combined/unfamiliar-fault test and report escalation and
 confident misclassification. Unknown-fault handling is not established by the
 known-class gate. No LLM, automatic remediation, Slack or GitHub incident workflow
 is part of this stage.
+
+Investigation timing includes the initial measurement and selected inspections.
+Shared fault setup/warmup is recorded separately; later methods also have a
+since-shared-injection timestamp that includes time spent by earlier methods.
+Any unexpected request failure or expired fault window invalidates the trial
+rather than silently scoring it under the intended fault label.

@@ -34,6 +34,7 @@ class EmpiricalEnv:
         import elements
         self.rows=[json.loads(l) for l in Path(path).read_text().splitlines()];self.rng=np.random.default_rng(seed);self.sim=None
         if not self.rows or any(len(r['frames'])<4 for r in self.rows):raise ValueError('Incomplete calibration')
+        if any(f['successes']!=f['requests'] for r in self.rows for f in r['frames']):raise ValueError('Unexpected request failures in calibration')
         self.obs_space=dict(vector=elements.Space(np.float32,(14,)),reward=elements.Space(np.float32),is_first=elements.Space(bool),is_last=elements.Space(bool),is_terminal=elements.Space(bool))
         self.act_space=dict(reset=elements.Space(bool),action=elements.Space(np.int32,(),0,9))
     def step(self,action):

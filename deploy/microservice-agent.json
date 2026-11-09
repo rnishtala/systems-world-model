@@ -190,7 +190,7 @@
               {
                 "name": "source",
                 "configMap": {
-                  "name": "microservice-source-v3"
+                  "name": "microservice-source-v5"
                 }
               },
               {
@@ -261,6 +261,13 @@
                     "swm-role": "runner"
                   }
                 }
+              },
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-role": "agent"
+                  }
+                }
               }
             ],
             "ports": [
@@ -283,6 +290,42 @@
         "podSelector": {
           "matchLabels": {
             "swm-role": "runner"
+          }
+        },
+        "policyTypes": [
+          "Egress"
+        ],
+        "egress": [
+          {
+            "to": [
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-component": "inference"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 8088
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "name": "swm-agent-self-api",
+        "namespace": "systems-world-model-lab"
+      },
+      "spec": {
+        "podSelector": {
+          "matchLabels": {
+            "swm-role": "agent"
           }
         },
         "policyTypes": [

@@ -1,0 +1,21 @@
+{
+  "upstream": "e01491fad6434b2245a3b8ca201dd7faedcc458c",
+  "calibration_sha256": "ecd68ac57a76dc664e692e5bd72104ee1cc85d0a2c063c8e0fb6399903cc11ac",
+  "bundles": {
+    "v1": "8aa4551df4e292f5e25faa3987eacafdcdd27e4f7863ef716ba979ce454e8a0e",
+    "v2": "039e8b0bd5a99c7309379a73a659ecd51e5f6c8945698182a55dcfe0e7fa1708",
+    "v3": "b5922db008326d5168ee67146fffeb195aeaf9aac0b6ad44615dc6924e16d30f",
+    "v4": "b9c36a071ad1835dfa219dedb746c71c7112b1fda9085afd78babfb952318524",
+    "v5": "dbe40e0b82864993b5e20127a31986c0070e3f13aa954912271712703eadbd9a"
+  },
+  "service_source": "v1",
+  "calibration_source": "v2",
+  "development_training_source": "v2",
+  "development_inference_source": "v5",
+  "notes": [
+    "Initial collection failed before any incident was recorded; v1a adds bounded readiness retries.",
+    "All 80 calibration incidents completed every real request successfully.",
+    "Inference pod mounts checkpoints/runtime/upstream only, not calibration data.",
+    "No existing BearBank or AutoSRE workload is used or changed."
+  ]
+}
