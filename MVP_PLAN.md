@@ -7,8 +7,8 @@ Repository: systems-world-model. Proposed namespace: systems-world-model-lab.
 ## 1. Research question and scope
 
 Can a small learned model of system dynamics identify hidden faults and choose
-informative diagnostic checks more accurately or cheaply than rules, static
-Bayesian diagnosis, and an LLM with the same evidence budget?
+informative diagnostic checks more accurately or cheaply than rules, a simple
+supervised diagnostic classifier, and an LLM with the same evidence budget?
 
 Start with one synthetic three-service chain: frontend -> payments -> ledger,
 backed by a disposable database. Own all services, telemetry, data, and experiment
@@ -29,11 +29,12 @@ modify production, or claim general diagnosis across arbitrary architectures.
 | Action selection and evidence collection | Agent harness / planning integration | Query the model to compare diagnostic checks; execute only lab allowlisted checks |
 | LLM | Language interface and optional candidate generator | Frozen model; no LLM fine-tuning required |
 | Actor-critic policy trained on imagined trajectories | Model-based reinforcement learning, as in Dreamer | Deferred until prediction and triage benefits are demonstrated |
-| Bayesian network | Optional baseline or later structured uncertainty module | Not a prerequisite for the learned model |
 
 Thus this is primarily a new learned dynamics model plus a planning harness,
 not simply a prompt change or LLM fine-tuning. Neural-network training updates
 the world model's own weights. A frozen LLM can consume its structured outputs.
+Probabilistic latent states, predictive uncertainty, and information gain remain
+part of the world-model design; they do not require a separate Bayesian network.
 An embedding alone is only a representation; predicting action-conditioned
 future observations and uncertainty is what makes this a world model.
 
@@ -125,7 +126,7 @@ information gain.
 
 For the MVP use a fixed hypothesis vocabulary plus unknown/other. An optional
 LLM can suggest out-of-vocabulary explanations, but these receive no invented
-Bayesian/model probability. Keep this separate from the primary benchmark.
+model-derived probability. Keep this separate from the primary benchmark.
 
 ## 6. Lab faults and training data
 
@@ -166,7 +167,8 @@ Compare under equal evidence, diagnostic-action, and time budgets:
 
 1. Threshold/rule checklist.
 2. Persistence and simple statistical forecasting for dynamics.
-3. A small static Bayesian diagnostic model using the same features.
+3. A simple supervised diagnostic classifier using the same observed features,
+   without learned dynamics or imagined trajectories.
 4. Frozen LLM-only triage with fixed model/prompt and reproducible settings.
 5. World-model triage, with and without the frozen LLM explanation.
 
@@ -188,8 +190,9 @@ Proposed go/no-go targets, to freeze after a pilot and before blind evaluation:
   with accuracy degradation no greater than 2 percentage points.
 - At least 15% reduction in normalized forecast error versus the strongest
   simple forecasting baseline at the declared operational horizon.
-- No worsening in probabilistic calibration versus the probabilistic baseline;
-  report per-class reliability and uncertainty rather than only aggregate scores.
+- No worsening in probabilistic calibration versus the supervised classifier
+  baseline on the same diagnosis labels; report per-class reliability and
+  uncertainty rather than only aggregate scores.
 - Healthy-load false alarm rate <=5%; report the uncertainty of this estimate.
 - P95 local inference <=1 second and serving memory <=1 GiB on measured hardware.
 - At least 30 independently seeded blind real-lab episodes as an initial gate;
