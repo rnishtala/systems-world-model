@@ -1,0 +1,126 @@
+{
+  "apiVersion": "batch/v1",
+  "kind": "Job",
+  "metadata": {
+    "name": "swm-auxiliary-train-v1",
+    "namespace": "systems-world-model-lab"
+  },
+  "spec": {
+    "backoffLimit": 0,
+    "activeDeadlineSeconds": 7200,
+    "template": {
+      "metadata": {
+        "labels": {
+          "swm-role": "trainer"
+        }
+      },
+      "spec": {
+        "restartPolicy": "Never",
+        "automountServiceAccountToken": false,
+        "nodeSelector": {
+          "kubernetes.io/hostname": "amd-halo"
+        },
+        "securityContext": {
+          "runAsNonRoot": true,
+          "runAsUser": 1000,
+          "runAsGroup": 1000,
+          "fsGroup": 1000,
+          "seccompProfile": {
+            "type": "RuntimeDefault"
+          }
+        },
+        "containers": [
+          {
+            "name": "experiment",
+            "image": "python:3.11-slim",
+            "securityContext": {
+              "allowPrivilegeEscalation": false,
+              "readOnlyRootFilesystem": true,
+              "capabilities": {
+                "drop": [
+                  "ALL"
+                ]
+              }
+            },
+            "resources": {
+              "requests": {
+                "cpu": "4",
+                "memory": "6Gi"
+              },
+              "limits": {
+                "cpu": "4",
+                "memory": "6Gi"
+              }
+            },
+            "env": [
+              {
+                "name": "PYTHONUNBUFFERED",
+                "value": "1"
+              },
+              {
+                "name": "PYTHONDONTWRITEBYTECODE",
+                "value": "1"
+              },
+              {
+                "name": "OMP_NUM_THREADS",
+                "value": "1"
+              },
+              {
+                "name": "OPENBLAS_NUM_THREADS",
+                "value": "1"
+              },
+              {
+                "name": "XLA_FLAGS",
+                "value": "--xla_cpu_multi_thread_eigen=false intra_op_parallelism_threads=1"
+              },
+              {
+                "name": "XDG_CACHE_HOME",
+                "value": "/tmp/cache"
+              }
+            ],
+            "command": [
+              "sh",
+              "-ec",
+              "mkdir -p /results/swm-auxiliary-train-v1-work\ntar xzf /source/app.tar.gz -C /results/swm-auxiliary-train-v1-work\ncd /results/swm-auxiliary-train-v1-work\nexport PYTHONPATH=/results/swm-auxiliary-train-v1-work:/results/swm-auxiliary-train-v1-work/deps:/results/work/upstream\nexport DREAMER_SOURCE=/results/work/upstream\n/results/venv/bin/python -m pytest -q tests/test_supervision.py tests/test_microservice.py tests/test_mechanisms.py tests/test_latent_probe.py tests/test_regularized_head.py\n/results/venv/bin/python -m microservice.train --data /results/micro-mechanisms-v1/calibration.jsonl --out /results/micro-auxiliary-v1/smoke --seed 21 --steps 2000 --compositional --mechanism-supervision\n/results/venv/bin/python -m microservice.auxiliary_audit --root /results/micro-auxiliary-v1/smoke --out /results/micro-auxiliary-v1/smoke-audit.json\n/results/venv/bin/python -m microservice.train --data /results/micro-mechanisms-v1/calibration.jsonl --out /results/micro-auxiliary-v1/development --seed 21 --steps 100000 --compositional --mechanism-supervision"
+            ],
+            "volumeMounts": [
+              {
+                "name": "source",
+                "mountPath": "/source",
+                "readOnly": true
+              },
+              {
+                "name": "results",
+                "mountPath": "/results"
+              },
+              {
+                "name": "tmp",
+                "mountPath": "/tmp"
+              }
+            ]
+          }
+        ],
+        "volumes": [
+          {
+            "name": "source",
+            "configMap": {
+              "name": "microservice-source-v15"
+            }
+          },
+          {
+            "name": "results",
+            "persistentVolumeClaim": {
+              "claimName": "results"
+            }
+          },
+          {
+            "name": "tmp",
+            "emptyDir": {
+              "sizeLimit": "512Mi"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

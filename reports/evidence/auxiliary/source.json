@@ -1,0 +1,6 @@
+{
+  "configmap": "microservice-source-v15",
+  "sha256": "2d68204020e1933a8d274d99718a068dc2fb7bc3e15cf286e3dc89cfa65a3955",
+  "upstream_revision": "e01491fad6434b2245a3b8ca201dd7faedcc458c",
+  "calibration_sha256": "9121c40cab47960f8f41ea57b605fa20a41509b8c457abe60132ef07207f077b"
+}

@@ -7,15 +7,21 @@ The first POC trains the project-linked DreamerV3 implementation from scratch
 on a partially observed queue simulator. It runs on **AMD Halo, CPU only**, in
 its own Kubernetes namespace: `systems-world-model-lab`.
 
-## Latest experiment — regularized heads rejected before fresh testing
+## Latest experiment — auxiliary mechanism supervision
+
+With auxiliary supervision, Dreamer’s reward readout scored **77/80**, its auxiliary head **71/80**, and telemetry alone **77/80**. All three achieved **70/70** on healthy, single and pair families, but failed unseen-triple acceptance. Labels are training targets only. The existing deployment is restored and no candidate was promoted. Independent confirmation and a matched ablation remain necessary; LLM integration and autonomous resolution are future work.
+
+[Results](reports/AUXILIARY_SUPERVISION_RESULTS.md) · [Research note](output/pdf/dreamerv3-auxiliary-supervision.pdf)
+
+## Earlier experiment — regularized heads rejected before fresh testing
 
 Training-only selection produced **120/140** stratified predictions but **0/60**
 withheld-pair predictions for the selected latent head. A telemetry skip-connection
 search chose **zero latent weight**: the raw comparator remained stronger. No
-fresh test batch or cluster change was needed; seed 6500 remains unused.
+fresh test batch or cluster change was needed; no fresh seed was used in that earlier study.
 
 The next hypothesis is independent mechanism supervision during world-model
-training. This is planned, not yet implemented. Reliable combined-fault triage
+training. This was subsequently implemented in the auxiliary experiment above. Reliable combined-fault triage
 remains unfinished; the deployed controller is unchanged.
 
 [Selection results](reports/REGULARIZED_HEAD_RESULTS.md) ·

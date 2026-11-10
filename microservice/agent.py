@@ -9,8 +9,9 @@ from pathlib import Path
 from dreamerv3 import main as upstream
 
 class ShapeEnv:
-    def __init__(self,count=9):
+    def __init__(self,count=9,supervised=False):
         self.obs_space=dict(vector=elements.Space(np.float32,(14,)),reward=elements.Space(np.float32),is_first=elements.Space(bool),is_last=elements.Space(bool),is_terminal=elements.Space(bool))
+        if supervised:self.obs_space['mechanism_target']=elements.Space(np.float32,(3,),0,1)
         self.act_space=dict(reset=elements.Space(bool),action=elements.Space(np.int32,(),0,count))
     def close(self):pass
 
@@ -18,6 +19,8 @@ class Model:
     def __init__(self,root,seed,controller="native"):
         self.controller=controller
         meta=json.loads((Path(root)/f'training-{seed}.json').read_text())
+        self.supervised=meta.get('mechanism_supervision',False)
+        if controller=='inspect-mechanisms' and not self.supervised:raise ValueError('Auxiliary head missing')
         self.contract=meta.get('action_contract','single-v1')
         if self.contract not in ('single-v1','mechanisms-v1'):raise ValueError('Unknown action contract')
         self.classes=8 if self.contract=='mechanisms-v1' else 4
@@ -25,8 +28,9 @@ class Model:
         self.guard=json.loads((Path(__file__).parent/"calibration/predictive-guard-v1.json").read_text()) if controller=="inspect-guarded" else None
         self.seed=seed
         c=elements.Config.load(elements.Path(root+f'/train-{seed}/config.yaml')).update(logdir=f'/tmp/inference-{seed}')
-        upstream.make_env=lambda config,index,**kw:upstream.wrap_env(ShapeEnv(self.classes+5),config)
-        self.agent=upstream.make_agent(c);cp=elements.Checkpoint(elements.Path(root+f'/final-{seed}'));cp.agent=self.agent;cp.load(keys=['agent'])
+        upstream.make_env=lambda config,index,**kw:upstream.wrap_env(ShapeEnv(self.classes+5,self.supervised),config)
+        from microservice.supervision import make_agent
+        self.agent=(make_agent if self.supervised else upstream.make_agent)(c);cp=elements.Checkpoint(elements.Path(root+f'/final-{seed}'));cp.agent=self.agent;cp.load(keys=['agent'])
         self.policy=ParticleActor(self.agent);self.carry=None;self.calls=0;self.sessions={}
         model=self.agent.model
         @nj.pure
@@ -39,6 +43,10 @@ class Model:
             dyn=jax.tree.map(lambda x:jnp.repeat(x,self.classes,axis=0),dyn)
             _,(feat,_)=model.dyn.imagine(dyn,{'action':jnp.tile(jnp.arange(4,4+self.classes,dtype=jnp.int32),16)},1,False,single=True)
             return model.rew(model.feat2tensor(feat),1).pred().reshape(16,self.classes).mean(0)
+        @nj.pure
+        def mechanisms(dyn):
+            return jax.nn.sigmoid(model.mechanisms(model.feat2tensor(dyn))).mean(0)
+        self.mechanisms=jax.jit(lambda params,dyn,key:mechanisms(params,dyn,seed=key,create=False,modify=False)[1])
         self.forecast=jax.jit(lambda params,dyn,act,key:forecast(params,dyn,act,seed=key,create=False,modify=False)[1])
         self.rewards=jax.jit(lambda params,dyn,key:rewards(params,dyn,seed=key,create=False,modify=False)[1])
     def act(self,vector,first,reward,incident_id):
@@ -54,19 +62,25 @@ class Model:
         if pending:
             history=history+[{**pending,"actual":[vector[i] for i in pending["indices"]]}]
         obs=dict(vector=np.array([vector],np.float32),reward=np.array([reward],np.float32),is_first=np.array([first]),is_last=np.array([False]),is_terminal=np.array([False]))
+        if self.supervised:obs['mechanism_target']=np.zeros((1,3),np.float32)
         self.carry,acts,_=self.policy.policy(self.carry,obs,mode='eval');action=int(acts['action'][0]);self.calls+=1
-        if self.controller in ('inspect-first','inspect-guarded'):
+        if self.controller in ('inspect-first','inspect-guarded','inspect-mechanisms'):
             # Fixed evidence acquisition, learned diagnosis; no expert thresholds.
             missing=[i+1 for i in range(3) if not vector[10+i]]
             with jax.transfer_guard('allow'):
                 dyn=self.agent._stack(self.carry)[1]
                 scores=np.asarray(self.rewards(self.agent.params,dyn,jax.random.PRNGKey(self.calls+900)))
             action=missing[0] if missing else int(scores.argmax())+4
+            if not missing and self.controller=='inspect-mechanisms':
+                with jax.transfer_guard('allow'):
+                    probabilities=np.asarray(self.mechanisms(self.agent.params,dyn,jax.random.PRNGKey(self.calls+900)))
+                action=4+int(np.sum((probabilities>.5)*np.array([1,2,4])))
             guard_result=assess(self.guard,self.seed,action-4,history) if not missing and self.guard else None
             if guard_result and guard_result['escalate']:action=8
             previous=[jax.device_put(np.int32(action),ref.sharding) for ref in self.carry[-1]['action']]
             self.carry=(*self.carry[:-1],{**self.carry[-1],'action':previous})
         result={'action':action,'controller':self.controller,'action_contract':self.contract}
+        if self.controller=='inspect-mechanisms' and not missing:result['mechanism_probabilities']=probabilities.tolist()
         if self.guard and not missing:
             result['guard']=guard_result;result['predicted_diagnosis_rewards']=scores.tolist()
         with jax.transfer_guard('allow'):
@@ -81,7 +95,7 @@ class Model:
         return result
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--root',required=True);p.add_argument('--seeds',type=int,nargs='+',required=True);p.add_argument('--controller',choices=['native','inspect-first','inspect-guarded'],default='native');a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--root',required=True);p.add_argument('--seeds',type=int,nargs='+',required=True);p.add_argument('--controller',choices=['native','inspect-first','inspect-guarded','inspect-mechanisms'],default='native');a=p.parse_args()
     models={s:Model(a.root,s,a.controller) for s in a.seeds};lock=threading.Lock()
     for model in models.values():
         model.act([0.]*14,True,0.,str(uuid.uuid4()))

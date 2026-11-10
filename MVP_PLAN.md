@@ -1,6 +1,6 @@
 # Systems World Model: DreamerV3 triage MVP
 
-**Status:** the isolated lab and frozen-state studies are complete, but reliable combined-fault triage is unfinished. Training-only regularized-head selection failed withheld-combination validation; adding telemetry chose zero latent weight. No fresh test run or deployment was made. Next: test independent mechanism supervision during world-model training, with labels excluded from inference and a telemetry-only ablation. This is planned, not implemented. See [latest results](reports/REGULARIZED_HEAD_RESULTS.md). The existing controller remains unchanged; LLM integration and autonomous resolution remain future work.
+**Status:** With auxiliary supervision, Dreamer’s reward readout scored **77/80**, its auxiliary head **71/80**, and telemetry alone **77/80**. All three achieved **70/70** on healthy, single and pair families, but failed unseen-triple acceptance. Labels are training targets only. The existing deployment is restored and no candidate was promoted. Independent confirmation and a matched ablation remain necessary; LLM integration and autonomous resolution are future work. See [latest results](reports/AUXILIARY_SUPERVISION_RESULTS.md).
 
 Reuse the [DreamerV3 implementation](https://github.com/danijar/dreamerv3), train
 it on a small system-triage environment, and test whether its learned behavior

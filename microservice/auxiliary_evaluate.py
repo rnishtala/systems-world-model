@@ -1,0 +1,47 @@
+"""Frozen auxiliary head evaluation; no test-driven fitting."""
+from microservice.latent_probe import *
+def main():
+    p=argparse.ArgumentParser();p.add_argument('--root',required=True);p.add_argument('--calibration',required=True);p.add_argument('--out',required=True);p.add_argument('--scenario-seed',type=int,default=6500);a=p.parse_args()
+    out=Path(a.out)
+    out.mkdir(parents=True,exist_ok=False)
+    from microservice.agent import Model
+    from microservice.auxiliary_audit import audit
+    before=digest(Path(a.root)/'final-21');model=Model(a.root,21,'inspect-mechanisms')
+    (out/'audit.json').write_text(json.dumps(audit(model),indent=2))
+    train=list(map(json.loads,Path(a.calibration).read_text().splitlines()))
+    raw,latent,training_predictions=extract(model,train);y=labels(train)
+    probes={'raw':fit_probe(raw,y),'latent':fit_probe(latent,y),'shuffled_latent':fit_probe(latent,y[np.random.default_rng(7001).permutation(len(y))])}
+    np.savez_compressed(out/'train-features.npz',raw=raw,latent=latent,labels=y)
+    np.savez_compressed(out/'probes.npz',**{name+'_'+k:v for name,probe in probes.items() for k,v in probe.items()})
+    (out/'fitted.json').write_text(json.dumps({'utc':time.time(),'calibration_sha256':hashlib.sha256(Path(a.calibration).read_bytes()).hexdigest(),'checkpoint_sha256':before,'raw_dimensions':raw.shape[1],'latent_dimensions':latent.shape[1],'penalty':1.,'threshold':0.,'seed':a.scenario_seed,'scope':'Probes frozen before collecting fresh test incidents.'},indent=2))
+    (out/'training-diagnosis.json').write_text(json.dumps({'correct':int(sum(training_predictions==np.array([FAULT_MASK[r['fault']] for r in train]))),'n':len(train)},indent=2))
+    print('PROBES_FROZEN',flush=True)
+    from microservice.live import configure,frame,reset,wait_ready,batch
+    rng=np.random.default_rng(a.scenario_seed);faults=np.tile(np.arange(8),10);rng.shuffle(faults);test=[];wait_ready()
+    try:
+        with (out/'test.jsonl').open('x') as f:
+            for i,fault in enumerate(faults):
+                start=time.monotonic();n=configure(int(fault),rng,True)
+                for _ in range(2):
+                    if batch(n)!=n:raise RuntimeError('Warmup failed')
+                frames=[frame(n) for _ in range(4)]
+                if time.monotonic()-start>35 or any(x['successes']!=x['requests'] for x in frames):raise RuntimeError('Invalid incident')
+                row=dict(episode=i,fault=int(fault),seed=a.scenario_seed,shifted=True,frames=frames,seconds=time.monotonic()-start)
+                test.append(row);f.write(json.dumps(row)+'\n');f.flush();print('COLLECT',i,int(fault),flush=True)
+    finally:reset()
+    raw,latent,original=extract(model,test)
+    np.savez_compressed(out/'test-features.npz',raw=raw,latent=latent,labels=labels(test))
+    predictions={'dreamer_auxiliary':original,**{name:predict(probe,raw if name=='raw' else latent) for name,probe in probes.items()}}
+    model.controller='inspect-first'
+    _,_,reward_predictions=extract(model,test)
+    predictions['dreamer_reward']=reward_predictions
+    target=np.array([FAULT_MASK[r['fault']] for r in test]);summary={}
+    for name,pred in predictions.items():
+        families={str(f):{'n':10,'correct':int(sum(pred[i]==target[i] for i,r in enumerate(test) if r['fault']==f))} for f in range(8)}
+        summary[name]={'correct':int(sum(pred==target)),'n':len(test),'families':families,'gate_passed':all(v['correct']>=(10 if f=='0' else 9) for f,v in families.items())}
+    after=digest(Path(a.root)/'final-21');assert before==after,'Checkpoint changed'
+    result={'methods':summary,'checkpoint_unchanged':True,'scope':'One auxiliary-supervised development model, one fresh 80-incident batch; not independent confirmation.'}
+    (out/'summary.json').write_text(json.dumps(result,indent=2))
+    (out/'predictions.json').write_text(json.dumps({'target':target.tolist(),**{k:v.tolist() for k,v in predictions.items()}},indent=2))
+    print('PROBE_COMPLETE',json.dumps(result),flush=True)
+if __name__=='__main__':main()
