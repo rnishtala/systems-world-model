@@ -1,5 +1,9 @@
 # Live microservice experiment results
 
+Later evidence: [the 10 November follow-up](UNKNOWN_FAULT_RESULTS.md) exposed
+known-delay accuracy below target on a fresh stream. The results below remain
+the historical frozen confirmation, not a universal reliability claim.
+
 Known-case confirmation passed on 9 November 2026. This is a bounded experiment,
 not a claim of general system understanding or production readiness.
 

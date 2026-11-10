@@ -7,6 +7,26 @@ The first POC trains the project-linked DreamerV3 implementation from scratch
 on a partially observed queue simulator. It runs on **AMD Halo, CPU only**, in
 its own Kubernetes namespace: `systems-world-model-lab`.
 
+## Latest follow-up — predictive guard helps, reliability gates still fail
+
+On 10 November, a forecast-error escalation guard was tested on **96 fresh
+physical incidents** using the existing three models. It escalated every
+CPU+delay and CPU+pool case. Pool+delay escalation was 100%, 83.3%, 83.3% by seed.
+There were **zero false escalations** on 60 known-case incidents per model.
+However, known ledger-delay diagnosis was only 86.7%, 93.3%, 86.7%, below the
+90% per-class target for two seeds. The guard did not cause or catch those errors.
+The previous confirmation therefore remains a historical result, not evidence
+that every fresh incident stream meets the reliability target.
+
+The new guard **was not promoted**: the lab is restored to `inspect-first` and
+the candidate remains available as `inspect-guarded` for research. Next work
+must improve delay-versus-pool separation and representation of simultaneous
+mechanisms; tightening thresholds against this same pilot would not be valid
+confirmation. No model weights were changed in this follow-up.
+
+[Follow-up results](reports/UNKNOWN_FAULT_RESULTS.md) ·
+[Two-page research note](output/pdf/dreamerv3-predictive-escalation.pdf)
+
 ## Live microservice MVP — known-case confirmation passed
 
 A separate live lab now runs checkout -> payment -> ledger -> PostgreSQL,

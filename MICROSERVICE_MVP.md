@@ -1,3 +1,8 @@
+> Latest, 10 November: the predictive escalation pilot did not pass all gates.
+> It caught CPU combinations without false escalation, but pool+delay and fresh
+> known-delay cases still expose gaps. The confirmed controller is restored.
+> See reports/UNKNOWN_FAULT_RESULTS.md; prior confirmation is preserved below.
+
 > Status, 9 November 2026: live lab and development evaluation implemented.
 > The inspect-first world-model controller achieved 48/48 known-case diagnoses
 > across two development batches. Fresh-seed confirmation passed at 99.2–100%

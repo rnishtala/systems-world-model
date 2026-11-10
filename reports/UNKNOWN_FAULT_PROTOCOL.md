@@ -33,3 +33,9 @@ The 60 known + 36 combined physical incidents are a small fresh pilot, not a
 production reliability guarantee. Do not tune bounds against these outcomes.
 If the guard fails, retain the failure and restore the confirmed unguarded
 controller; document why predictive contradiction alone was insufficient.
+
+## Outcome
+
+The pilot completed all 96 physical incidents without changing thresholds.
+All seeds failed at least one gate. The confirmed inspect-first deployment was
+restored; inspect-guarded remains experimental. See UNKNOWN_FAULT_RESULTS.md.
