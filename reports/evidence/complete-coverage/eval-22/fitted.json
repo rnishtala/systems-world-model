@@ -1,0 +1,11 @@
+{
+  "utc": 1794342848.6885653,
+  "calibration_sha256": "e6d217c0fcdddc2b50df296c09c95540eb3223ff5d7fcf6f0c9f179b6d903473",
+  "checkpoint_sha256": "4d715266c93faee86c8c312d9a47f75016c36d997f45cfaecdfe34e5878e6afd",
+  "raw_dimensions": 8,
+  "latent_dimensions": 640,
+  "penalty": 1.0,
+  "threshold": 0.0,
+  "seed": 6601,
+  "scope": "Probes frozen before collecting fresh test incidents."
+}

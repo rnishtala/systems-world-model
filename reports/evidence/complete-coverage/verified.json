@@ -1,0 +1,12 @@
+{
+  "22": {
+    "valid_incidents": 80,
+    "verified_scores": true,
+    "collection_minutes": 7.058144538744818
+  },
+  "tests": {
+    "targeted": 14,
+    "monitor_regressions": 4
+  },
+  "restored_healthy_check": "healthy"
+}

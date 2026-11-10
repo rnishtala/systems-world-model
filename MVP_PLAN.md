@@ -1,6 +1,6 @@
 # Systems World Model: DreamerV3 triage MVP
 
-**Status:** With auxiliary supervision, Dreamer’s reward readout scored **77/80**, its auxiliary head **71/80**, and telemetry alone **77/80**. All three achieved **70/70** on healthy, single and pair families, but failed unseen-triple acceptance. Labels are training targets only. The existing deployment is restored and no candidate was promoted. Independent confirmation and a matched ablation remain necessary; LLM integration and autonomous resolution are future work. See [latest results](reports/AUXILIARY_SUPERVISION_RESULTS.md).
+**Status:** With all eight regimes represented in training, development Dreamer scored **77/80** fresh exact diagnoses versus **78/80** for telemetry. The primary gate **failed**. Independent confirmation was skipped as prespecified. The existing deployment is restored. This tests known regimes, not unseen combinations. Next: fix the warm-up measurement window, then run fresh validation before independent confirmation. See [latest results](reports/COMPLETE_COVERAGE_RESULTS.md).
 
 Reuse the [DreamerV3 implementation](https://github.com/danijar/dreamerv3), train
 it on a small system-triage environment, and test whether its learned behavior

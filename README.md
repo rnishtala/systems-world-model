@@ -7,7 +7,13 @@ The first POC trains the project-linked DreamerV3 implementation from scratch
 on a partially observed queue simulator. It runs on **AMD Halo, CPU only**, in
 its own Kubernetes namespace: `systems-world-model-lab`.
 
-## Latest experiment — auxiliary mechanism supervision
+## Latest experiment — complete fault-regime coverage
+
+With all eight regimes represented in training, development Dreamer scored **77/80** fresh exact diagnoses versus **78/80** for telemetry. The primary gate **failed**. Independent confirmation was skipped as prespecified. The existing deployment is restored. This tests known regimes, not unseen combinations. Next: fix the warm-up measurement window, then run fresh validation before independent confirmation.
+
+[Results](reports/COMPLETE_COVERAGE_RESULTS.md) · [Research note](output/pdf/dreamerv3-complete-coverage.pdf)
+
+## Earlier experiment — auxiliary mechanism supervision
 
 With auxiliary supervision, Dreamer’s reward readout scored **77/80**, its auxiliary head **71/80**, and telemetry alone **77/80**. All three achieved **70/70** on healthy, single and pair families, but failed unseen-triple acceptance. Labels are training targets only. The existing deployment is restored and no candidate was promoted. Independent confirmation and a matched ablation remain necessary; LLM integration and autonomous resolution are future work.
 

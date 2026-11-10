@@ -1,0 +1,170 @@
+[
+  {
+    "step": 3850,
+    "train/mechanism_count": 17.697624190064793,
+    "train/mechanism_exact": 0.13331151216996925,
+    "train/mechanism_loss": 0.6939954077965755,
+    "fps/policy": 125.65866744466588
+  },
+  {
+    "step": 8020,
+    "train/mechanism_count": 17.429942418426105,
+    "train/mechanism_exact": 0.13835092816294497,
+    "train/mechanism_loss": 0.6924477212717346,
+    "fps/policy": 138.99509321686372
+  },
+  {
+    "step": 12190,
+    "train/mechanism_count": 17.598848368522074,
+    "train/mechanism_exact": 0.2489527747492644,
+    "train/mechanism_loss": 0.6620060060166123,
+    "fps/policy": 138.90237687667934
+  },
+  {
+    "step": 16340,
+    "train/mechanism_count": 17.895953757225435,
+    "train/mechanism_exact": 0.42446611808731377,
+    "train/mechanism_loss": 0.5409186910802,
+    "fps/policy": 138.13850650631863
+  },
+  {
+    "step": 20500,
+    "train/mechanism_count": 18.43846153846154,
+    "train/mechanism_exact": 0.5297543486436972,
+    "train/mechanism_loss": 0.4374538415326522,
+    "fps/policy": 138.42489170571469
+  },
+  {
+    "step": 24620,
+    "train/mechanism_count": 18.46990291262136,
+    "train/mechanism_exact": 0.6478857297920486,
+    "train/mechanism_loss": 0.3743259513841092,
+    "fps/policy": 137.29856926268968
+  },
+  {
+    "step": 28760,
+    "train/mechanism_count": 17.89189189189189,
+    "train/mechanism_exact": 0.732494016814416,
+    "train/mechanism_loss": 0.3129006312390552,
+    "fps/policy": 137.86939623917803
+  },
+  {
+    "step": 32910,
+    "train/mechanism_count": 17.99034749034749,
+    "train/mechanism_exact": 0.7922568373008124,
+    "train/mechanism_loss": 0.2611621185044064,
+    "fps/policy": 138.08142487550796
+  },
+  {
+    "step": 37070,
+    "train/mechanism_count": 18.265384615384615,
+    "train/mechanism_exact": 0.8526475398586346,
+    "train/mechanism_loss": 0.21214260628017095,
+    "fps/policy": 138.50664155851607
+  },
+  {
+    "step": 41230,
+    "train/mechanism_count": 18.140384615384615,
+    "train/mechanism_exact": 0.9153939235668916,
+    "train/mechanism_loss": 0.16576815839283743,
+    "fps/policy": 138.43646204219095
+  },
+  {
+    "step": 45370,
+    "train/mechanism_count": 18.04826254826255,
+    "train/mechanism_exact": 0.9442297848495277,
+    "train/mechanism_loss": 0.12930446966734632,
+    "fps/policy": 137.80944422720995
+  },
+  {
+    "step": 49500,
+    "train/mechanism_count": 17.823643410852714,
+    "train/mechanism_exact": 0.9619429712147676,
+    "train/mechanism_loss": 0.10447342207207698,
+    "fps/policy": 137.49032641380654
+  },
+  {
+    "step": 53670,
+    "train/mechanism_count": 18.030710172744723,
+    "train/mechanism_exact": 0.9677116405254591,
+    "train/mechanism_loss": 0.08846067358344621,
+    "fps/policy": 138.83873938114996
+  },
+  {
+    "step": 57810,
+    "train/mechanism_count": 18.223938223938223,
+    "train/mechanism_exact": 0.9743028692757301,
+    "train/mechanism_loss": 0.07518266473670264,
+    "fps/policy": 137.69409330129545
+  },
+  {
+    "step": 61940,
+    "train/mechanism_count": 18.162790697674417,
+    "train/mechanism_exact": 0.9773310407880664,
+    "train/mechanism_loss": 0.06414849352986776,
+    "fps/policy": 137.66126651754752
+  },
+  {
+    "step": 66120,
+    "train/mechanism_count": 18.110898661567877,
+    "train/mechanism_exact": 0.9795351486588983,
+    "train/mechanism_loss": 0.057802371410065355,
+    "fps/policy": 138.97346762036264
+  },
+  {
+    "step": 70270,
+    "train/mechanism_count": 17.91891891891892,
+    "train/mechanism_exact": 0.9824306204282179,
+    "train/mechanism_loss": 0.05116861019801334,
+    "fps/policy": 138.1059897257816
+  },
+  {
+    "step": 74390,
+    "train/mechanism_count": 18.149514563106795,
+    "train/mechanism_exact": 0.9835105405270474,
+    "train/mechanism_loss": 0.046730744950834985,
+    "fps/policy": 137.09812717431782
+  },
+  {
+    "step": 78520,
+    "train/mechanism_count": 18.067698259187623,
+    "train/mechanism_exact": 0.9856050430690758,
+    "train/mechanism_loss": 0.04193408901819408,
+    "fps/policy": 137.65115003655657
+  },
+  {
+    "step": 82640,
+    "train/mechanism_count": 18.349514563106798,
+    "train/mechanism_exact": 0.9873403234389222,
+    "train/mechanism_loss": 0.03781597123671215,
+    "fps/policy": 136.87744980708874
+  },
+  {
+    "step": 86780,
+    "train/mechanism_count": 18.28239845261122,
+    "train/mechanism_exact": 0.9884817569122093,
+    "train/mechanism_loss": 0.03446067257548324,
+    "fps/policy": 138.00058894408753
+  },
+  {
+    "step": 90930,
+    "train/mechanism_count": 18.196531791907514,
+    "train/mechanism_exact": 0.9907023646009221,
+    "train/mechanism_loss": 0.02977375249039231,
+    "fps/policy": 138.0869600233545
+  },
+  {
+    "step": 95060,
+    "train/mechanism_count": 17.968992248062015,
+    "train/mechanism_exact": 0.9885306111139844,
+    "train/mechanism_loss": 0.029786524115592357,
+    "fps/policy": 137.40244656417448
+  },
+  {
+    "step": 99230,
+    "train/mechanism_count": 18.174664107485604,
+    "train/mechanism_exact": 0.9900674051149335,
+    "train/mechanism_loss": 0.02634064831293676,
+    "fps/policy": 138.86265931168128
+  }
+]

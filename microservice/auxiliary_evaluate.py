@@ -1,12 +1,12 @@
 """Frozen auxiliary head evaluation; no test-driven fitting."""
 from microservice.latent_probe import *
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--root',required=True);p.add_argument('--calibration',required=True);p.add_argument('--out',required=True);p.add_argument('--scenario-seed',type=int,default=6500);a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--root',required=True);p.add_argument('--calibration',required=True);p.add_argument('--out',required=True);p.add_argument('--scenario-seed',type=int,default=6500);p.add_argument('--model-seed',type=int,default=21);a=p.parse_args()
     out=Path(a.out)
     out.mkdir(parents=True,exist_ok=False)
     from microservice.agent import Model
     from microservice.auxiliary_audit import audit
-    before=digest(Path(a.root)/'final-21');model=Model(a.root,21,'inspect-mechanisms')
+    before=digest(Path(a.root)/f'final-{a.model_seed}');model=Model(a.root,a.model_seed,'inspect-mechanisms')
     (out/'audit.json').write_text(json.dumps(audit(model),indent=2))
     train=list(map(json.loads,Path(a.calibration).read_text().splitlines()))
     raw,latent,training_predictions=extract(model,train);y=labels(train)
@@ -39,7 +39,7 @@ def main():
     for name,pred in predictions.items():
         families={str(f):{'n':10,'correct':int(sum(pred[i]==target[i] for i,r in enumerate(test) if r['fault']==f))} for f in range(8)}
         summary[name]={'correct':int(sum(pred==target)),'n':len(test),'families':families,'gate_passed':all(v['correct']>=(10 if f=='0' else 9) for f,v in families.items())}
-    after=digest(Path(a.root)/'final-21');assert before==after,'Checkpoint changed'
+    after=digest(Path(a.root)/f'final-{a.model_seed}');assert before==after,'Checkpoint changed'
     result={'methods':summary,'checkpoint_unchanged':True,'scope':'One auxiliary-supervised development model, one fresh 80-incident batch; not independent confirmation.'}
     (out/'summary.json').write_text(json.dumps(result,indent=2))
     (out/'predictions.json').write_text(json.dumps({'target':target.tolist(),**{k:v.tolist() for k,v in predictions.items()}},indent=2))

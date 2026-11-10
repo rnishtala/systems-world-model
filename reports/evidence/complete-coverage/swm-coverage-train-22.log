@@ -1,0 +1,275 @@
+Observations
+  vector           Space(float32, shape=(14,), low=-inf, high=inf)
+  reward           Space(float32, shape=(), low=-inf, high=inf)
+  is_first         Space(bool, shape=(), low=False, high=True)
+  is_last          Space(bool, shape=(), low=False, high=True)
+  is_terminal      Space(bool, shape=(), low=False, high=True)
+  mechanism_target Space(float32, shape=(3,), low=0, high=1)
+Actions
+  action           Space(int32, shape=(), low=0, high=13)
+Extras
+  consec           Space(int32, shape=(), low=-2147483648, high=2147483647)
+  stepid           Space(uint8, shape=(20,), low=0, high=255)
+  dyn/deter        Space(float32, shape=(512,), low=-inf, high=inf)
+  dyn/stoch        Space(float32, shape=(32, 4), low=-inf, high=inf)
+JAX devices (1): [TFRT_CPU_0]
+Policy devices: TFRT_CPU_0
+Train devices:  TFRT_CPU_0
+Initializing parameters...
+Optimizer opt has 642,013 params:
+       364,864 dyn
+        66,111 val
+        57,663 rew
+        50,446 dec
+        50,381 pol
+        41,153 con
+         9,472 enc
+         1,923 mechanisms
+Done initializing!
+Compiling 1 checkpoint groups...
+Largest checkpoint group: 0 GB
+Compiling train and report...
+Train cost analysis:
+  FLOPS:            2.2e+09
+  Memory (temp):    3.3e+07
+  Memory (inputs):  8.4e+06
+  Memory (outputs): 8.3e+06
+  Memory (code):    1.2e+06
+
+Report cost analysis:
+No available
+Done compiling!
+Did not find any checkpoint.
+Saving checkpoint: /results/micro-coverage-v1/models/train-22/ckpt/20261110T202113F457621
+Saved checkpoint.
+Start training loop
+Start JAX profiler: /results/micro-coverage-v1/models/train-22
+2026-11-10 20:21:19.789473: E external/xla/xla/python/profiler/internal/python_hooks.cc:400] Can't import tensorflow.python.profiler.trace
+Stop JAX profiler
+2026-11-10 20:21:21.249658: E external/xla/xla/python/profiler/internal/python_hooks.cc:400] Can't import tensorflow.python.profiler.trace
+
+--------------------[Agent Step 3_850]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score -1.05 / episode/length 2 / train/loss/con 0.62 / train/loss/dyn 2.44 / train/loss/policy -1.6e-3 / train/loss/rep 2.44 / train/loss/repval 7.88 / train/loss/rew 5.33 / train/loss/value 1.09 / train/loss/vector 3.31 / train/rand/action 1 / replay/replay_ratio 16.49 / fps/policy 125.66 / fps/train 1938.47
+
+Writing metrics: /results/micro-coverage-v1/models/train-22/metrics.jsonl
+Writing metrics: /results/micro-coverage-v1/models/train-22/scores.jsonl
+Saving checkpoint: /results/micro-coverage-v1/models/train-22/ckpt/20261110T202144F059198
+Saved checkpoint.
+
+--------------------[Agent Step 8_020]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score -1.5 / episode/length 5 / train/loss/con 0.24 / train/loss/dyn 1.03 / train/loss/policy -5.1e-3 / train/loss/rep 1.03 / train/loss/repval 5.84 / train/loss/rew 3.81 / train/loss/value 0.67 / train/loss/vector 0.75 / train/rand/action 1 / replay/replay_ratio 16.99 / fps/policy 139 / fps/train 2222.85
+
+Writing metrics: /results/micro-coverage-v1/models/train-22/metrics.jsonl
+Writing metrics: /results/micro-coverage-v1/models/train-22/scores.jsonl
+Saving checkpoint: /results/micro-coverage-v1/models/train-22/ckpt/20261110T202214F120813
+Saved checkpoint.
+
+--------------------[Agent Step 12_190]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0.95 / episode/length 2 / train/loss/con 0.03 / train/loss/dyn 1.14 / train/loss/policy 2.5e-3 / train/loss/rep 1.14 / train/loss/repval 3.85 / train/loss/rew 2.19 / train/loss/value 0.21 / train/loss/vector 0.45 / train/rand/action 0.96 / replay/replay_ratio 16.99 / fps/policy 138.9 / fps/train 2221.37
+
+Writing metrics: /results/micro-coverage-v1/models/train-22/scores.jsonlWriting metrics: /results/micro-coverage-v1/models/train-22/metrics.jsonl
+
+Saving checkpoint: /results/micro-coverage-v1/models/train-22/ckpt/20261110T202244F192484
+Saved checkpoint.
+
+--------------------[Agent Step 16_340]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score -1.65 / episode/length 5 / train/loss/con 0.02 / train/loss/dyn 1.67 / train/loss/policy 9.9e-3 / train/loss/rep 1.67 / train/loss/repval 3.41 / train/loss/rew 1.57 / train/loss/value 0.14 / train/loss/vector 0.24 / train/rand/action 0.92 / replay/replay_ratio 17.01 / fps/policy 138.14 / fps/train 2211.28
+
+Writing metrics: /results/micro-coverage-v1/models/train-22/metrics.jsonl
+Writing metrics: /results/micro-coverage-v1/models/train-22/scores.jsonl
+Saving checkpoint: /results/micro-coverage-v1/models/train-22/ckpt/20261110T202314F292166
+Saved checkpoint.
+
+--------------------[Agent Step 20_500]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score -1.05 / episode/length 2 / train/loss/con 0.02 / train/loss/dyn 1.8 / train/loss/policy 0.01 / train/loss/rep 1.8 / train/loss/repval 3.4 / train/loss/rew 1.2 / train/loss/value 0.13 / train/loss/vector 0.17 / train/rand/action 0.89 / replay/replay_ratio 17 / fps/policy 138.42 / fps/train 2214.8
+
+Writing metrics: /results/micro-coverage-v1/models/train-22/scores.jsonl
+Writing metrics: /results/micro-coverage-v1/models/train-22/metrics.jsonl
+Saving checkpoint: /results/micro-coverage-v1/models/train-22/ckpt/20261110T202344F357764
+Saved checkpoint.
+
+--------------------[Agent Step 24_620]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0.95 / episode/length 2 / train/loss/con 0.02 / train/loss/dyn 2.01 / train/loss/policy 0.01 / train/loss/rep 2.01 / train/loss/repval 3.31 / train/loss/rew 0.94 / train/loss/value 0.13 / train/loss/vector 0.13 / train/rand/action 0.87 / replay/replay_ratio 17 / fps/policy 137.3 / fps/train 2196.78
+
+Writing metrics: /results/micro-coverage-v1/models/train-22/scores.jsonl
+Writing metrics: /results/micro-coverage-v1/models/train-22/metrics.jsonl
+Saving checkpoint: /results/micro-coverage-v1/models/train-22/ckpt/20261110T202414F415961
+Saved checkpoint.
+
+--------------------[Agent Step 28_760]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score -1.65 / episode/length 5 / train/loss/con 0.02 / train/loss/dyn 2.18 / train/loss/policy 0.01 / train/loss/rep 2.18 / train/loss/repval 3.25 / train/loss/rew 0.84 / train/loss/value 0.13 / train/loss/vector 0.1 / train/rand/action 0.87 / replay/replay_ratio 17.02 / fps/policy 137.87 / fps/train 2208.04
+
+Writing metrics: /results/micro-coverage-v1/models/train-22/metrics.jsonl
+Writing metrics: /results/micro-coverage-v1/models/train-22/scores.jsonl
+Saving checkpoint: /results/micro-coverage-v1/models/train-22/ckpt/20261110T202444F506699
+Saved checkpoint.
+
+--------------------[Agent Step 32_910]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score -1.65 / episode/length 5 / train/loss/con 0.02 / train/loss/dyn 2.28 / train/loss/policy 0.01 / train/loss/rep 2.28 / train/loss/repval 3.21 / train/loss/rew 0.8 / train/loss/value 0.15 / train/loss/vector 0.09 / train/rand/action 0.86 / replay/replay_ratio 16.98 / fps/policy 138.08 / fps/train 2206.11
+
+Writing metrics: /results/micro-coverage-v1/models/train-22/scores.jsonlWriting metrics: /results/micro-coverage-v1/models/train-22/metrics.jsonl
+
+Saving checkpoint: /results/micro-coverage-v1/models/train-22/ckpt/20261110T202514F568555
+Saved checkpoint.
+
+--------------------[Agent Step 37_070]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0.95 / episode/length 2 / train/loss/con 0.02 / train/loss/dyn 2.39 / train/loss/policy 0.01 / train/loss/rep 2.39 / train/loss/repval 3.1 / train/loss/rew 0.76 / train/loss/value 0.16 / train/loss/vector 0.08 / train/rand/action 0.86 / replay/replay_ratio 17 / fps/policy 138.51 / fps/train 2216.11
+
+Writing metrics: /results/micro-coverage-v1/models/train-22/scores.jsonl
+Writing metrics: /results/micro-coverage-v1/models/train-22/metrics.jsonl
+Saving checkpoint: /results/micro-coverage-v1/models/train-22/ckpt/20261110T202544F603208
+Saved checkpoint.
+
+--------------------[Agent Step 41_230]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0.95 / episode/length 2 / train/loss/con 0.02 / train/loss/dyn 2.49 / train/loss/policy 0.01 / train/loss/rep 2.49 / train/loss/repval 3.08 / train/loss/rew 0.75 / train/loss/value 0.15 / train/loss/vector 0.07 / train/rand/action 0.85 / replay/replay_ratio 17 / fps/policy 138.44 / fps/train 2214.98
+
+Writing metrics: /results/micro-coverage-v1/models/train-22/scores.jsonl
+Writing metrics: /results/micro-coverage-v1/models/train-22/metrics.jsonl
+Saving checkpoint: /results/micro-coverage-v1/models/train-22/ckpt/20261110T202614F644733
+Saved checkpoint.
+
+--------------------[Agent Step 45_370]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score -1.05 / episode/length 2 / train/loss/con 0.02 / train/loss/dyn 2.54 / train/loss/policy 0.01 / train/loss/rep 2.54 / train/loss/repval 3 / train/loss/rew 0.73 / train/loss/value 0.14 / train/loss/vector 0.06 / train/rand/action 0.83 / replay/replay_ratio 17.02 / fps/policy 137.81 / fps/train 2207.08
+
+Writing metrics: /results/micro-coverage-v1/models/train-22/metrics.jsonl
+Writing metrics: /results/micro-coverage-v1/models/train-22/scores.jsonl
+Saving checkpoint: /results/micro-coverage-v1/models/train-22/ckpt/20261110T202644F672536
+Saved checkpoint.
+
+--------------------[Agent Step 49_500]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score -1.05 / episode/length 2 / train/loss/con 0.01 / train/loss/dyn 2.57 / train/loss/policy 0.02 / train/loss/rep 2.57 / train/loss/repval 2.93 / train/loss/rew 0.73 / train/loss/value 0.16 / train/loss/vector 0.06 / train/rand/action 0.82 / replay/replay_ratio 16.99 / fps/policy 137.49 / fps/train 2198.78
+
+Writing metrics: /results/micro-coverage-v1/models/train-22/scores.jsonlWriting metrics: /results/micro-coverage-v1/models/train-22/metrics.jsonl
+
+Saving checkpoint: /results/micro-coverage-v1/models/train-22/ckpt/20261110T202714F721813
+Saved checkpoint.
+
+--------------------[Agent Step 53_670]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score -1.05 / episode/length 2 / train/loss/con 0.01 / train/loss/dyn 2.6 / train/loss/policy 0.02 / train/loss/rep 2.6 / train/loss/repval 3.01 / train/loss/rew 0.72 / train/loss/value 0.16 / train/loss/vector 0.06 / train/rand/action 0.8 / replay/replay_ratio 16.99 / fps/policy 138.84 / fps/train 2220.35
+
+Writing metrics: /results/micro-coverage-v1/models/train-22/scores.jsonl
+Writing metrics: /results/micro-coverage-v1/models/train-22/metrics.jsonl
+Saving checkpoint: /results/micro-coverage-v1/models/train-22/ckpt/20261110T202744F760691
+Saved checkpoint.
+
+--------------------[Agent Step 57_810]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score -3.65 / episode/length 5 / train/loss/con 0.01 / train/loss/dyn 2.63 / train/loss/policy 0.02 / train/loss/rep 2.63 / train/loss/repval 2.96 / train/loss/rew 0.71 / train/loss/value 0.16 / train/loss/vector 0.05 / train/rand/action 0.79 / replay/replay_ratio 17.02 / fps/policy 137.69 / fps/train 2205.23
+
+Writing metrics: /results/micro-coverage-v1/models/train-22/scores.jsonlWriting metrics: /results/micro-coverage-v1/models/train-22/metrics.jsonl
+
+Saving checkpoint: /results/micro-coverage-v1/models/train-22/ckpt/20261110T202814F767872
+Saved checkpoint.
+
+--------------------[Agent Step 61_940]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 2.35 / episode/length 5 / train/loss/con 0.01 / train/loss/dyn 2.6 / train/loss/policy 0.02 / train/loss/rep 2.6 / train/loss/repval 2.92 / train/loss/rew 0.71 / train/loss/value 0.15 / train/loss/vector 0.05 / train/rand/action 0.79 / replay/replay_ratio 16.99 / fps/policy 137.66 / fps/train 2201.51
+
+Writing metrics: /results/micro-coverage-v1/models/train-22/metrics.jsonlWriting metrics: /results/micro-coverage-v1/models/train-22/scores.jsonl
+
+Saving checkpoint: /results/micro-coverage-v1/models/train-22/ckpt/20261110T202844F772154
+Saved checkpoint.
+
+--------------------[Agent Step 66_120]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0.95 / episode/length 2 / train/loss/con 0.01 / train/loss/dyn 2.6 / train/loss/policy 0.02 / train/loss/rep 2.6 / train/loss/repval 2.89 / train/loss/rew 0.71 / train/loss/value 0.15 / train/loss/vector 0.05 / train/rand/action 0.78 / replay/replay_ratio 17.02 / fps/policy 138.97 / fps/train 2225.7
+
+Writing metrics: /results/micro-coverage-v1/models/train-22/metrics.jsonl
+Writing metrics: /results/micro-coverage-v1/models/train-22/scores.jsonl
+Saving checkpoint: /results/micro-coverage-v1/models/train-22/ckpt/20261110T202914F800843
+Saved checkpoint.
+
+--------------------[Agent Step 70_270]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score -3.05 / episode/length 2 / train/loss/con 0.01 / train/loss/dyn 2.56 / train/loss/policy 0.01 / train/loss/rep 2.56 / train/loss/repval 2.88 / train/loss/rew 0.71 / train/loss/value 0.15 / train/loss/vector 0.05 / train/rand/action 0.77 / replay/replay_ratio 16.98 / fps/policy 138.11 / fps/train 2206.5
+
+Writing metrics: /results/micro-coverage-v1/models/train-22/scores.jsonl
+Writing metrics: /results/micro-coverage-v1/models/train-22/metrics.jsonl
+Saving checkpoint: /results/micro-coverage-v1/models/train-22/ckpt/20261110T202944F830003
+Saved checkpoint.
+
+--------------------[Agent Step 74_390]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score -1.05 / episode/length 2 / train/loss/con 0.01 / train/loss/dyn 2.57 / train/loss/policy 0.02 / train/loss/rep 2.57 / train/loss/repval 2.91 / train/loss/rew 0.71 / train/loss/value 0.16 / train/loss/vector 0.05 / train/rand/action 0.7 / replay/replay_ratio 17 / fps/policy 137.1 / fps/train 2193.57
+
+Writing metrics: /results/micro-coverage-v1/models/train-22/metrics.jsonlWriting metrics: /results/micro-coverage-v1/models/train-22/scores.jsonl
+
+Saving checkpoint: /results/micro-coverage-v1/models/train-22/ckpt/20261110T203014F885388
+Saved checkpoint.
+
+--------------------[Agent Step 78_520]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score -1.65 / episode/length 5 / train/loss/con 0.01 / train/loss/dyn 2.57 / train/loss/policy 0.01 / train/loss/rep 2.57 / train/loss/repval 2.87 / train/loss/rew 0.7 / train/loss/value 0.17 / train/loss/vector 0.05 / train/rand/action 0.43 / replay/replay_ratio 17.02 / fps/policy 137.65 / fps/train 2205.62
+
+Writing metrics: /results/micro-coverage-v1/models/train-22/scores.jsonl
+Writing metrics: /results/micro-coverage-v1/models/train-22/metrics.jsonl
+Saving checkpoint: /results/micro-coverage-v1/models/train-22/ckpt/20261110T203044F900591
+Saved checkpoint.
+
+--------------------[Agent Step 82_640]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score -1.05 / episode/length 2 / train/loss/con 0.01 / train/loss/dyn 2.52 / train/loss/policy 3.7e-3 / train/loss/rep 2.52 / train/loss/repval 2.89 / train/loss/rew 0.7 / train/loss/value 0.18 / train/loss/vector 0.05 / train/rand/action 0.19 / replay/replay_ratio 17 / fps/policy 136.88 / fps/train 2190.04
+
+Writing metrics: /results/micro-coverage-v1/models/train-22/metrics.jsonlWriting metrics: /results/micro-coverage-v1/models/train-22/scores.jsonl
+
+Saving checkpoint: /results/micro-coverage-v1/models/train-22/ckpt/20261110T203114F936837
+Saved checkpoint.
+
+--------------------[Agent Step 86_780]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0.35 / episode/length 5 / train/loss/con 0.01 / train/loss/dyn 2.53 / train/loss/policy 1.3e-3 / train/loss/rep 2.53 / train/loss/repval 2.94 / train/loss/rew 0.68 / train/loss/value 0.21 / train/loss/vector 0.04 / train/rand/action 0.21 / replay/replay_ratio 16.98 / fps/policy 138 / fps/train 2205.88
+
+Writing metrics: /results/micro-coverage-v1/models/train-22/metrics.jsonl
+Writing metrics: /results/micro-coverage-v1/models/train-22/scores.jsonl
+Saving checkpoint: /results/micro-coverage-v1/models/train-22/ckpt/20261110T203144F995888
+Saved checkpoint.
+
+--------------------[Agent Step 90_930]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 2.95 / episode/length 2 / train/loss/con 0.01 / train/loss/dyn 2.58 / train/loss/policy 6.8e-3 / train/loss/rep 2.58 / train/loss/repval 2.98 / train/loss/rew 0.65 / train/loss/value 0.24 / train/loss/vector 0.04 / train/rand/action 0.57 / replay/replay_ratio 17.01 / fps/policy 138.09 / fps/train 2210.46
+
+Writing metrics: /results/micro-coverage-v1/models/train-22/scores.jsonl
+Writing metrics: /results/micro-coverage-v1/models/train-22/metrics.jsonl
+Saving checkpoint: /results/micro-coverage-v1/models/train-22/ckpt/20261110T203215F096314
+Saved checkpoint.
+
+--------------------[Agent Step 95_060]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score -1.65 / episode/length 5 / train/loss/con 0.01 / train/loss/dyn 2.57 / train/loss/policy 0.02 / train/loss/rep 2.57 / train/loss/repval 2.96 / train/loss/rew 0.62 / train/loss/value 0.25 / train/loss/vector 0.04 / train/rand/action 0.42 / replay/replay_ratio 16.99 / fps/policy 137.4 / fps/train 2197.37
+
+Writing metrics: /results/micro-coverage-v1/models/train-22/scores.jsonl
+Writing metrics: /results/micro-coverage-v1/models/train-22/metrics.jsonl
+Saving checkpoint: /results/micro-coverage-v1/models/train-22/ckpt/20261110T203245F154177
+Saved checkpoint.
+
+--------------------[Agent Step 99_230]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0.35 / episode/length 5 / train/loss/con 0.01 / train/loss/dyn 2.62 / train/loss/policy 0.02 / train/loss/rep 2.62 / train/loss/repval 3 / train/loss/rew 0.6 / train/loss/value 0.28 / train/loss/vector 0.04 / train/rand/action 0.28 / replay/replay_ratio 16.99 / fps/policy 138.86 / fps/train 2220.74
+
+Writing metrics: /results/micro-coverage-v1/models/train-22/scores.jsonl
+Writing metrics: /results/micro-coverage-v1/models/train-22/metrics.jsonl
+Saving checkpoint: /results/micro-coverage-v1/models/train-22/ckpt/20261110T203315F192448
+Saved checkpoint.
+
+--------------------[Agent Step 100_000]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0.35 / episode/length 5
+
+Writing metrics: /results/micro-coverage-v1/models/train-22/metrics.jsonlWriting metrics: /results/micro-coverage-v1/models/train-22/scores.jsonl
+
+Saving checkpoint: /results/micro-coverage-v1/models/final-22/20261110T203320F630902
+Saved checkpoint.
+TRAINING_COMPLETE {"resumed": false, "timing_scope": "Complete training process", "mechanism_supervision": true, "auxiliary_loss_weight": 1.0, "action_contract": "mechanisms-v1", "observation_version": "physical-v2", "seed": 22, "steps": 100000, "seconds": 742.3590078353882, "calibration_sha256": "e6d217c0fcdddc2b50df296c09c95540eb3223ff5d7fcf6f0c9f179b6d903473", "coverage": {"guided": 14141, "policy": 14272}, "scope": "Empirical surrogate training; no live test episodes used."}

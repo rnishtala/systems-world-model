@@ -1,0 +1,78 @@
+{
+  "scope": "Training-only observation saturation audit; no settings changed.",
+  "per_family_incidents": 20,
+  "clipped_counts": {
+    "0": {
+      "payment_cpu": 0,
+      "ledger_cpu": 0,
+      "pool_wait": 0,
+      "db_duration": 0,
+      "payment_self": 0,
+      "ledger_latency": 0,
+      "payment_downstream": 0
+    },
+    "1": {
+      "payment_cpu": 0,
+      "ledger_cpu": 0,
+      "pool_wait": 0,
+      "db_duration": 0,
+      "payment_self": 7,
+      "ledger_latency": 0,
+      "payment_downstream": 0
+    },
+    "2": {
+      "payment_cpu": 0,
+      "ledger_cpu": 0,
+      "pool_wait": 0,
+      "db_duration": 0,
+      "payment_self": 0,
+      "ledger_latency": 0,
+      "payment_downstream": 0
+    },
+    "3": {
+      "payment_cpu": 0,
+      "ledger_cpu": 0,
+      "pool_wait": 0,
+      "db_duration": 0,
+      "payment_self": 0,
+      "ledger_latency": 0,
+      "payment_downstream": 0
+    },
+    "4": {
+      "payment_cpu": 0,
+      "ledger_cpu": 0,
+      "pool_wait": 0,
+      "db_duration": 0,
+      "payment_self": 5,
+      "ledger_latency": 0,
+      "payment_downstream": 3
+    },
+    "5": {
+      "payment_cpu": 0,
+      "ledger_cpu": 0,
+      "pool_wait": 0,
+      "db_duration": 0,
+      "payment_self": 3,
+      "ledger_latency": 0,
+      "payment_downstream": 0
+    },
+    "6": {
+      "payment_cpu": 0,
+      "ledger_cpu": 0,
+      "pool_wait": 0,
+      "db_duration": 0,
+      "payment_self": 0,
+      "ledger_latency": 9,
+      "payment_downstream": 9
+    },
+    "7": {
+      "payment_cpu": 0,
+      "ledger_cpu": 0,
+      "pool_wait": 0,
+      "db_duration": 0,
+      "payment_self": 3,
+      "ledger_latency": 0,
+      "payment_downstream": 8
+    }
+  }
+}

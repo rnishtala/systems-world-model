@@ -1,0 +1,8 @@
+{
+  "base_sha256": "9121c40cab47960f8f41ea57b605fa20a41509b8c457abe60132ef07207f077b",
+  "calibration_sha256": "e6d217c0fcdddc2b50df296c09c95540eb3223ff5d7fcf6f0c9f179b6d903473",
+  "base_incidents": 140,
+  "new_incidents": 20,
+  "seed": 6600,
+  "scope": "All eight regimes represented; no historical held-out data reused."
+}
