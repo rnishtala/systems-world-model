@@ -1,0 +1,5 @@
+{
+  "inference_ready": true,
+  "controller": "inspect-first",
+  "source": "microservice-source-v10"
+}

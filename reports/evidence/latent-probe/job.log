@@ -1,0 +1,136 @@
+.................................                                        [100%]
+33 passed in 0.28s
+Observations
+  vector           Space(float32, shape=(14,), low=-inf, high=inf)
+  reward           Space(float32, shape=(), low=-inf, high=inf)
+  is_first         Space(bool, shape=(), low=False, high=True)
+  is_last          Space(bool, shape=(), low=False, high=True)
+  is_terminal      Space(bool, shape=(), low=False, high=True)
+Actions
+  action           Space(int32, shape=(), low=0, high=13)
+Extras
+  consec           Space(int32, shape=(), low=-2147483648, high=2147483647)
+  stepid           Space(uint8, shape=(20,), low=0, high=255)
+  dyn/deter        Space(float32, shape=(512,), low=-inf, high=inf)
+  dyn/stoch        Space(float32, shape=(32, 4), low=-inf, high=inf)
+JAX devices (1): [TFRT_CPU_0]
+Policy devices: TFRT_CPU_0
+Train devices:  TFRT_CPU_0
+Initializing parameters...
+Optimizer opt has 640,090 params:
+       364,864 dyn
+        66,111 val
+        57,663 rew
+        50,446 dec
+        50,381 pol
+        41,153 con
+         9,472 enc
+Done initializing!
+Compiling 1 checkpoint groups...
+Largest checkpoint group: 0 GB
+Compiling train and report...
+Train cost analysis:
+  FLOPS:            2.2e+09
+  Memory (temp):    3.3e+07
+  Memory (inputs):  8.3e+06
+  Memory (outputs): 8.3e+06
+  Memory (code):    1.2e+06
+
+Report cost analysis:
+No available
+Done compiling!
+Loading checkpoint: /results/micro-mechanisms-v1/development/final-20/20261110T161201F446621
+Loaded checkpoint.
+EXTRACT 0
+EXTRACT 20
+EXTRACT 40
+EXTRACT 60
+EXTRACT 80
+EXTRACT 100
+EXTRACT 120
+PROBES_FROZEN
+COLLECT 0 3
+COLLECT 1 5
+COLLECT 2 3
+COLLECT 3 5
+COLLECT 4 4
+COLLECT 5 4
+COLLECT 6 0
+COLLECT 7 0
+COLLECT 8 0
+COLLECT 9 6
+COLLECT 10 1
+COLLECT 11 1
+COLLECT 12 1
+COLLECT 13 0
+COLLECT 14 1
+COLLECT 15 3
+COLLECT 16 6
+COLLECT 17 2
+COLLECT 18 5
+COLLECT 19 1
+COLLECT 20 3
+COLLECT 21 7
+COLLECT 22 3
+COLLECT 23 5
+COLLECT 24 1
+COLLECT 25 7
+COLLECT 26 2
+COLLECT 27 3
+COLLECT 28 7
+COLLECT 29 2
+COLLECT 30 0
+COLLECT 31 6
+COLLECT 32 7
+COLLECT 33 4
+COLLECT 34 5
+COLLECT 35 7
+COLLECT 36 7
+COLLECT 37 1
+COLLECT 38 6
+COLLECT 39 6
+COLLECT 40 6
+COLLECT 41 2
+COLLECT 42 4
+COLLECT 43 3
+COLLECT 44 3
+COLLECT 45 4
+COLLECT 46 0
+COLLECT 47 3
+COLLECT 48 1
+COLLECT 49 0
+COLLECT 50 4
+COLLECT 51 0
+COLLECT 52 5
+COLLECT 53 4
+COLLECT 54 6
+COLLECT 55 2
+COLLECT 56 7
+COLLECT 57 4
+COLLECT 58 3
+COLLECT 59 2
+COLLECT 60 5
+COLLECT 61 1
+COLLECT 62 5
+COLLECT 63 2
+COLLECT 64 5
+COLLECT 65 6
+COLLECT 66 7
+COLLECT 67 6
+COLLECT 68 0
+COLLECT 69 4
+COLLECT 70 2
+COLLECT 71 7
+COLLECT 72 6
+COLLECT 73 2
+COLLECT 74 1
+COLLECT 75 2
+COLLECT 76 0
+COLLECT 77 4
+COLLECT 78 7
+COLLECT 79 5
+EXTRACT 0
+EXTRACT 20
+EXTRACT 40
+EXTRACT 60
+PROBE_COMPLETE {"methods": {"dreamer_reward": {"correct": 50, "n": 80, "families": {"0": {"n": 10, "correct": 10}, "1": {"n": 10, "correct": 10}, "2": {"n": 10, "correct": 10}, "3": {"n": 10, "correct": 10}, "4": {"n": 10, "correct": 0}, "5": {"n": 10, "correct": 0}, "6": {"n": 10, "correct": 10}, "7": {"n": 10, "correct": 0}}, "gate_passed": false}, "raw": {"correct": 76, "n": 80, "families": {"0": {"n": 10, "correct": 10}, "1": {"n": 10, "correct": 10}, "2": {"n": 10, "correct": 10}, "3": {"n": 10, "correct": 10}, "4": {"n": 10, "correct": 10}, "5": {"n": 10, "correct": 9}, "6": {"n": 10, "correct": 10}, "7": {"n": 10, "correct": 7}}, "gate_passed": false}, "latent": {"correct": 63, "n": 80, "families": {"0": {"n": 10, "correct": 10}, "1": {"n": 10, "correct": 5}, "2": {"n": 10, "correct": 10}, "3": {"n": 10, "correct": 10}, "4": {"n": 10, "correct": 8}, "5": {"n": 10, "correct": 6}, "6": {"n": 10, "correct": 8}, "7": {"n": 10, "correct": 6}}, "gate_passed": false}, "shuffled_latent": {"correct": 15, "n": 80, "families": {"0": {"n": 10, "correct": 0}, "1": {"n": 10, "correct": 4}, "2": {"n": 10, "correct": 2}, "3": {"n": 10, "correct": 2}, "4": {"n": 10, "correct": 1}, "5": {"n": 10, "correct": 3}, "6": {"n": 10, "correct": 1}, "7": {"n": 10, "correct": 2}}, "gate_passed": false}}, "checkpoint_unchanged": true, "scope": "One frozen model, one fresh 80-incident batch. Linear probe failure does not establish absence of information."}

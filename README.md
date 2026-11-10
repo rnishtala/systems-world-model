@@ -7,7 +7,23 @@ The first POC trains the project-linked DreamerV3 implementation from scratch
 on a partially observed queue simulator. It runs on **AMD Halo, CPU only**, in
 its own Kubernetes namespace: `systems-world-model-lab`.
 
-## Latest experiment — combined diagnoses still fail with CPU contention
+## Latest experiment — fault signals are partly recoverable from frozen state
+
+On 80 fresh incidents, the existing Dreamer reward path scored **50/80**, a
+linear probe of its frozen latent state **63/80**, raw-telemetry probes **76/80**,
+and a shuffled-label latent control **15/80**. No Dreamer weights changed.
+The latent probe recovered 20/30 CPU combinations but introduced other errors;
+none passed every acceptance gate. Even shuffled labels fitted perfectly on
+training data, exposing the probe's capacity to overfit.
+
+Next: select a regularized multi-label diagnostic head with training-only
+cross-validation before another fresh evaluation. The previous controller is
+restored. This remains experimental triage, not reliable autonomous resolution.
+
+[Probe results](reports/LATENT_PROBE_RESULTS.md) ·
+[Research note](output/pdf/dreamerv3-latent-probes.pdf)
+
+## Earlier experiment — combined diagnoses still fail with CPU contention
 
 A fresh DreamerV3 model with eight fault-set answers scored **49/80 (61.25%)**
 exact diagnoses. A small learned baseline scored **76/80 (95%)** on the same
