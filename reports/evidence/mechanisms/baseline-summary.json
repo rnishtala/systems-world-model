@@ -1,0 +1,77 @@
+{
+  "physical_incidents": 80,
+  "models": {
+    "binary-trees": {
+      "families": {
+        "0": {
+          "n": 10,
+          "correct": 10,
+          "accuracy": 1.0
+        },
+        "1": {
+          "n": 10,
+          "correct": 10,
+          "accuracy": 1.0
+        },
+        "2": {
+          "n": 10,
+          "correct": 9,
+          "accuracy": 0.9
+        },
+        "3": {
+          "n": 10,
+          "correct": 10,
+          "accuracy": 1.0
+        },
+        "4": {
+          "n": 10,
+          "correct": 10,
+          "accuracy": 1.0
+        },
+        "5": {
+          "n": 10,
+          "correct": 9,
+          "accuracy": 0.9
+        },
+        "6": {
+          "n": 10,
+          "correct": 10,
+          "accuracy": 1.0
+        },
+        "7": {
+          "n": 10,
+          "correct": 8,
+          "accuracy": 0.8
+        }
+      },
+      "mechanisms": {
+        "cpu": {
+          "tp": 40,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "pool": {
+          "tp": 38,
+          "fp": 0,
+          "fn": 2,
+          "precision": 1.0,
+          "recall": 0.95
+        },
+        "delay": {
+          "tp": 40,
+          "fp": 2,
+          "fn": 0,
+          "precision": 0.9523809523809523,
+          "recall": 1.0
+        }
+      },
+      "median_seconds": 8.544884622097015e-07,
+      "escalations": 0,
+      "development_gate": false
+    }
+  },
+  "passed": false,
+  "scope": "Single development seed; pairs trained, triple composition held out. Not reliability confirmation."
+}

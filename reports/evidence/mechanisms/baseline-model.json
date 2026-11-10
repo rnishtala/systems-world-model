@@ -1,0 +1,91 @@
+{
+  "algorithm": "independent binary CART, depth 3, min leaf 5, majority ties absent",
+  "calibration_sha256": "9121c40cab47960f8f41ea57b605fa20a41509b8c457abe60132ef07207f077b",
+  "features": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "trees": [
+    {
+      "prediction": 0,
+      "n": 140,
+      "positive": 60,
+      "feature": 3,
+      "threshold": 0.2696514427661896,
+      "left": {
+        "prediction": 0,
+        "n": 80,
+        "positive": 0
+      },
+      "right": {
+        "prediction": 1,
+        "n": 60,
+        "positive": 60
+      }
+    },
+    {
+      "prediction": 0,
+      "n": 140,
+      "positive": 60,
+      "feature": 5,
+      "threshold": 0.23725034296512604,
+      "left": {
+        "prediction": 0,
+        "n": 80,
+        "positive": 0
+      },
+      "right": {
+        "prediction": 1,
+        "n": 60,
+        "positive": 60
+      }
+    },
+    {
+      "prediction": 0,
+      "n": 140,
+      "positive": 60,
+      "feature": 8,
+      "threshold": 0.5774495005607605,
+      "left": {
+        "prediction": 0,
+        "n": 58,
+        "positive": 0
+      },
+      "right": {
+        "prediction": 1,
+        "n": 82,
+        "positive": 60,
+        "feature": 5,
+        "threshold": 0.5774544477462769,
+        "left": {
+          "prediction": 1,
+          "n": 42,
+          "positive": 42
+        },
+        "right": {
+          "prediction": 0,
+          "n": 40,
+          "positive": 18,
+          "feature": 8,
+          "threshold": 1.23279869556427,
+          "left": {
+            "prediction": 0,
+            "n": 21,
+            "positive": 0
+          },
+          "right": {
+            "prediction": 1,
+            "n": 19,
+            "positive": 18
+          }
+        }
+      }
+    }
+  ]
+}

@@ -26,13 +26,13 @@ def wait_ready(timeout=45):
 
 
 def configure(fault,rng,shift=False):
-    if fault not in range(7):raise ValueError('Unknown experiment fault')
+    if fault not in range(8):raise ValueError('Unknown experiment fault')
     reset()
     hold=float(rng.uniform(.03,.05))
     request('ledger','/control',{'db_hold':hold},True)
-    if fault in (1,4,5):request('payment','/control',{'cpu_seconds':float(rng.uniform(.055,.075) if shift else rng.uniform(.025,.05))},True)
-    if fault in (2,5,6):request('ledger','/control',{'pool_size':1,'db_hold':hold},True)
-    if fault in (3,4,6):request('ledger','/control',{'delay_seconds':float(rng.uniform(.26,.34) if shift else rng.uniform(.12,.23)),'db_hold':hold,**({'pool_size':1} if fault==6 else {})},True)
+    if fault in (1,4,5,7):request('payment','/control',{'cpu_seconds':float(rng.uniform(.055,.075) if shift else rng.uniform(.025,.05))},True)
+    if fault in (2,5,6,7):request('ledger','/control',{'pool_size':1,'db_hold':hold},True)
+    if fault in (3,4,6,7):request('ledger','/control',{'delay_seconds':float(rng.uniform(.26,.34) if shift else rng.uniform(.12,.23)),'db_hold':hold,**({'pool_size':1} if fault in (6,7) else {})},True)
     return int(rng.integers(7,10) if shift else rng.integers(4,7))
 
 def batch(n):

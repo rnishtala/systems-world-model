@@ -1,6 +1,6 @@
 # Systems World Model: DreamerV3 triage MVP
 
-**Status:** stages 1–2 are complete for the bounded synthetic task. Three fresh models passed the frozen gate with 100% accuracy across 900 held-out incidents and one inspection each. The POC ran on AMD Halo in `systems-world-model-lab`; experiment processes are stopped and checkpoints retained. See [README.md](README.md) for measured results and [RUNBOOK.md](RUNBOOK.md) for reproduction. Real-service transfer and the LLM resolution stage below remain future work.
+**Status:** the synthetic POC is complete, and the isolated live HTTP/PostgreSQL lab is implemented. The latest combined-fault development run scored 49/80 exact diagnoses with Dreamer versus 76/80 with a simple learned comparator. Neither passed every family gate; reliable combined-fault triage remains unresolved. The previous controller is restored. Next: probe frozen latent states to distinguish representation loss from a weak diagnostic readout before retraining. See [latest results](reports/MECHANISMS_RESULTS.md). LLM integration and autonomous resolution remain future work.
 
 Reuse the [DreamerV3 implementation](https://github.com/danijar/dreamerv3), train
 it on a small system-triage environment, and test whether its learned behavior

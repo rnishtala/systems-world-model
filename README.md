@@ -7,7 +7,22 @@ The first POC trains the project-linked DreamerV3 implementation from scratch
 on a partially observed queue simulator. It runs on **AMD Halo, CPU only**, in
 its own Kubernetes namespace: `systems-world-model-lab`.
 
-## Latest follow-up — predictive guard helps, reliability gates still fail
+## Latest experiment — combined diagnoses still fail with CPU contention
+
+A fresh DreamerV3 model with eight fault-set answers scored **49/80 (61.25%)**
+exact diagnoses. A small learned baseline scored **76/80 (95%)** on the same
+observations. Dreamer correctly handled all ten pool-plus-delay incidents but
+missed every CPU-containing combination. Neither model passed every family gate.
+
+The earlier controller is restored. The next experiment will probe whether
+Dreamer's recurrent state loses mechanism information or its reward readout
+fails to use it, before another full retraining. This is still an experimental
+triage system, not reliable autonomous resolution.
+
+[Results and next step](reports/MECHANISMS_RESULTS.md) ·
+[Research note](output/pdf/dreamerv3-compositional-diagnosis.pdf)
+
+## Earlier follow-up — predictive guard helps, reliability gates still fail
 
 On 10 November, a forecast-error escalation guard was tested on **96 fresh
 physical incidents** using the existing three models. It escalated every

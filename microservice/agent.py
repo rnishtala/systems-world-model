@@ -9,18 +9,23 @@ from pathlib import Path
 from dreamerv3 import main as upstream
 
 class ShapeEnv:
-    def __init__(self):
+    def __init__(self,count=9):
         self.obs_space=dict(vector=elements.Space(np.float32,(14,)),reward=elements.Space(np.float32),is_first=elements.Space(bool),is_last=elements.Space(bool),is_terminal=elements.Space(bool))
-        self.act_space=dict(reset=elements.Space(bool),action=elements.Space(np.int32,(),0,9))
+        self.act_space=dict(reset=elements.Space(bool),action=elements.Space(np.int32,(),0,count))
     def close(self):pass
 
 class Model:
     def __init__(self,root,seed,controller="native"):
         self.controller=controller
+        meta=json.loads((Path(root)/f'training-{seed}.json').read_text())
+        self.contract=meta.get('action_contract','single-v1')
+        if self.contract not in ('single-v1','mechanisms-v1'):raise ValueError('Unknown action contract')
+        self.classes=8 if self.contract=='mechanisms-v1' else 4
+        if self.classes==8 and controller=='inspect-guarded':raise ValueError('Guard is calibrated only for single-v1')
         self.guard=json.loads((Path(__file__).parent/"calibration/predictive-guard-v1.json").read_text()) if controller=="inspect-guarded" else None
         self.seed=seed
         c=elements.Config.load(elements.Path(root+f'/train-{seed}/config.yaml')).update(logdir=f'/tmp/inference-{seed}')
-        upstream.make_env=lambda config,index,**kw:upstream.wrap_env(ShapeEnv(),config)
+        upstream.make_env=lambda config,index,**kw:upstream.wrap_env(ShapeEnv(self.classes+5),config)
         self.agent=upstream.make_agent(c);cp=elements.Checkpoint(elements.Path(root+f'/final-{seed}'));cp.agent=self.agent;cp.load(keys=['agent'])
         self.policy=ParticleActor(self.agent);self.carry=None;self.calls=0;self.sessions={}
         model=self.agent.model
@@ -31,9 +36,9 @@ class Model:
             return pred['vector'].pred().mean(0)
         @nj.pure
         def rewards(dyn):
-            dyn=jax.tree.map(lambda x:jnp.repeat(x,4,axis=0),dyn)
-            _,(feat,_)=model.dyn.imagine(dyn,{'action':jnp.tile(jnp.arange(4,8,dtype=jnp.int32),16)},1,False,single=True)
-            return model.rew(model.feat2tensor(feat),1).pred().reshape(16,4).mean(0)
+            dyn=jax.tree.map(lambda x:jnp.repeat(x,self.classes,axis=0),dyn)
+            _,(feat,_)=model.dyn.imagine(dyn,{'action':jnp.tile(jnp.arange(4,4+self.classes,dtype=jnp.int32),16)},1,False,single=True)
+            return model.rew(model.feat2tensor(feat),1).pred().reshape(16,self.classes).mean(0)
         self.forecast=jax.jit(lambda params,dyn,act,key:forecast(params,dyn,act,seed=key,create=False,modify=False)[1])
         self.rewards=jax.jit(lambda params,dyn,key:rewards(params,dyn,seed=key,create=False,modify=False)[1])
     def act(self,vector,first,reward,incident_id):
@@ -61,13 +66,13 @@ class Model:
             if guard_result and guard_result['escalate']:action=8
             previous=[jax.device_put(np.int32(action),ref.sharding) for ref in self.carry[-1]['action']]
             self.carry=(*self.carry[:-1],{**self.carry[-1],'action':previous})
-        result={'action':action,'controller':self.controller}
+        result={'action':action,'controller':self.controller,'action_contract':self.contract}
         if self.guard and not missing:
             result['guard']=guard_result;result['predicted_diagnosis_rewards']=scores.tolist()
         with jax.transfer_guard('allow'):
             dyn=self.agent._stack(self.carry)[1];key=jax.random.PRNGKey(self.calls+900)
             if action in (1,2,3):result['predicted_next_vector']=np.asarray(self.forecast(self.agent.params,dyn,np.int32(action),key)).tolist()
-            if 4<=action<=7:result['predicted_diagnosis_rewards']=np.asarray(self.rewards(self.agent.params,dyn,key)).tolist()
+            if 4<=action<4+self.classes:result['predicted_diagnosis_rewards']=np.asarray(self.rewards(self.agent.params,dyn,key)).tolist()
         if action in GROUPS:
             indices=list(GROUPS[action]);pending={'indices':indices,'predicted':[result['predicted_next_vector'][i] for i in indices]}
         else:pending=None
