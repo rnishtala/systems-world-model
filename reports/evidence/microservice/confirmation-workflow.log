@@ -1,0 +1,6 @@
+{"stage": "waiting_for_training", "updated_utc": "2026-11-10T03:21:00Z"}
+{"stage": "restoring_lab", "updated_utc": "2026-11-10T03:21:01Z"}
+{"stage": "live_confirmation", "updated_utc": "2026-11-10T03:21:02Z"}
+{"stage": "waiting", "updated_utc": "2026-11-10T03:21:03Z", "jobs": {"swm-live-confirm-v1": "running"}}
+{"stage": "exporting_evidence", "updated_utc": "2026-11-10T03:40:41Z"}
+{"stage": "complete", "updated_utc": "2026-11-10T03:40:50Z", "gate_passed": true, "physical_incidents": 120}

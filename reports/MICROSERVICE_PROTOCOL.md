@@ -133,3 +133,12 @@ inspections, not the original native actor gate. This explicit change of
 controller is motivated by development results and does not revise numerical
 diagnosis or prediction thresholds. Unknown-fault detection remains unsupported:
 the inspect-first controller always returns one of four known classes.
+
+## Recorded outcome
+
+The frozen inspect-first confirmation passed all per-seed numerical gates.
+Seeds 10/11/12 scored 119/120, 120/120, 119/120 respectively. All forecasts beat
+the calibration-mean baseline. See MICROSERVICE_RESULTS.md and preserved JSONL.
+No controller, training, threshold or scenario changes were made after seeing
+confirmation outcomes. A workflow-only parser fix handled Kubernetes returning
+a single Job object instead of a List; it did not restart the live Job.

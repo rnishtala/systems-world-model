@@ -60,6 +60,8 @@ if confirmation:
  table(rows,[35,60,45,75,155,120])
 else:p('Confirmation is pending. No fresh-seed reliability result is reported in this edition.')
 p('The gates are sample-performance checks, not confidence guarantees. Even 30/30 correct cases in one class has a two-sided 95% Wilson lower accuracy bound of about 88.6%. Repeated models on shared incidents must not be pooled as independent trials. Larger and broader evaluations are needed for stronger reliability claims.')
+p('Confirmation errors: seeds 10 and 12 diagnosed pool contention during ledger-delay incident 53; seed 11 diagnosed it correctly. Their pool-wait measurements differed because methods observe successive request batches. The checklist produced one false alarm on healthy incident 116 (119/120 overall). These results do not establish a statistically meaningful superiority of either method. Training completed in 25m49s wall time; live confirmation took 20m23s.')
+story.append(PageBreak())
 h('4. Failure boundary: unfamiliar combined faults')
 p('In eight separate CPU-plus-ledger-delay incidents, both the development model and checklist returned payment CPU contention every time. They identified one present mechanism but missed the simultaneous delay; neither escalated. The evidence-first controller always selects a known class. Its reward ranking is not calibrated confidence. Unknown-fault recognition and safe abstention remain open work, not supported deployment capabilities.')
 h('5. Interpretation and next experiments')

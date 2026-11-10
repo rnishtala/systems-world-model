@@ -1,6 +1,7 @@
 > Status, 9 November 2026: live lab and development evaluation implemented.
 > The inspect-first world-model controller achieved 48/48 known-case diagnoses
-> across two development batches. Fresh-seed confirmation is running. Unknown
+> across two development batches. Fresh-seed confirmation passed at 99.2–100%
+> per model across 120 physical incidents (360 model evaluations). Unknown
 > combined faults are not reliably recognized. See README and the live protocol
 > for current evidence; the original plan below is retained as design context.
 

@@ -25,7 +25,7 @@ def upload(path):
 def wait_jobs(names,timeout):
  deadline=time.monotonic()+timeout;last=None
  while time.monotonic()<deadline:
-  jobs=json.loads(kube('get jobs '+' '.join(names)+' -o json'))['items']
+  response=json.loads(kube('get jobs '+' '.join(names)+' -o json'));jobs=response.get('items',[response])
   statuses={j['metadata']['name']:j.get('status',{}) for j in jobs}
   if any(s.get('failed',0)>0 for s in statuses.values()):raise RuntimeError('Experiment failed: '+json.dumps(statuses))
   if all(s.get('succeeded',0)==1 for s in statuses.values()):return

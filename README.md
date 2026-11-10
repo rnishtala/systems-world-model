@@ -7,7 +7,7 @@ The first POC trains the project-linked DreamerV3 implementation from scratch
 on a partially observed queue simulator. It runs on **AMD Halo, CPU only**, in
 its own Kubernetes namespace: `systems-world-model-lab`.
 
-## Live microservice MVP — development passed, confirmation running
+## Live microservice MVP — known-case confirmation passed
 
 A separate live lab now runs checkout -> payment -> ledger -> PostgreSQL,
 with real HTTP/SQL traffic and bounded CPU, connection-pool and delay faults.
@@ -29,8 +29,25 @@ also achieved 100%, with fewer checks. Eight combined CPU-plus-delay incidents
 exposed incomplete diagnoses: both methods identified CPU but missed delay.
 Unknown-fault detection and autonomous repair remain unsupported.
 
-Fresh training seeds 10/11/12 are running before the reserved confirmation test.
-Do not equate development success with confirmed reliability. Read the
+Fresh seeds 10/11/12 passed the frozen confirmation gates on 120 held-out live
+incidents (360 model-incident evaluations), with increased load and severity:
+
+| Seed | Exact diagnosis | Median seconds | Forecast MSE / baseline |
+|---|---:|---:|---:|
+| 10 | 119/120 (99.2%) | 1.64 | 0.1981 / 0.2846 |
+| 11 | 120/120 (100%) | 2.39 | 0.2123 / 0.2853 |
+| 12 | 119/120 (99.2%) | 2.44 | 0.2015 / 0.2874 |
+
+Every model used three fixed inspections and had zero healthy false alarms.
+Seeds 10/12 confused one ledger-delay incident with pool contention. The checklist
+scored 119/120, using 2.25 checks on average. These small paired samples do not
+establish statistical superiority or production reliability. Combined-fault
+recognition remains unsupported. Training took 25m49s wall time; the live batch
+20m23s. The five lab deployments are running with frozen checkpoints; fault and
+load jobs have finished. A separate healthy investigation passed in 0.30 seconds.
+
+Read the [measured results](reports/MICROSERVICE_RESULTS.md),
+[confirmation evidence](reports/evidence/microservice/confirmation-summary.json), and
 [live research note](output/pdf/dreamerv3-live-microservice-study.pdf),
 [prospective protocol](reports/MICROSERVICE_PROTOCOL.md) and
 [operating guide](microservice/README.md).

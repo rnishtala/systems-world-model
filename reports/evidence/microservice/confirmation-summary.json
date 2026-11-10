@@ -1,0 +1,310 @@
+{
+  "physical_incidents": 120,
+  "calibration_incidents": 80,
+  "methods": {
+    "10": {
+      "evaluations": 120,
+      "classes": {
+        "0": {
+          "n": 30,
+          "accuracy": 1,
+          "accuracy_wilson95": [
+            0.8864866068260369,
+            1
+          ],
+          "false_fault_rate": 0,
+          "unresolved": 0
+        },
+        "1": {
+          "n": 30,
+          "accuracy": 1,
+          "accuracy_wilson95": [
+            0.8864866068260369,
+            1
+          ],
+          "false_fault_rate": 1,
+          "unresolved": 0
+        },
+        "2": {
+          "n": 30,
+          "accuracy": 1,
+          "accuracy_wilson95": [
+            0.8864866068260369,
+            1
+          ],
+          "false_fault_rate": 1,
+          "unresolved": 0
+        },
+        "3": {
+          "n": 30,
+          "accuracy": 0.9666666666666667,
+          "accuracy_wilson95": [
+            0.8332960900859135,
+            0.9940914096183872
+          ],
+          "false_fault_rate": 1,
+          "unresolved": 0
+        }
+      },
+      "accuracy": 0.9916666666666667,
+      "checks": 3,
+      "median_seconds": 1.6418205599766225,
+      "forecast_count": 360,
+      "prediction_mse": 0.19810345359960566,
+      "baseline_mse": 0.2845829702149625,
+      "per_sensor": {
+        "3": {
+          "model_mse": 0.18325473552939583,
+          "baseline_mse": 0.3253334194522779
+        },
+        "4": {
+          "model_mse": 2.667968678901705e-05,
+          "baseline_mse": 2.9243824301847794e-11
+        },
+        "5": {
+          "model_mse": 0.29624249612687903,
+          "baseline_mse": 0.3628357896934863
+        },
+        "6": {
+          "model_mse": 0.06975282929573696,
+          "baseline_mse": 0.015645984729311703
+        },
+        "7": {
+          "model_mse": 0.4183561149702462,
+          "baseline_mse": 0.7597291815644712
+        },
+        "8": {
+          "model_mse": 0.15394928757598966,
+          "baseline_mse": 0.24807799380079976
+        },
+        "9": {
+          "model_mse": 0.2651420320122028,
+          "baseline_mse": 0.28045842223514666
+        }
+      },
+      "triage_thresholds_met": true,
+      "prediction_thresholds_met": true
+    },
+    "11": {
+      "evaluations": 120,
+      "classes": {
+        "0": {
+          "n": 30,
+          "accuracy": 1,
+          "accuracy_wilson95": [
+            0.8864866068260369,
+            1
+          ],
+          "false_fault_rate": 0,
+          "unresolved": 0
+        },
+        "1": {
+          "n": 30,
+          "accuracy": 1,
+          "accuracy_wilson95": [
+            0.8864866068260369,
+            1
+          ],
+          "false_fault_rate": 1,
+          "unresolved": 0
+        },
+        "2": {
+          "n": 30,
+          "accuracy": 1,
+          "accuracy_wilson95": [
+            0.8864866068260369,
+            1
+          ],
+          "false_fault_rate": 1,
+          "unresolved": 0
+        },
+        "3": {
+          "n": 30,
+          "accuracy": 1,
+          "accuracy_wilson95": [
+            0.8864866068260369,
+            1
+          ],
+          "false_fault_rate": 1,
+          "unresolved": 0
+        }
+      },
+      "accuracy": 1,
+      "checks": 3,
+      "median_seconds": 2.3923598445253447,
+      "forecast_count": 360,
+      "prediction_mse": 0.21226335435624424,
+      "baseline_mse": 0.28532253763536236,
+      "per_sensor": {
+        "3": {
+          "model_mse": 0.1843333860021401,
+          "baseline_mse": 0.32533155266349717
+        },
+        "4": {
+          "model_mse": 1.6717815513461807e-05,
+          "baseline_mse": 3.524320977040957e-11
+        },
+        "5": {
+          "model_mse": 0.3073117611955279,
+          "baseline_mse": 0.36856953477677995
+        },
+        "6": {
+          "model_mse": 0.06380686290956425,
+          "baseline_mse": 0.015568000180792834
+        },
+        "7": {
+          "model_mse": 0.4609911748555058,
+          "baseline_mse": 0.7540635324191217
+        },
+        "8": {
+          "model_mse": 0.17373195141375963,
+          "baseline_mse": 0.24932853409407196
+        },
+        "9": {
+          "model_mse": 0.29565162630169867,
+          "baseline_mse": 0.28439660927802973
+        }
+      },
+      "triage_thresholds_met": true,
+      "prediction_thresholds_met": true
+    },
+    "12": {
+      "evaluations": 120,
+      "classes": {
+        "0": {
+          "n": 30,
+          "accuracy": 1,
+          "accuracy_wilson95": [
+            0.8864866068260369,
+            1
+          ],
+          "false_fault_rate": 0,
+          "unresolved": 0
+        },
+        "1": {
+          "n": 30,
+          "accuracy": 1,
+          "accuracy_wilson95": [
+            0.8864866068260369,
+            1
+          ],
+          "false_fault_rate": 1,
+          "unresolved": 0
+        },
+        "2": {
+          "n": 30,
+          "accuracy": 1,
+          "accuracy_wilson95": [
+            0.8864866068260369,
+            1
+          ],
+          "false_fault_rate": 1,
+          "unresolved": 0
+        },
+        "3": {
+          "n": 30,
+          "accuracy": 0.9666666666666667,
+          "accuracy_wilson95": [
+            0.8332960900859135,
+            0.9940914096183872
+          ],
+          "false_fault_rate": 1,
+          "unresolved": 0
+        }
+      },
+      "accuracy": 0.9916666666666667,
+      "checks": 3,
+      "median_seconds": 2.4414967668708414,
+      "forecast_count": 360,
+      "prediction_mse": 0.2014724784584676,
+      "baseline_mse": 0.2874092185492181,
+      "per_sensor": {
+        "3": {
+          "model_mse": 0.18397379754089616,
+          "baseline_mse": 0.3253320664162675
+        },
+        "4": {
+          "model_mse": 6.491290388400289e-05,
+          "baseline_mse": 5.1455411393278114e-11
+        },
+        "5": {
+          "model_mse": 0.2932254796375407,
+          "baseline_mse": 0.3718073495929414
+        },
+        "6": {
+          "model_mse": 0.07008717818970295,
+          "baseline_mse": 0.015873535514348912
+        },
+        "7": {
+          "model_mse": 0.4344354269341399,
+          "baseline_mse": 0.7582317589715188
+        },
+        "8": {
+          "model_mse": 0.15257413245793824,
+          "baseline_mse": 0.2532309441700167
+        },
+        "9": {
+          "model_mse": 0.27594642154517124,
+          "baseline_mse": 0.28738887512797756
+        }
+      },
+      "triage_thresholds_met": true,
+      "prediction_thresholds_met": true
+    },
+    "checklist": {
+      "evaluations": 120,
+      "classes": {
+        "0": {
+          "n": 30,
+          "accuracy": 0.9666666666666667,
+          "accuracy_wilson95": [
+            0.8332960900859135,
+            0.9940914096183872
+          ],
+          "false_fault_rate": 0.03333333333333333,
+          "unresolved": 0
+        },
+        "1": {
+          "n": 30,
+          "accuracy": 1,
+          "accuracy_wilson95": [
+            0.8864866068260369,
+            1
+          ],
+          "false_fault_rate": 1,
+          "unresolved": 0
+        },
+        "2": {
+          "n": 30,
+          "accuracy": 1,
+          "accuracy_wilson95": [
+            0.8864866068260369,
+            1
+          ],
+          "false_fault_rate": 1,
+          "unresolved": 0
+        },
+        "3": {
+          "n": 30,
+          "accuracy": 1,
+          "accuracy_wilson95": [
+            0.8864866068260369,
+            1
+          ],
+          "false_fault_rate": 1,
+          "unresolved": 0
+        }
+      },
+      "accuracy": 0.9916666666666667,
+      "checks": 2.25,
+      "median_seconds": 1.6009806104702875,
+      "forecast_count": 0,
+      "prediction_mse": null,
+      "baseline_mse": null,
+      "per_sensor": {},
+      "triage_thresholds_met": true,
+      "prediction_thresholds_met": false
+    }
+  },
+  "frozen_confirmation_passed": true
+}

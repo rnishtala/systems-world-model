@@ -1,0 +1,14 @@
+{"stage": "waiting_for_training", "updated_utc": "2026-11-10T02:57:55Z"}
+{"stage": "waiting", "updated_utc": "2026-11-10T02:57:56Z", "jobs": {"swm-confirm-10-v1": "running", "swm-confirm-11-v1": "running", "swm-confirm-12-v1": "running"}}
+{"stage": "waiting", "updated_utc": "2026-11-10T03:18:39Z", "jobs": {"swm-confirm-10-v1": "complete", "swm-confirm-11-v1": "complete", "swm-confirm-12-v1": "running"}}
+{"stage": "restoring_lab", "updated_utc": "2026-11-10T03:19:00Z"}
+{"stage": "live_confirmation", "updated_utc": "2026-11-10T03:19:57Z"}
+{"stage": "failed", "updated_utc": "2026-11-10T03:19:58Z", "error": "'items'"}
+Traceback (most recent call last):
+  File "/Users/rnishtala/src/systems-world-model/scripts/finish_micro_confirmation.py", line 59, in <module>
+    wait_jobs(['swm-live-confirm-v1'],3600)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rnishtala/src/systems-world-model/scripts/finish_micro_confirmation.py", line 28, in wait_jobs
+    jobs=json.loads(kube('get jobs '+' '.join(names)+' -o json'))['items']
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'items'
