@@ -7,7 +7,13 @@ The first POC trains the project-linked DreamerV3 implementation from scratch
 on a partially observed queue simulator. It runs on **AMD Halo, CPU only**, in
 its own Kubernetes namespace: `systems-world-model-lab`.
 
-## Latest experiment — complete fault-regime coverage
+## Latest experiment — clean measurement windows
+
+The warm-up measurement fix passed all window checks and healthy cases scored **10/10**. On 80 fresh incidents, Dreamer’s reward readout scored **77/80** and still failed the primary gate; its frozen latent-state classifier scored **80/80** as a secondary result. Independent confirmation was skipped under the prespecified rule. Baseline deployments are restored and no candidate was promoted. Next: prespecify the latent classifier as the candidate and validate it with an independent model and fresh incidents.
+
+[Results](reports/MEASUREMENT_WINDOW_RESULTS.md) · [Research note](output/pdf/dreamerv3-measurement-window.pdf)
+
+## Previous experiment — complete fault-regime coverage
 
 With all eight regimes represented in training, development Dreamer scored **77/80** fresh exact diagnoses versus **78/80** for telemetry. The primary gate **failed**. Independent confirmation was skipped as prespecified. The existing deployment is restored. This tests known regimes, not unseen combinations. Next: fix the warm-up measurement window, then run fresh validation before independent confirmation.
 

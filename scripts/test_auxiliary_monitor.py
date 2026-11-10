@@ -1,8 +1,8 @@
 """Regression checks for the two observed SSH monitoring failure modes."""
 import subprocess,unittest
 from unittest.mock import patch
-from scripts import finish_auxiliary_evaluation,finish_coverage
-WORKFLOWS=(finish_auxiliary_evaluation,finish_coverage)
+from scripts import finish_auxiliary_evaluation,finish_coverage,finish_window
+WORKFLOWS=(finish_auxiliary_evaluation,finish_coverage,finish_window)
 
 class MonitorTests(unittest.TestCase):
     def test_command_timeout_is_retried(self):

@@ -1,0 +1,9 @@
+test_data_port_cannot_reset_metrics (test_measurement_window.MeasurementWindowTests.test_data_port_cannot_reset_metrics) ... ok
+test_operator_uses_only_measurement_control_endpoint (test_measurement_window.MeasurementWindowTests.test_operator_uses_only_measurement_control_endpoint) ... ok
+test_reset_preserves_pool_connections_config_and_lease (test_measurement_window.MeasurementWindowTests.test_reset_preserves_pool_connections_config_and_lease) ... ok
+test_reset_rejects_nonempty_or_nonobject_body (test_measurement_window.MeasurementWindowTests.test_reset_rejects_nonempty_or_nonobject_body) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.027s
+
+OK

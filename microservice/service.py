@@ -40,6 +40,10 @@ def snapshot():
             'db_mean':mean('db'),'downstream_p95':p95('downstream'),
             'self_p95':p95('self_time')}
 
+def reset_metrics():
+    """Call only after all measurement requests have drained. Preserve fault lease/pool."""
+    with LOCK:ROWS.clear()
+
 def apply(config):
     global CONFIG,POOL,EXPIRES
     allowed=set(DEFAULT)|{'lease_seconds'}
@@ -91,11 +95,17 @@ class Handler(http.server.BaseHTTPRequestHandler):
         trace.append({'service':ROLE,'duration':elapsed,'error':bool(err)})
         self.reply({'trace':trace},503 if err else 200)
     def do_POST(self):
-        if not self.control or self.path!='/control':return self.reply({'error':'not found'},404)
+        if not self.control or self.path not in ('/control','/metrics/reset'):return self.reply({'error':'not found'},404)
         try:
             n=int(self.headers.get('Content-Length',0))
             if not 0<n<2048:raise ValueError('invalid body size')
-            apply(json.loads(self.rfile.read(n)));self.reply({'accepted':True})
+            body=json.loads(self.rfile.read(n))
+            if not isinstance(body,dict):raise ValueError('object required')
+            if self.path=='/metrics/reset':
+                if body:raise ValueError('empty object required')
+                reset_metrics()
+            else:apply(body)
+            self.reply({'accepted':True})
         except (ValueError,TypeError):self.reply({'error':'invalid bounded control'},400)
 
 if __name__=='__main__':

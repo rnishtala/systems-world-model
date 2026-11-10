@@ -1,6 +1,6 @@
 # Systems World Model: DreamerV3 triage MVP
 
-**Status:** With all eight regimes represented in training, development Dreamer scored **77/80** fresh exact diagnoses versus **78/80** for telemetry. The primary gate **failed**. Independent confirmation was skipped as prespecified. The existing deployment is restored. This tests known regimes, not unseen combinations. Next: fix the warm-up measurement window, then run fresh validation before independent confirmation. See [latest results](reports/COMPLETE_COVERAGE_RESULTS.md).
+**Status:** The warm-up measurement fix passed all window checks and healthy cases scored **10/10**. On 80 fresh incidents, Dreamer’s reward readout scored **77/80** and still failed the primary gate; its frozen latent-state classifier scored **80/80** as a secondary result. Independent confirmation was skipped under the prespecified rule. Baseline deployments are restored and no candidate was promoted. Next: prespecify the latent classifier as the candidate and validate it with an independent model and fresh incidents. See [latest results](reports/MEASUREMENT_WINDOW_RESULTS.md).
 
 Reuse the [DreamerV3 implementation](https://github.com/danijar/dreamerv3), train
 it on a small system-triage environment, and test whether its learned behavior

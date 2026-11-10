@@ -1,0 +1,146 @@
+{
+  "22": [
+    {
+      "episode": 17,
+      "fault": 5,
+      "target": 3,
+      "wrong": {
+        "dreamer_auxiliary": 1,
+        "raw": 1,
+        "dreamer_reward": 1
+      },
+      "last_metrics": {
+        "checkout": {
+          "service": "checkout",
+          "count": 36,
+          "timestamp": 1794344221.912833,
+          "error_rate": 0.0,
+          "latency_p95": 1.1299657840281725,
+          "cpu_mean": 0.0010014265555555555,
+          "pool_wait_p95": 0.0,
+          "db_mean": 0.0,
+          "downstream_p95": 1.1289624839555472,
+          "self_p95": 0.0010140908416360617
+        },
+        "payment": {
+          "service": "payment",
+          "count": 36,
+          "timestamp": 1794344221.9145024,
+          "error_rate": 0.0,
+          "latency_p95": 0.645977026084438,
+          "cpu_mean": 0.05744233833333334,
+          "pool_wait_p95": 0.0,
+          "db_mean": 0.0,
+          "downstream_p95": 0.38945029280148447,
+          "self_p95": 0.4112860672175884
+        },
+        "ledger": {
+          "service": "ledger",
+          "count": 36,
+          "timestamp": 1794344221.9160004,
+          "error_rate": 0.0,
+          "latency_p95": 0.1164144929498434,
+          "cpu_mean": 0.001002664638888889,
+          "pool_wait_p95": 0.06496654800139368,
+          "db_mean": 0.050991986153854266,
+          "downstream_p95": 0.0,
+          "self_p95": 0.1164144929498434
+        }
+      }
+    },
+    {
+      "episode": 63,
+      "fault": 7,
+      "target": 7,
+      "wrong": {
+        "dreamer_auxiliary": 5,
+        "dreamer_reward": 5
+      },
+      "last_metrics": {
+        "checkout": {
+          "service": "checkout",
+          "count": 36,
+          "timestamp": 1794344457.9270544,
+          "error_rate": 0.0,
+          "latency_p95": 1.502677729120478,
+          "cpu_mean": 0.0010017155833333333,
+          "pool_wait_p95": 0.0,
+          "db_mean": 0.0,
+          "downstream_p95": 1.5016736548859626,
+          "self_p95": 0.0010139723308384418
+        },
+        "payment": {
+          "service": "payment",
+          "count": 36,
+          "timestamp": 1794344457.9280062,
+          "error_rate": 0.0,
+          "latency_p95": 1.1598232151009142,
+          "cpu_mean": 0.07153283125,
+          "pool_wait_p95": 0.0,
+          "db_mean": 0.0,
+          "downstream_p95": 0.6654125459026545,
+          "self_p95": 0.589571945136413
+        },
+        "ledger": {
+          "service": "ledger",
+          "count": 36,
+          "timestamp": 1794344457.9289737,
+          "error_rate": 0.0,
+          "latency_p95": 0.5311236788984388,
+          "cpu_mean": 0.0010018074444444443,
+          "pool_wait_p95": 0.17158282198943198,
+          "db_mean": 0.04894019910393076,
+          "downstream_p95": 0.0,
+          "self_p95": 0.5311236788984388
+        }
+      }
+    },
+    {
+      "episode": 71,
+      "fault": 5,
+      "target": 3,
+      "wrong": {
+        "raw": 1,
+        "dreamer_reward": 1
+      },
+      "last_metrics": {
+        "checkout": {
+          "service": "checkout",
+          "count": 32,
+          "timestamp": 1794344498.670602,
+          "error_rate": 0.0,
+          "latency_p95": 1.0638680888805538,
+          "cpu_mean": 0.0010019224687499997,
+          "pool_wait_p95": 0.0,
+          "db_mean": 0.0,
+          "downstream_p95": 1.0628572630230337,
+          "self_p95": 0.0010124191176146269
+        },
+        "payment": {
+          "service": "payment",
+          "count": 32,
+          "timestamp": 1794344498.6723206,
+          "error_rate": 0.0,
+          "latency_p95": 0.8934774508234113,
+          "cpu_mean": 0.07431390959375,
+          "pool_wait_p95": 0.0,
+          "db_mean": 0.0,
+          "downstream_p95": 0.4499548471067101,
+          "self_p95": 0.7455398521851748
+        },
+        "ledger": {
+          "service": "ledger",
+          "count": 32,
+          "timestamp": 1794344498.6736555,
+          "error_rate": 0.0,
+          "latency_p95": 0.10188993695192039,
+          "cpu_mean": 0.0010016036874999999,
+          "pool_wait_p95": 0.058155623031780124,
+          "db_mean": 0.04273708847176749,
+          "downstream_p95": 0.0,
+          "self_p95": 0.10188993695192039
+        }
+      }
+    }
+  ]
+}

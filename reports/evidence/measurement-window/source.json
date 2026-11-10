@@ -1,0 +1,12 @@
+{
+  "file": "/tmp/swm-micro-v19.tar.gz",
+  "sha256": "e6a27c2ffda41ae56ffa905a037f1e644e8c14c6700518e6dd4540f39bd450eb",
+  "bytes": 484431,
+  "protocol_sha256": "310bef0d828303d9a9a224a0a6381cde059f67faaaee10c936fbab589f8c6d86",
+  "recorded_utc": "2026-11-10T20:54:37.640835+00:00",
+  "changed_runtime_files": {
+    "microservice/service.py": "48fb39e251c269df2b6a04d283996815a55321489cd644f78324ddbd5164e551",
+    "microservice/live.py": "30b45b4faf116364bc673c3f53cb02b40364ce1495112893fdd2f0206b033c68",
+    "microservice/auxiliary_evaluate.py": "e322308e981bacfee11db1a33751a76d4f86205642830e631ad02c85688bb995"
+  }
+}

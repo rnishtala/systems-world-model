@@ -14,6 +14,13 @@ def reset():
         except Exception as e:errors.append(str(e))
     if errors:raise RuntimeError('Reset failed: '+'; '.join(errors))
 
+def reset_measurement_window():
+    """Exclude completed warm-up batches without changing faults or connections.
+
+    Caller must await every warm-up request before opening this window.
+    """
+    for service in SERVICES:request(service,'/metrics/reset',{},True)
+
 def wait_ready(timeout=45):
     deadline=time.monotonic()+timeout
     while True:
