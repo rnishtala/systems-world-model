@@ -1,3 +1,9 @@
+> Status, 9 November 2026: live lab and development evaluation implemented.
+> The inspect-first world-model controller achieved 48/48 known-case diagnoses
+> across two development batches. Fresh-seed confirmation is running. Unknown
+> combined faults are not reliably recognized. See README and the live protocol
+> for current evidence; the original plan below is retained as design context.
+
 # Microservice triage MVP
 
 Proposed next stage after the confirmed synthetic POC. This document is a design;

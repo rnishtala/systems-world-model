@@ -1,0 +1,359 @@
+{
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "swm-inference",
+        "namespace": "systems-world-model-lab"
+      },
+      "spec": {
+        "replicas": 1,
+        "strategy": {
+          "type": "Recreate"
+        },
+        "selector": {
+          "matchLabels": {
+            "swm-component": "inference",
+            "swm-role": "agent"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "swm-component": "inference",
+              "swm-role": "agent"
+            }
+          },
+          "spec": {
+            "automountServiceAccountToken": false,
+            "securityContext": {
+              "runAsNonRoot": true,
+              "runAsUser": 1000,
+              "runAsGroup": 1000,
+              "fsGroup": 1000,
+              "seccompProfile": {
+                "type": "RuntimeDefault"
+              }
+            },
+            "nodeSelector": {
+              "kubernetes.io/hostname": "amd-halo"
+            },
+            "initContainers": [
+              {
+                "name": "unpack",
+                "image": "python:3.11-slim",
+                "command": [
+                  "sh",
+                  "-ec",
+                  "tar xzf /source/app.tar.gz -C /app"
+                ],
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "readOnlyRootFilesystem": true,
+                  "capabilities": {
+                    "drop": [
+                      "ALL"
+                    ]
+                  }
+                },
+                "resources": {
+                  "requests": {
+                    "cpu": "300m",
+                    "memory": "512Mi"
+                  },
+                  "limits": {
+                    "cpu": "2300m",
+                    "memory": "4Gi"
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "name": "source",
+                    "mountPath": "/source",
+                    "readOnly": true
+                  },
+                  {
+                    "name": "app",
+                    "mountPath": "/app"
+                  }
+                ]
+              }
+            ],
+            "containers": [
+              {
+                "name": "agent",
+                "image": "python:3.11-slim",
+                "command": [
+                  "/results/venv/bin/python",
+                  "-m",
+                  "microservice.agent",
+                  "--root",
+                  "/models",
+                  "--controller",
+                  "inspect-first",
+                  "--seeds",
+                  "10",
+                  "11",
+                  "12"
+                ],
+                "env": [
+                  {
+                    "name": "PYTHONPATH",
+                    "value": "/app:/app/deps:/results/work/upstream"
+                  },
+                  {
+                    "name": "DREAMER_SOURCE",
+                    "value": "/results/work/upstream"
+                  },
+                  {
+                    "name": "PYTHONDONTWRITEBYTECODE",
+                    "value": "1"
+                  },
+                  {
+                    "name": "PYTHONUNBUFFERED",
+                    "value": "1"
+                  },
+                  {
+                    "name": "OMP_NUM_THREADS",
+                    "value": "1"
+                  },
+                  {
+                    "name": "OPENBLAS_NUM_THREADS",
+                    "value": "1"
+                  },
+                  {
+                    "name": "XLA_FLAGS",
+                    "value": "--xla_cpu_multi_thread_eigen=false intra_op_parallelism_threads=1"
+                  },
+                  {
+                    "name": "XDG_CACHE_HOME",
+                    "value": "/tmp/cache"
+                  }
+                ],
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "readOnlyRootFilesystem": true,
+                  "capabilities": {
+                    "drop": [
+                      "ALL"
+                    ]
+                  }
+                },
+                "resources": {
+                  "requests": {
+                    "cpu": "300m",
+                    "memory": "512Mi"
+                  },
+                  "limits": {
+                    "cpu": "2300m",
+                    "memory": "4Gi"
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "name": "app",
+                    "mountPath": "/app",
+                    "readOnly": true
+                  },
+                  {
+                    "name": "results",
+                    "mountPath": "/models",
+                    "subPath": "micro-v2/confirmation",
+                    "readOnly": true
+                  },
+                  {
+                    "name": "results",
+                    "mountPath": "/results/venv",
+                    "subPath": "venv",
+                    "readOnly": true
+                  },
+                  {
+                    "name": "results",
+                    "mountPath": "/results/work/upstream",
+                    "subPath": "work/upstream",
+                    "readOnly": true
+                  },
+                  {
+                    "name": "tmp",
+                    "mountPath": "/tmp"
+                  }
+                ],
+                "readinessProbe": {
+                  "httpGet": {
+                    "path": "/health",
+                    "port": 8088
+                  },
+                  "periodSeconds": 3
+                }
+              }
+            ],
+            "volumes": [
+              {
+                "name": "source",
+                "configMap": {
+                  "name": "microservice-source-v10"
+                }
+              },
+              {
+                "name": "app",
+                "emptyDir": {
+                  "sizeLimit": "32Mi"
+                }
+              },
+              {
+                "name": "results",
+                "persistentVolumeClaim": {
+                  "claimName": "results",
+                  "readOnly": true
+                }
+              },
+              {
+                "name": "tmp",
+                "emptyDir": {
+                  "sizeLimit": "512Mi"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "swm-inference",
+        "namespace": "systems-world-model-lab"
+      },
+      "spec": {
+        "selector": {
+          "swm-component": "inference",
+          "swm-role": "agent"
+        },
+        "ports": [
+          {
+            "port": 8088
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "name": "swm-inference-api",
+        "namespace": "systems-world-model-lab"
+      },
+      "spec": {
+        "podSelector": {
+          "matchLabels": {
+            "swm-component": "inference"
+          }
+        },
+        "policyTypes": [
+          "Ingress"
+        ],
+        "ingress": [
+          {
+            "from": [
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-role": "runner"
+                  }
+                }
+              },
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-role": "agent"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 8088
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "name": "swm-runner-inference",
+        "namespace": "systems-world-model-lab"
+      },
+      "spec": {
+        "podSelector": {
+          "matchLabels": {
+            "swm-role": "runner"
+          }
+        },
+        "policyTypes": [
+          "Egress"
+        ],
+        "egress": [
+          {
+            "to": [
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-component": "inference"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 8088
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "name": "swm-agent-self-api",
+        "namespace": "systems-world-model-lab"
+      },
+      "spec": {
+        "podSelector": {
+          "matchLabels": {
+            "swm-role": "agent"
+          }
+        },
+        "policyTypes": [
+          "Egress"
+        ],
+        "egress": [
+          {
+            "to": [
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "swm-component": "inference"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 8088
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

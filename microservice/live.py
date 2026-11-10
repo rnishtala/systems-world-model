@@ -26,12 +26,13 @@ def wait_ready(timeout=45):
 
 
 def configure(fault,rng,shift=False):
+    if fault not in range(5):raise ValueError('Unknown experiment fault')
     reset()
     hold=float(rng.uniform(.03,.05))
     request('ledger','/control',{'db_hold':hold},True)
-    if fault==1:request('payment','/control',{'cpu_seconds':float(rng.uniform(.055,.075) if shift else rng.uniform(.025,.05))},True)
+    if fault in (1,4):request('payment','/control',{'cpu_seconds':float(rng.uniform(.055,.075) if shift else rng.uniform(.025,.05))},True)
     if fault==2:request('ledger','/control',{'pool_size':1,'db_hold':hold},True)
-    if fault==3:request('ledger','/control',{'delay_seconds':float(rng.uniform(.26,.34) if shift else rng.uniform(.12,.23)),'db_hold':hold},True)
+    if fault in (3,4):request('ledger','/control',{'delay_seconds':float(rng.uniform(.26,.34) if shift else rng.uniform(.12,.23)),'db_hold':hold},True)
     return int(rng.integers(7,10) if shift else rng.integers(4,7))
 
 def batch(n):

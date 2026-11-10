@@ -92,8 +92,12 @@
                   "microservice.agent",
                   "--root",
                   "/models",
+                  "--controller",
+                  "inspect-first",
                   "--seeds",
-                  "0"
+                  "10",
+                  "11",
+                  "12"
                 ],
                 "env": [
                   {
@@ -157,7 +161,7 @@
                   {
                     "name": "results",
                     "mountPath": "/models",
-                    "subPath": "micro-v1/development",
+                    "subPath": "micro-v2/confirmation",
                     "readOnly": true
                   },
                   {
@@ -190,7 +194,7 @@
               {
                 "name": "source",
                 "configMap": {
-                  "name": "microservice-source-v5"
+                  "name": "microservice-source-v10"
                 }
               },
               {

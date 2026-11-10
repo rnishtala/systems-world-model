@@ -7,6 +7,44 @@ The first POC trains the project-linked DreamerV3 implementation from scratch
 on a partially observed queue simulator. It runs on **AMD Halo, CPU only**, in
 its own Kubernetes namespace: `systems-world-model-lab`.
 
+## Live microservice MVP — development passed, confirmation running
+
+A separate live lab now runs checkout -> payment -> ledger -> PostgreSQL,
+with real HTTP/SQL traffic and bounded CPU, connection-pool and delay faults.
+All resources stay in `systems-world-model-lab`; no AutoSRE or BearBank services
+are used. This repository owns the code, manifests, models and evidence.
+
+| Live development condition | Accuracy | Inspections | Forecast MSE vs baseline |
+|---|---:|---:|---:|
+| Original features, native actor | 25% (24 cases) | 0 | No forecasts |
+| Physical scaling, native actor | 75% (24 cases) | 0.33 | 0.0570 vs 0.0483 |
+| Scaled model, inspect-first harness | 100% (24 cases) | 3 | 0.0439 vs 0.0790 |
+| Same harness, increased load/severity | 100% (24 cases) | 3 | 0.1963 vs 0.2780 |
+
+The evidence-first harness fixes CPU, pool and trace inspections, then uses the
+world model's imagined diagnostic rewards to choose a cause. **The diagnosis is
+learned; inspection order is fixed.** This is a harness change around trained
+DreamerV3, not an LLM fine-tune or a claim of learned active sensing. The checklist
+also achieved 100%, with fewer checks. Eight combined CPU-plus-delay incidents
+exposed incomplete diagnoses: both methods identified CPU but missed delay.
+Unknown-fault detection and autonomous repair remain unsupported.
+
+Fresh training seeds 10/11/12 are running before the reserved confirmation test.
+Do not equate development success with confirmed reliability. Read the
+[live research note](output/pdf/dreamerv3-live-microservice-study.pdf),
+[prospective protocol](reports/MICROSERVICE_PROTOCOL.md) and
+[operating guide](microservice/README.md).
+
+```mermaid
+flowchart LR
+    L[Isolated live microservices] --> T[Measured telemetry]
+    T --> W[Trained DreamerV3 world model]
+    H[Harness: CPU, pool, trace checks] --> L
+    W --> F[Forecast next inspected metrics]
+    W --> D[Rank known diagnoses by imagined reward]
+    D --> E[Compare with held-out incident truth]
+```
+
 ## Confirmed synthetic POC result
 
 **Passed the frozen confirmation gate on 9 November 2026.** Three freshly trained
@@ -51,8 +89,9 @@ The encoder, RSSM, prediction heads, imagination training, actor and critic are
 upstream code. The environment adapter and evaluation harness are ours. This
 is model training for a new environment, not LLM fine-tuning. No BayesNet is used.
 
-**Scope:** synthetic diagnosis only. No LLM calls, production telemetry, real
-fault injection, code repairs, or real-service recovery are claimed. The later
+**Historical queue-POC scope:** synthetic diagnosis only. The live extension
+above adds isolated fault injection, but no LLM calls, production telemetry,
+code repairs or real-service recovery. The later
 LLM resolution architecture remains in [MVP_PLAN.md](MVP_PLAN.md).
 
 ## Original baseline experiment

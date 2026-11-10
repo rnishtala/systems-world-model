@@ -7,13 +7,15 @@ import numpy as np
 ACTIONS=('wait','inspect_cpu','inspect_pool','inspect_trace','healthy','payment_cpu','ledger_pool','ledger_delay','escalate')
 GROUPS={1:(3,4),2:(5,6),3:(7,8,9)}
 DIAGNOSES=('healthy','payment:cpu_contention','ledger:pool_contention','ledger:downstream_delay')
+GAIN=np.array([10,1,1,3,3,10,4,10,10,10],np.float32)
+def normalize(vector):return np.clip(np.asarray(vector,np.float32)*GAIN,0,2).tolist()
 
 class Incident:
     def __init__(self,frames,fault,penalty=2):
         self.frames=frames;self.fault=fault;self.penalty=penalty;self.t=0;self.checks=0;self.done=False;self.choice=None
         self.seen=np.zeros(3,np.float32);self.values=np.zeros(7,np.float32)
     def observe(self):
-        f=self.frames[min(self.t,len(self.frames)-1)]['vector']
+        f=normalize(self.frames[min(self.t,len(self.frames)-1)]['vector'])
         return np.array([*f[:3],*self.values,*self.seen,self.t/7],np.float32)
     def step(self,action):
         if self.done:raise RuntimeError('episode ended')
@@ -21,7 +23,7 @@ class Incident:
         self.t+=1;reward=-.05
         if action in GROUPS:
             self.checks+=1;reward-=.15;self.seen[action-1]=1
-            f=self.frames[min(self.t,len(self.frames)-1)]['vector']
+            f=normalize(self.frames[min(self.t,len(self.frames)-1)]['vector'])
             for i in GROUPS[action]:self.values[i-3]=f[i]
         elif 4<=action<=7:
             self.choice=action-4;reward+=3 if self.choice==self.fault else -3;self.done=True

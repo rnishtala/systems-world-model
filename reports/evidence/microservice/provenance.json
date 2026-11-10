@@ -6,7 +6,10 @@
     "v2": "039e8b0bd5a99c7309379a73a659ecd51e5f6c8945698182a55dcfe0e7fa1708",
     "v3": "b5922db008326d5168ee67146fffeb195aeaf9aac0b6ad44615dc6924e16d30f",
     "v4": "b9c36a071ad1835dfa219dedb746c71c7112b1fda9085afd78babfb952318524",
-    "v5": "dbe40e0b82864993b5e20127a31986c0070e3f13aa954912271712703eadbd9a"
+    "v5": "dbe40e0b82864993b5e20127a31986c0070e3f13aa954912271712703eadbd9a",
+    "v8": "997e886aa885bcf6dc64d1e08ef6b361dc0d4fc413f668c66b1993da771628e2",
+    "v9": "11abdfd28d878585cef63f1ece2e7160d1aab02b23b11e4845ca3fac1a504648",
+    "v10": "73c21ddd5f21c9c656336dc929a1f5057caad395ebe4c4db64387562dc28fda8"
   },
   "service_source": "v1",
   "calibration_source": "v2",
@@ -16,6 +19,12 @@
     "Initial collection failed before any incident was recorded; v1a adds bounded readiness retries.",
     "All 80 calibration incidents completed every real request successfully.",
     "Inference pod mounts checkpoints/runtime/upstream only, not calibration data.",
-    "No existing BearBank or AutoSRE workload is used or changed."
-  ]
+    "No existing BearBank or AutoSRE workload is used or changed.",
+    "v2 physical scaling preserves calibration; v3 changes only inference harness. Separate fresh development seeds, no confirmation claim."
+  ],
+  "development_v2_training_source": "v7",
+  "development_v2_native_source": "v8",
+  "development_v3_inspect_first_source": "v9",
+  "confirmation_source": "v10",
+  "confirmation_controller": "inspect-first"
 }

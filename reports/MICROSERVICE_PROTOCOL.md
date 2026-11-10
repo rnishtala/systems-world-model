@@ -88,3 +88,48 @@ Shared fault setup/warmup is recorded separately; later methods also have a
 since-shared-injection timestamp that includes time spent by earlier methods.
 Any unexpected request failure or expired fault window invalidates the trial
 rather than silently scoring it under the intended fault label.
+
+## Development v2: physical observation scaling
+
+The first 100,000-step model mostly chose payment CPU without any inspections
+in the live development batch. Original continuous features were often 0.01–0.1,
+while observation masks were 0/1. Test a scaling correction, with unchanged data,
+architecture, rewards and step budget. Scale latency/trace readings by 10, CPU
+readings by 3, pool-wait by 10 and database duration by 4; cap normalized readings
+at 2. These correspond to physical reference units (e.g. 300 ms latency and
+50 ms CPU/request), not fault labels. Calibration files stay immutable; apply the
+same transformation in training and live inference. Checklist thresholds change
+units only, preserving their physical values. This is a hypothesis about the
+failure, not an established causal conclusion. Repeat development on fresh
+incident seeds before any confirmation.
+
+## Development v3: evidence-first harness comparison
+
+Development v2 achieved 18/24 live diagnoses; all six ledger-delay cases failed.
+A forced-three-inspection probe on calibration incidents achieved 80/80 correct
+world-model reward rankings (not held-out evidence). Test the frozen v2 model
+with a clearly separate inspect-first controller: CPU, pool, trace, then select
+the highest imagined diagnostic reward. The harness fixes inspection order and
+budget; the learned world model supplies the diagnosis without expert thresholds.
+This is not native Dreamer action selection or evidence of learned active sensing.
+Preserve native results. Use fresh development seeds 2600 and 2700 (shifted).
+Keep diagnosis and forecast gates unchanged. Confirmation, if warranted, must
+explicitly identify this harness and its three fixed checks.
+
+## Confirmation freeze — 9 November 2026, 21:52 EST
+
+Both v3 development batches passed: 24/24 diagnoses at ordinary load and 24/24
+at shifted load. Forecast MSE was 0.04393 versus 0.07904 baseline, and 0.19631
+versus 0.27800 respectively. Freeze physical-v2 scaling, 100,000 training steps,
+the original calibration dataset and the inspect-first harness. Train seeds
+10/11/12 from scratch using source v10 (SHA256
+73c21ddd5f21c9c656336dc929a1f5057caad395ebe4c4db64387562dc28fda8).
+The new unknown-fault runner option does not change training or known-case
+evaluation. Confirmation uses the previously reserved seed 4200, shifted load,
+30 incidents/class; no changes based on confirmation outcomes.
+
+This confirmation tests a learned world-model diagnostic with three fixed
+inspections, not the original native actor gate. This explicit change of
+controller is motivated by development results and does not revise numerical
+diagnosis or prediction thresholds. Unknown-fault detection remains unsupported:
+the inspect-first controller always returns one of four known classes.

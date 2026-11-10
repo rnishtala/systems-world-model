@@ -3,8 +3,8 @@ import argparse,http.server,json,os,sys,threading,traceback,time,uuid
 import numpy as np
 sys.path.insert(0,os.environ.get('DREAMER_SOURCE','/results/work/upstream'))
 import elements,jax,jax.numpy as jnp,ninjax as nj
-from dreamerv3 import main as upstream
 from experiment.particles import ParticleActor
+from dreamerv3 import main as upstream
 
 class ShapeEnv:
     def __init__(self):
@@ -13,7 +13,8 @@ class ShapeEnv:
     def close(self):pass
 
 class Model:
-    def __init__(self,root,seed):
+    def __init__(self,root,seed,controller="native"):
+        self.controller=controller
         c=elements.Config.load(elements.Path(root+f'/train-{seed}/config.yaml')).update(logdir=f'/tmp/inference-{seed}')
         upstream.make_env=lambda config,index,**kw:upstream.wrap_env(ShapeEnv(),config)
         self.agent=upstream.make_agent(c);cp=elements.Checkpoint(elements.Path(root+f'/final-{seed}'));cp.agent=self.agent;cp.load(keys=['agent'])
@@ -43,7 +44,16 @@ class Model:
             self.carry=self.sessions[incident_id][0]
         obs=dict(vector=np.array([vector],np.float32),reward=np.array([reward],np.float32),is_first=np.array([first]),is_last=np.array([False]),is_terminal=np.array([False]))
         self.carry,acts,_=self.policy.policy(self.carry,obs,mode='eval');action=int(acts['action'][0]);self.calls+=1
-        result={'action':action}
+        if self.controller=='inspect-first':
+            # Fixed evidence acquisition, learned diagnosis; no expert thresholds.
+            missing=[i+1 for i in range(3) if not vector[10+i]]
+            with jax.transfer_guard('allow'):
+                dyn=self.agent._stack(self.carry)[1]
+                scores=np.asarray(self.rewards(self.agent.params,dyn,jax.random.PRNGKey(self.calls+900)))
+            action=missing[0] if missing else int(scores.argmax())+4
+            previous=[jax.device_put(np.int32(action),ref.sharding) for ref in self.carry[-1]['action']]
+            self.carry=(*self.carry[:-1],{**self.carry[-1],'action':previous})
+        result={'action':action,'controller':self.controller}
         with jax.transfer_guard('allow'):
             dyn=self.agent._stack(self.carry)[1];key=jax.random.PRNGKey(self.calls+900)
             if action in (1,2,3):result['predicted_next_vector']=np.asarray(self.forecast(self.agent.params,dyn,np.int32(action),key)).tolist()
@@ -53,8 +63,8 @@ class Model:
         return result
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--root',required=True);p.add_argument('--seeds',type=int,nargs='+',required=True);a=p.parse_args()
-    models={s:Model(a.root,s) for s in a.seeds};lock=threading.Lock()
+    p=argparse.ArgumentParser();p.add_argument('--root',required=True);p.add_argument('--seeds',type=int,nargs='+',required=True);p.add_argument('--controller',choices=['native','inspect-first'],default='native');a=p.parse_args()
+    models={s:Model(a.root,s,a.controller) for s in a.seeds};lock=threading.Lock()
     for model in models.values():
         model.act([0.]*14,True,0.,str(uuid.uuid4()))
         with jax.transfer_guard('allow'):

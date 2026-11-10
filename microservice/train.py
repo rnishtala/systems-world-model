@@ -17,5 +17,5 @@ args=elements.Config(**c.run,replica=0,replicas=1,logdir=c.logdir,batch_size=c.b
 c.save(elements.Path(c.logdir)/'config.yaml');start=time.time()
 embodied.run.train(build,lambda:upstream.make_replay(c,'replay'),lambda index:upstream.make_env(c,index),lambda replay,mode:upstream.make_stream(c,replay,mode),lambda:upstream.make_logger(c),args)
 cp=elements.Checkpoint(elements.Path(out/f'final-{a.seed}'));cp.agent=captured['agent'];cp.save()
-result=dict(seed=a.seed,steps=a.steps,seconds=time.time()-start,calibration_sha256=hashlib.sha256(Path(a.data).read_bytes()).hexdigest(),coverage=captured['coverage'].stats,scope='Empirical surrogate training; no live test episodes used.')
+result=dict(observation_version='physical-v2',seed=a.seed,steps=a.steps,seconds=time.time()-start,calibration_sha256=hashlib.sha256(Path(a.data).read_bytes()).hexdigest(),coverage=captured['coverage'].stats,scope='Empirical surrogate training; no live test episodes used.')
 (out/f'training-{a.seed}.json').write_text(json.dumps(result,indent=2));print('TRAINING_COMPLETE',json.dumps(result),flush=True)
