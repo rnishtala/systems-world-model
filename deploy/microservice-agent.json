@@ -93,7 +93,7 @@
                   "--root",
                   "/models",
                   "--controller",
-                  "inspect-first",
+                  "inspect-guarded",
                   "--seeds",
                   "10",
                   "11",
@@ -194,7 +194,7 @@
               {
                 "name": "source",
                 "configMap": {
-                  "name": "microservice-source-v10"
+                  "name": "microservice-source-v11"
                 }
               },
               {

@@ -1,7 +1,7 @@
 """Read-only model serving with no calibration data or control-plane credentials."""
 import argparse,json
 from pathlib import Path
-p=argparse.ArgumentParser();p.add_argument('--source',default='microservice-source-v3');p.add_argument('--model-dir',default='micro-v1/development');p.add_argument('--seeds',type=int,nargs='+',default=[0]);p.add_argument('--controller',choices=['native','inspect-first'],default='native');a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--source',default='microservice-source-v3');p.add_argument('--model-dir',default='micro-v1/development');p.add_argument('--seeds',type=int,nargs='+',default=[0]);p.add_argument('--controller',choices=['native','inspect-first','inspect-guarded'],default='native');a=p.parse_args()
 ns='systems-world-model-lab';security={'allowPrivilegeEscalation':False,'readOnlyRootFilesystem':True,'capabilities':{'drop':['ALL']}}
 resources={'requests':{'cpu':'300m','memory':'512Mi'},'limits':{'cpu':'2300m','memory':'4Gi'}}
 mounts=[{'name':'app','mountPath':'/app','readOnly':True},{'name':'results','mountPath':'/models','subPath':a.model_dir,'readOnly':True},{'name':'results','mountPath':'/results/venv','subPath':'venv','readOnly':True},{'name':'results','mountPath':'/results/work/upstream','subPath':'work/upstream','readOnly':True},{'name':'tmp','mountPath':'/tmp'}]

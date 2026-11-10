@@ -56,3 +56,17 @@ change, not retraining or learned inspection selection. Responses identify the
 controller, and live traces retain it. Neither mode has established reliable
 unknown-fault detection. `evaluate --unknown` separately tests combined CPU and
 ledger delay, never included in calibration or known-class acceptance.
+
+`inspect-guarded` is an experimental alternative. It compares the three
+pre-inspection forecasts with returned telemetry, then rejects a candidate
+known diagnosis when any residual exceeds its fitted class/sensor envelope.
+`microservice/calibration/predictive-guard-v1.json` contains fitted parameters,
+not raw incident examples. Imagined rewards are not confidence probabilities.
+The earlier confirmation dataset is explicitly reused as calibration for this
+new study; only the fresh pilot can validate the guard. See
+[UNKNOWN_FAULT_PROTOCOL.md](../reports/UNKNOWN_FAULT_PROTOCOL.md).
+
+Combined fault controls support `--unknown-kind cpu-delay`, `cpu-pool` and
+`pool-delay` in the isolated evaluator. No such control is exposed to the agent.
+`scripts/finish_guard_pilot.py` collects the fresh evidence and restores the
+confirmed `inspect-first` deployment when the guard fails its fixed gates.

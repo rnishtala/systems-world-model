@@ -4,6 +4,8 @@ import numpy as np
 sys.path.insert(0,os.environ.get('DREAMER_SOURCE','/results/work/upstream'))
 import elements,jax,jax.numpy as jnp,ninjax as nj
 from experiment.particles import ParticleActor
+from microservice.guard import assess, GROUPS
+from pathlib import Path
 from dreamerv3 import main as upstream
 
 class ShapeEnv:
@@ -15,6 +17,8 @@ class ShapeEnv:
 class Model:
     def __init__(self,root,seed,controller="native"):
         self.controller=controller
+        self.guard=json.loads((Path(__file__).parent/"calibration/predictive-guard-v1.json").read_text()) if controller=="inspect-guarded" else None
+        self.seed=seed
         c=elements.Config.load(elements.Path(root+f'/train-{seed}/config.yaml')).update(logdir=f'/tmp/inference-{seed}')
         upstream.make_env=lambda config,index,**kw:upstream.wrap_env(ShapeEnv(),config)
         self.agent=upstream.make_agent(c);cp=elements.Checkpoint(elements.Path(root+f'/final-{seed}'));cp.agent=self.agent;cp.load(keys=['agent'])
@@ -38,32 +42,41 @@ class Model:
         if first:
             if incident_id in self.sessions:raise ValueError('incident already active')
             if len(self.sessions)>=16:raise ValueError('too many active incidents')
-            self.carry=self.policy.init_policy(1)
+            self.carry=self.policy.init_policy(1);history=[];pending=None
         else:
             if incident_id not in self.sessions:raise ValueError('start a new incident')
-            self.carry=self.sessions[incident_id][0]
+            self.carry,_,history,pending=self.sessions[incident_id]
+        if pending:
+            history=history+[{**pending,"actual":[vector[i] for i in pending["indices"]]}]
         obs=dict(vector=np.array([vector],np.float32),reward=np.array([reward],np.float32),is_first=np.array([first]),is_last=np.array([False]),is_terminal=np.array([False]))
         self.carry,acts,_=self.policy.policy(self.carry,obs,mode='eval');action=int(acts['action'][0]);self.calls+=1
-        if self.controller=='inspect-first':
+        if self.controller in ('inspect-first','inspect-guarded'):
             # Fixed evidence acquisition, learned diagnosis; no expert thresholds.
             missing=[i+1 for i in range(3) if not vector[10+i]]
             with jax.transfer_guard('allow'):
                 dyn=self.agent._stack(self.carry)[1]
                 scores=np.asarray(self.rewards(self.agent.params,dyn,jax.random.PRNGKey(self.calls+900)))
             action=missing[0] if missing else int(scores.argmax())+4
+            guard_result=assess(self.guard,self.seed,action-4,history) if not missing and self.guard else None
+            if guard_result and guard_result['escalate']:action=8
             previous=[jax.device_put(np.int32(action),ref.sharding) for ref in self.carry[-1]['action']]
             self.carry=(*self.carry[:-1],{**self.carry[-1],'action':previous})
         result={'action':action,'controller':self.controller}
+        if self.guard and not missing:
+            result['guard']=guard_result;result['predicted_diagnosis_rewards']=scores.tolist()
         with jax.transfer_guard('allow'):
             dyn=self.agent._stack(self.carry)[1];key=jax.random.PRNGKey(self.calls+900)
             if action in (1,2,3):result['predicted_next_vector']=np.asarray(self.forecast(self.agent.params,dyn,np.int32(action),key)).tolist()
             if 4<=action<=7:result['predicted_diagnosis_rewards']=np.asarray(self.rewards(self.agent.params,dyn,key)).tolist()
-        if action<4:self.sessions[incident_id]=(self.carry,time.monotonic())
+        if action in GROUPS:
+            indices=list(GROUPS[action]);pending={'indices':indices,'predicted':[result['predicted_next_vector'][i] for i in indices]}
+        else:pending=None
+        if action<4:self.sessions[incident_id]=(self.carry,time.monotonic(),history,pending)
         else:self.sessions.pop(incident_id,None)
         return result
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--root',required=True);p.add_argument('--seeds',type=int,nargs='+',required=True);p.add_argument('--controller',choices=['native','inspect-first'],default='native');a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--root',required=True);p.add_argument('--seeds',type=int,nargs='+',required=True);p.add_argument('--controller',choices=['native','inspect-first','inspect-guarded'],default='native');a=p.parse_args()
     models={s:Model(a.root,s,a.controller) for s in a.seeds};lock=threading.Lock()
     for model in models.values():
         model.act([0.]*14,True,0.,str(uuid.uuid4()))

@@ -35,10 +35,10 @@ def checklist(v):
     return 7 if v[8]>.35 else 4
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--out',required=True);p.add_argument('--seeds',type=int,nargs='+',default=[0]);p.add_argument('--episodes',type=int,default=6);p.add_argument('--scenario-seed',type=int,default=2200);p.add_argument('--shift',action='store_true');p.add_argument('--unknown',action='store_true',help='Separate combined CPU+delay stress test; excluded from known-class acceptance');a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--out',required=True);p.add_argument('--seeds',type=int,nargs='+',default=[0]);p.add_argument('--episodes',type=int,default=6);p.add_argument('--scenario-seed',type=int,default=2200);p.add_argument('--shift',action='store_true');p.add_argument('--unknown',action='store_true',help='Separate combined CPU+delay stress test; excluded from known-class acceptance');p.add_argument('--unknown-kind',choices=['cpu-delay','cpu-pool','pool-delay'],default='cpu-delay');a=p.parse_args()
     path=Path(a.out)
     if path.exists():raise SystemExit('Refusing to replace evidence')
-    path.parent.mkdir(parents=True,exist_ok=True);rng=np.random.default_rng(a.scenario_seed);faults=np.full(a.episodes,4) if a.unknown else np.tile(np.arange(4),a.episodes);rng.shuffle(faults)
+    path.parent.mkdir(parents=True,exist_ok=True);rng=np.random.default_rng(a.scenario_seed);faults=np.full(a.episodes,{'cpu-delay':4,'cpu-pool':5,'pool-delay':6}[a.unknown_kind]) if a.unknown else np.tile(np.arange(4),a.episodes);rng.shuffle(faults)
     wait_ready()
     try:
         with path.open('x') as f:
@@ -55,9 +55,9 @@ def main():
                         if time.monotonic()-incident_started>35:raise RuntimeError('Incident exceeds safe fault lease window')
                         r={'action':checklist(v)} if method=='checklist' else agent(method,v,first,reward,incident_id)
                         if time.monotonic()-incident_started>35:raise RuntimeError('Inference exceeded the safe fault lease window')
-                        action=r['action'];entry={'observation':v,'action':ACTIONS[action],'controller':r.get('controller','checklist')};trace.append(entry)
+                        action=r['action'];entry={'observation':v,'action':ACTIONS[action],'controller':r.get('controller','checklist'),'guard':r.get('guard')};trace.append(entry)
                         if 4<=action<=7:diagnosis=action-4;ranking=r.get('predicted_diagnosis_rewards');break
-                        if action==8:break
+                        if action==8:ranking=r.get('predicted_diagnosis_rewards');break
                         state.t+=1;nextv=state.observe(action)
                         if 'predicted_next_vector' in r:
                             indices=list(GROUPS[action]);predictions.append({'action':action,'indices':indices,'predicted':[r['predicted_next_vector'][i] for i in indices],'actual':[nextv[i] for i in indices]})
