@@ -1,0 +1,27 @@
+[
+  {
+    "deployment": "swm-checkout",
+    "available": 1,
+    "source": "microservice-source-v1"
+  },
+  {
+    "deployment": "swm-payment",
+    "available": 1,
+    "source": "microservice-source-v1"
+  },
+  {
+    "deployment": "swm-ledger",
+    "available": 1,
+    "source": "microservice-source-v1"
+  },
+  {
+    "deployment": "swm-postgres",
+    "available": 1,
+    "source": null
+  },
+  {
+    "deployment": "swm-inference",
+    "available": 1,
+    "source": "microservice-source-v10"
+  }
+]

@@ -1,0 +1,201 @@
+{
+  "methods": {
+    "dreamer_auxiliary": {
+      "correct": 80,
+      "n": 80,
+      "families": {
+        "0": {
+          "n": 10,
+          "correct": 10
+        },
+        "1": {
+          "n": 10,
+          "correct": 10
+        },
+        "2": {
+          "n": 10,
+          "correct": 10
+        },
+        "3": {
+          "n": 10,
+          "correct": 10
+        },
+        "4": {
+          "n": 10,
+          "correct": 10
+        },
+        "5": {
+          "n": 10,
+          "correct": 10
+        },
+        "6": {
+          "n": 10,
+          "correct": 10
+        },
+        "7": {
+          "n": 10,
+          "correct": 10
+        }
+      },
+      "gate_passed": true
+    },
+    "raw": {
+      "correct": 78,
+      "n": 80,
+      "families": {
+        "0": {
+          "n": 10,
+          "correct": 10
+        },
+        "1": {
+          "n": 10,
+          "correct": 10
+        },
+        "2": {
+          "n": 10,
+          "correct": 10
+        },
+        "3": {
+          "n": 10,
+          "correct": 10
+        },
+        "4": {
+          "n": 10,
+          "correct": 10
+        },
+        "5": {
+          "n": 10,
+          "correct": 8
+        },
+        "6": {
+          "n": 10,
+          "correct": 10
+        },
+        "7": {
+          "n": 10,
+          "correct": 10
+        }
+      },
+      "gate_passed": false
+    },
+    "latent": {
+      "correct": 80,
+      "n": 80,
+      "families": {
+        "0": {
+          "n": 10,
+          "correct": 10
+        },
+        "1": {
+          "n": 10,
+          "correct": 10
+        },
+        "2": {
+          "n": 10,
+          "correct": 10
+        },
+        "3": {
+          "n": 10,
+          "correct": 10
+        },
+        "4": {
+          "n": 10,
+          "correct": 10
+        },
+        "5": {
+          "n": 10,
+          "correct": 10
+        },
+        "6": {
+          "n": 10,
+          "correct": 10
+        },
+        "7": {
+          "n": 10,
+          "correct": 10
+        }
+      },
+      "gate_passed": true
+    },
+    "shuffled_latent": {
+      "correct": 12,
+      "n": 80,
+      "families": {
+        "0": {
+          "n": 10,
+          "correct": 2
+        },
+        "1": {
+          "n": 10,
+          "correct": 1
+        },
+        "2": {
+          "n": 10,
+          "correct": 0
+        },
+        "3": {
+          "n": 10,
+          "correct": 3
+        },
+        "4": {
+          "n": 10,
+          "correct": 2
+        },
+        "5": {
+          "n": 10,
+          "correct": 1
+        },
+        "6": {
+          "n": 10,
+          "correct": 2
+        },
+        "7": {
+          "n": 10,
+          "correct": 1
+        }
+      },
+      "gate_passed": false
+    },
+    "dreamer_reward": {
+      "correct": 70,
+      "n": 80,
+      "families": {
+        "0": {
+          "n": 10,
+          "correct": 10
+        },
+        "1": {
+          "n": 10,
+          "correct": 10
+        },
+        "2": {
+          "n": 10,
+          "correct": 9
+        },
+        "3": {
+          "n": 10,
+          "correct": 10
+        },
+        "4": {
+          "n": 10,
+          "correct": 10
+        },
+        "5": {
+          "n": 10,
+          "correct": 1
+        },
+        "6": {
+          "n": 10,
+          "correct": 10
+        },
+        "7": {
+          "n": 10,
+          "correct": 10
+        }
+      },
+      "gate_passed": false
+    }
+  },
+  "checkpoint_unchanged": true,
+  "scope": "One auxiliary-supervised development model, one fresh 80-incident batch; not independent confirmation."
+}

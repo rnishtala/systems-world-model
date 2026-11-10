@@ -7,7 +7,13 @@ The first POC trains the project-linked DreamerV3 implementation from scratch
 on a partially observed queue simulator. It runs on **AMD Halo, CPU only**, in
 its own Kubernetes namespace: `systems-world-model-lab`.
 
-## Latest experiment — clean measurement windows
+## Latest experiment — independent learned-state confirmation
+
+Independent confirmation **passed: 80/80 exact diagnoses**, including **10/10 in each of eight known fault families**, using a classifier over an independently trained Dreamer state (model seed 23, scenario seed 6801). Raw telemetry scored 78/80; imagined-reward diagnosis scored 70/80. This validates a limited known-regime POC, not production reliability or autonomous resolution. Baseline deployments are restored; the candidate is not promoted. Next: integrate the frozen classifier into the inference-only API and verify parity and fresh live behavior.
+
+[Results](reports/LATENT_CONFIRMATION_RESULTS.md) · [Research note](output/pdf/dreamerv3-latent-confirmation.pdf)
+
+## Previous experiment — clean measurement windows
 
 The warm-up measurement fix passed all window checks and healthy cases scored **10/10**. On 80 fresh incidents, Dreamer’s reward readout scored **77/80** and still failed the primary gate; its frozen latent-state classifier scored **80/80** as a secondary result. Independent confirmation was skipped under the prespecified rule. Baseline deployments are restored and no candidate was promoted. Next: prespecify the latent classifier as the candidate and validate it with an independent model and fresh incidents.
 
