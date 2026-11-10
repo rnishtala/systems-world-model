@@ -1,0 +1,580 @@
+{
+  "chosen": {
+    "rank": 0,
+    "latent_weight": 0,
+    "penalty": 0.01,
+    "score": 0.9083333333333333,
+    "counts": {
+      "stratified": [
+        140,
+        140
+      ],
+      "held_pair": [
+        49,
+        60
+      ]
+    }
+  },
+  "candidates": [
+    {
+      "rank": 0,
+      "latent_weight": 0,
+      "penalty": 0.01,
+      "score": 0.9083333333333333,
+      "counts": {
+        "stratified": [
+          140,
+          140
+        ],
+        "held_pair": [
+          49,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 0,
+      "latent_weight": 0,
+      "penalty": 0.1,
+      "score": 0.8238095238095238,
+      "counts": {
+        "stratified": [
+          135,
+          140
+        ],
+        "held_pair": [
+          41,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 0,
+      "latent_weight": 0,
+      "penalty": 1.0,
+      "score": 0.5476190476190477,
+      "counts": {
+        "stratified": [
+          109,
+          140
+        ],
+        "held_pair": [
+          19,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 0,
+      "latent_weight": 0,
+      "penalty": 10.0,
+      "score": 0.21785714285714286,
+      "counts": {
+        "stratified": [
+          61,
+          140
+        ],
+        "held_pair": [
+          0,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 0,
+      "latent_weight": 0,
+      "penalty": 100.0,
+      "score": 0.07142857142857142,
+      "counts": {
+        "stratified": [
+          20,
+          140
+        ],
+        "held_pair": [
+          0,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 8,
+      "latent_weight": 0.1,
+      "penalty": 0.01,
+      "score": 0.9,
+      "counts": {
+        "stratified": [
+          140,
+          140
+        ],
+        "held_pair": [
+          48,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 8,
+      "latent_weight": 0.1,
+      "penalty": 0.1,
+      "score": 0.819047619047619,
+      "counts": {
+        "stratified": [
+          136,
+          140
+        ],
+        "held_pair": [
+          40,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 8,
+      "latent_weight": 0.1,
+      "penalty": 1.0,
+      "score": 0.5476190476190477,
+      "counts": {
+        "stratified": [
+          109,
+          140
+        ],
+        "held_pair": [
+          19,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 8,
+      "latent_weight": 0.1,
+      "penalty": 10.0,
+      "score": 0.21785714285714286,
+      "counts": {
+        "stratified": [
+          61,
+          140
+        ],
+        "held_pair": [
+          0,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 8,
+      "latent_weight": 0.1,
+      "penalty": 100.0,
+      "score": 0.07142857142857142,
+      "counts": {
+        "stratified": [
+          20,
+          140
+        ],
+        "held_pair": [
+          0,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 8,
+      "latent_weight": 1.0,
+      "penalty": 0.01,
+      "score": 0.625,
+      "counts": {
+        "stratified": [
+          140,
+          140
+        ],
+        "held_pair": [
+          15,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 8,
+      "latent_weight": 1.0,
+      "penalty": 0.1,
+      "score": 0.6226190476190476,
+      "counts": {
+        "stratified": [
+          137,
+          140
+        ],
+        "held_pair": [
+          16,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 8,
+      "latent_weight": 1.0,
+      "penalty": 1.0,
+      "score": 0.45,
+      "counts": {
+        "stratified": [
+          126,
+          140
+        ],
+        "held_pair": [
+          0,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 8,
+      "latent_weight": 1.0,
+      "penalty": 10.0,
+      "score": 0.2714285714285714,
+      "counts": {
+        "stratified": [
+          76,
+          140
+        ],
+        "held_pair": [
+          0,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 8,
+      "latent_weight": 1.0,
+      "penalty": 100.0,
+      "score": 0.07142857142857142,
+      "counts": {
+        "stratified": [
+          20,
+          140
+        ],
+        "held_pair": [
+          0,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 16,
+      "latent_weight": 0.1,
+      "penalty": 0.01,
+      "score": 0.8916666666666666,
+      "counts": {
+        "stratified": [
+          140,
+          140
+        ],
+        "held_pair": [
+          47,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 16,
+      "latent_weight": 0.1,
+      "penalty": 0.1,
+      "score": 0.819047619047619,
+      "counts": {
+        "stratified": [
+          136,
+          140
+        ],
+        "held_pair": [
+          40,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 16,
+      "latent_weight": 0.1,
+      "penalty": 1.0,
+      "score": 0.5476190476190477,
+      "counts": {
+        "stratified": [
+          109,
+          140
+        ],
+        "held_pair": [
+          19,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 16,
+      "latent_weight": 0.1,
+      "penalty": 10.0,
+      "score": 0.21785714285714286,
+      "counts": {
+        "stratified": [
+          61,
+          140
+        ],
+        "held_pair": [
+          0,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 16,
+      "latent_weight": 0.1,
+      "penalty": 100.0,
+      "score": 0.07142857142857142,
+      "counts": {
+        "stratified": [
+          20,
+          140
+        ],
+        "held_pair": [
+          0,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 16,
+      "latent_weight": 1.0,
+      "penalty": 0.01,
+      "score": 0.65,
+      "counts": {
+        "stratified": [
+          140,
+          140
+        ],
+        "held_pair": [
+          18,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 16,
+      "latent_weight": 1.0,
+      "penalty": 0.1,
+      "score": 0.5761904761904763,
+      "counts": {
+        "stratified": [
+          138,
+          140
+        ],
+        "held_pair": [
+          10,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 16,
+      "latent_weight": 1.0,
+      "penalty": 1.0,
+      "score": 0.44642857142857145,
+      "counts": {
+        "stratified": [
+          125,
+          140
+        ],
+        "held_pair": [
+          0,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 16,
+      "latent_weight": 1.0,
+      "penalty": 10.0,
+      "score": 0.2857142857142857,
+      "counts": {
+        "stratified": [
+          80,
+          140
+        ],
+        "held_pair": [
+          0,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 16,
+      "latent_weight": 1.0,
+      "penalty": 100.0,
+      "score": 0.07142857142857142,
+      "counts": {
+        "stratified": [
+          20,
+          140
+        ],
+        "held_pair": [
+          0,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 32,
+      "latent_weight": 0.1,
+      "penalty": 0.01,
+      "score": 0.9,
+      "counts": {
+        "stratified": [
+          140,
+          140
+        ],
+        "held_pair": [
+          48,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 32,
+      "latent_weight": 0.1,
+      "penalty": 0.1,
+      "score": 0.819047619047619,
+      "counts": {
+        "stratified": [
+          136,
+          140
+        ],
+        "held_pair": [
+          40,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 32,
+      "latent_weight": 0.1,
+      "penalty": 1.0,
+      "score": 0.5476190476190477,
+      "counts": {
+        "stratified": [
+          109,
+          140
+        ],
+        "held_pair": [
+          19,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 32,
+      "latent_weight": 0.1,
+      "penalty": 10.0,
+      "score": 0.21785714285714286,
+      "counts": {
+        "stratified": [
+          61,
+          140
+        ],
+        "held_pair": [
+          0,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 32,
+      "latent_weight": 0.1,
+      "penalty": 100.0,
+      "score": 0.07142857142857142,
+      "counts": {
+        "stratified": [
+          20,
+          140
+        ],
+        "held_pair": [
+          0,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 32,
+      "latent_weight": 1.0,
+      "penalty": 0.01,
+      "score": 0.65,
+      "counts": {
+        "stratified": [
+          140,
+          140
+        ],
+        "held_pair": [
+          18,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 32,
+      "latent_weight": 1.0,
+      "penalty": 0.1,
+      "score": 0.5285714285714286,
+      "counts": {
+        "stratified": [
+          134,
+          140
+        ],
+        "held_pair": [
+          6,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 32,
+      "latent_weight": 1.0,
+      "penalty": 1.0,
+      "score": 0.4392857142857143,
+      "counts": {
+        "stratified": [
+          123,
+          140
+        ],
+        "held_pair": [
+          0,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 32,
+      "latent_weight": 1.0,
+      "penalty": 10.0,
+      "score": 0.2892857142857143,
+      "counts": {
+        "stratified": [
+          81,
+          140
+        ],
+        "held_pair": [
+          0,
+          60
+        ]
+      }
+    },
+    {
+      "rank": 32,
+      "latent_weight": 1.0,
+      "penalty": 100.0,
+      "score": 0.07142857142857142,
+      "counts": {
+        "stratified": [
+          20,
+          140
+        ],
+        "held_pair": [
+          0,
+          60
+        ]
+      }
+    }
+  ]
+}

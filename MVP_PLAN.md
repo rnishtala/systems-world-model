@@ -1,6 +1,6 @@
 # Systems World Model: DreamerV3 triage MVP
 
-**Status:** the synthetic POC and isolated HTTP/PostgreSQL lab are implemented. A fresh frozen-state study scored 50/80 with Dreamer's reward path, 63/80 with latent probes, and 76/80 with raw probes. Secondary-fault information is partly recoverable, but all methods failed at least one family gate. Next: select a regularized multi-label diagnostic head using training-only cross-validation, then fresh evaluation; keep Dreamer weights frozen. The previous controller is restored. See [latest results](reports/LATENT_PROBE_RESULTS.md). Reliable combined-fault triage, LLM integration and autonomous resolution remain unfinished.
+**Status:** the isolated lab and frozen-state studies are complete, but reliable combined-fault triage is unfinished. Training-only regularized-head selection failed withheld-combination validation; adding telemetry chose zero latent weight. No fresh test run or deployment was made. Next: test independent mechanism supervision during world-model training, with labels excluded from inference and a telemetry-only ablation. This is planned, not implemented. See [latest results](reports/REGULARIZED_HEAD_RESULTS.md). The existing controller remains unchanged; LLM integration and autonomous resolution remain future work.
 
 Reuse the [DreamerV3 implementation](https://github.com/danijar/dreamerv3), train
 it on a small system-triage environment, and test whether its learned behavior

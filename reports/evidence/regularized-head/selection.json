@@ -1,0 +1,492 @@
+{
+  "latent": {
+    "chosen": {
+      "rank": 16,
+      "penalty": 0.1,
+      "score": 0.42857142857142855,
+      "counts": {
+        "stratified": [
+          120,
+          140
+        ],
+        "held_pair": [
+          0,
+          60
+        ]
+      }
+    },
+    "candidates": [
+      {
+        "rank": 8,
+        "penalty": 0.01,
+        "score": 0.4142857142857143,
+        "counts": {
+          "stratified": [
+            116,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 8,
+        "penalty": 0.1,
+        "score": 0.4142857142857143,
+        "counts": {
+          "stratified": [
+            116,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 8,
+        "penalty": 1.0,
+        "score": 0.4107142857142857,
+        "counts": {
+          "stratified": [
+            115,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 8,
+        "penalty": 10.0,
+        "score": 0.38571428571428573,
+        "counts": {
+          "stratified": [
+            108,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 8,
+        "penalty": 100.0,
+        "score": 0.26785714285714285,
+        "counts": {
+          "stratified": [
+            75,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 16,
+        "penalty": 0.01,
+        "score": 0.425,
+        "counts": {
+          "stratified": [
+            119,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 16,
+        "penalty": 0.1,
+        "score": 0.42857142857142855,
+        "counts": {
+          "stratified": [
+            120,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 16,
+        "penalty": 1.0,
+        "score": 0.42142857142857143,
+        "counts": {
+          "stratified": [
+            118,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 16,
+        "penalty": 10.0,
+        "score": 0.3892857142857143,
+        "counts": {
+          "stratified": [
+            109,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 16,
+        "penalty": 100.0,
+        "score": 0.26785714285714285,
+        "counts": {
+          "stratified": [
+            75,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 32,
+        "penalty": 0.01,
+        "score": 0.42857142857142855,
+        "counts": {
+          "stratified": [
+            120,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 32,
+        "penalty": 0.1,
+        "score": 0.42857142857142855,
+        "counts": {
+          "stratified": [
+            120,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 32,
+        "penalty": 1.0,
+        "score": 0.42857142857142855,
+        "counts": {
+          "stratified": [
+            120,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 32,
+        "penalty": 10.0,
+        "score": 0.3892857142857143,
+        "counts": {
+          "stratified": [
+            109,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 32,
+        "penalty": 100.0,
+        "score": 0.26785714285714285,
+        "counts": {
+          "stratified": [
+            75,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 64,
+        "penalty": 0.01,
+        "score": 0.42142857142857143,
+        "counts": {
+          "stratified": [
+            118,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 64,
+        "penalty": 0.1,
+        "score": 0.425,
+        "counts": {
+          "stratified": [
+            119,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 64,
+        "penalty": 1.0,
+        "score": 0.4107142857142857,
+        "counts": {
+          "stratified": [
+            115,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 64,
+        "penalty": 10.0,
+        "score": 0.39285714285714285,
+        "counts": {
+          "stratified": [
+            110,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 64,
+        "penalty": 100.0,
+        "score": 0.26785714285714285,
+        "counts": {
+          "stratified": [
+            75,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 0,
+        "penalty": 0.01,
+        "score": 0.375,
+        "counts": {
+          "stratified": [
+            105,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 0,
+        "penalty": 0.1,
+        "score": 0.42857142857142855,
+        "counts": {
+          "stratified": [
+            120,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 0,
+        "penalty": 1.0,
+        "score": 0.425,
+        "counts": {
+          "stratified": [
+            119,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 0,
+        "penalty": 10.0,
+        "score": 0.3892857142857143,
+        "counts": {
+          "stratified": [
+            109,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 0,
+        "penalty": 100.0,
+        "score": 0.26785714285714285,
+        "counts": {
+          "stratified": [
+            75,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      }
+    ],
+    "scope": "Head selection only; frozen Dreamer previously trained on all calibration incidents."
+  },
+  "raw": {
+    "chosen": {
+      "rank": 0,
+      "penalty": 0.01,
+      "score": 0.9083333333333333,
+      "counts": {
+        "stratified": [
+          140,
+          140
+        ],
+        "held_pair": [
+          49,
+          60
+        ]
+      }
+    },
+    "candidates": [
+      {
+        "rank": 0,
+        "penalty": 0.01,
+        "score": 0.9083333333333333,
+        "counts": {
+          "stratified": [
+            140,
+            140
+          ],
+          "held_pair": [
+            49,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 0,
+        "penalty": 0.1,
+        "score": 0.8238095238095238,
+        "counts": {
+          "stratified": [
+            135,
+            140
+          ],
+          "held_pair": [
+            41,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 0,
+        "penalty": 1.0,
+        "score": 0.5476190476190477,
+        "counts": {
+          "stratified": [
+            109,
+            140
+          ],
+          "held_pair": [
+            19,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 0,
+        "penalty": 10.0,
+        "score": 0.21785714285714286,
+        "counts": {
+          "stratified": [
+            61,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      },
+      {
+        "rank": 0,
+        "penalty": 100.0,
+        "score": 0.07142857142857142,
+        "counts": {
+          "stratified": [
+            20,
+            140
+          ],
+          "held_pair": [
+            0,
+            60
+          ]
+        }
+      }
+    ],
+    "scope": "Head selection only; frozen Dreamer previously trained on all calibration incidents."
+  }
+}

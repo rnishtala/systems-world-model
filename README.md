@@ -7,7 +7,21 @@ The first POC trains the project-linked DreamerV3 implementation from scratch
 on a partially observed queue simulator. It runs on **AMD Halo, CPU only**, in
 its own Kubernetes namespace: `systems-world-model-lab`.
 
-## Latest experiment — fault signals are partly recoverable from frozen state
+## Latest experiment — regularized heads rejected before fresh testing
+
+Training-only selection produced **120/140** stratified predictions but **0/60**
+withheld-pair predictions for the selected latent head. A telemetry skip-connection
+search chose **zero latent weight**: the raw comparator remained stronger. No
+fresh test batch or cluster change was needed; seed 6500 remains unused.
+
+The next hypothesis is independent mechanism supervision during world-model
+training. This is planned, not yet implemented. Reliable combined-fault triage
+remains unfinished; the deployed controller is unchanged.
+
+[Selection results](reports/REGULARIZED_HEAD_RESULTS.md) ·
+[Research note](output/pdf/dreamerv3-regularized-head.pdf)
+
+## Earlier experiment — fault signals are partly recoverable from frozen state
 
 On 80 fresh incidents, the existing Dreamer reward path scored **50/80**, a
 linear probe of its frozen latent state **63/80**, raw-telemetry probes **76/80**,
