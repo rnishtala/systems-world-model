@@ -43,11 +43,11 @@ def ready():
         if all(d.get('status',{}).get('observedGeneration',0)>=d['metadata']['generation'] and d.get('status',{}).get('availableReplicas',0)==1 and d.get('status',{}).get('updatedReplicas',0)==1 for d in ds):return
         time.sleep(10)
     raise TimeoutError('Deployments not ready')
-def export_files(mapping):
+def export_files(mapping,remote_root='/results/micro-window-v1/'):
     manifest('swm-confirm-reader.json');run('wait pod/swm-confirm-reader --for=condition=Ready --timeout=55s')
     try:
         for remote_name,local_name in mapping:
-            cmd=K+' exec swm-confirm-reader -- cat /results/micro-window-v1/'+remote_name
+            cmd=K+' exec swm-confirm-reader -- cat '+remote_root+remote_name
             for attempt in range(20):
                 try:r=subprocess.run(['ssh','-o','BatchMode=yes','-o','ConnectTimeout=10','-o','HostName=100.98.114.55','-o','HostKeyAlias=amd-halo',HOST,cmd],capture_output=True,timeout=60)
                 except subprocess.TimeoutExpired:continue

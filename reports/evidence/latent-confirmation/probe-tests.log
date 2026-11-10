@@ -1,0 +1,3 @@
+test_probe_recovers_independent_signals_and_does_not_refit_on_test PASS
+test_labels_do_not_change_extracted_observations PASS
+test_constant_features_do_not_make_probe_nonfinite PASS
