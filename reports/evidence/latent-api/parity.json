@@ -1,0 +1,971 @@
+{
+  "n": 80,
+  "matching": 80,
+  "passed": true,
+  "contract_rejections": [
+    true,
+    true
+  ],
+  "rows": [
+    {
+      "episode": 0,
+      "expected": 4,
+      "actual": 4,
+      "actions": [
+        1,
+        2,
+        3,
+        8
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 1,
+      "expected": 1,
+      "actual": 1,
+      "actions": [
+        1,
+        2,
+        3,
+        5
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 2,
+      "expected": 5,
+      "actual": 5,
+      "actions": [
+        1,
+        2,
+        3,
+        9
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 3,
+      "expected": 7,
+      "actual": 7,
+      "actions": [
+        1,
+        2,
+        3,
+        11
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 4,
+      "expected": 5,
+      "actual": 5,
+      "actions": [
+        1,
+        2,
+        3,
+        9
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 5,
+      "expected": 6,
+      "actual": 6,
+      "actions": [
+        1,
+        2,
+        3,
+        10
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 6,
+      "expected": 7,
+      "actual": 7,
+      "actions": [
+        1,
+        2,
+        3,
+        11
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 7,
+      "expected": 0,
+      "actual": 0,
+      "actions": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 8,
+      "expected": 0,
+      "actual": 0,
+      "actions": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 9,
+      "expected": 0,
+      "actual": 0,
+      "actions": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 10,
+      "expected": 3,
+      "actual": 3,
+      "actions": [
+        1,
+        2,
+        3,
+        7
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 11,
+      "expected": 3,
+      "actual": 3,
+      "actions": [
+        1,
+        2,
+        3,
+        7
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 12,
+      "expected": 1,
+      "actual": 1,
+      "actions": [
+        1,
+        2,
+        3,
+        5
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 13,
+      "expected": 4,
+      "actual": 4,
+      "actions": [
+        1,
+        2,
+        3,
+        8
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 14,
+      "expected": 0,
+      "actual": 0,
+      "actions": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 15,
+      "expected": 6,
+      "actual": 6,
+      "actions": [
+        1,
+        2,
+        3,
+        10
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 16,
+      "expected": 4,
+      "actual": 4,
+      "actions": [
+        1,
+        2,
+        3,
+        8
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 17,
+      "expected": 1,
+      "actual": 1,
+      "actions": [
+        1,
+        2,
+        3,
+        5
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 18,
+      "expected": 6,
+      "actual": 6,
+      "actions": [
+        1,
+        2,
+        3,
+        10
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 19,
+      "expected": 6,
+      "actual": 6,
+      "actions": [
+        1,
+        2,
+        3,
+        10
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 20,
+      "expected": 3,
+      "actual": 3,
+      "actions": [
+        1,
+        2,
+        3,
+        7
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 21,
+      "expected": 7,
+      "actual": 7,
+      "actions": [
+        1,
+        2,
+        3,
+        11
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 22,
+      "expected": 2,
+      "actual": 2,
+      "actions": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 23,
+      "expected": 2,
+      "actual": 2,
+      "actions": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 24,
+      "expected": 2,
+      "actual": 2,
+      "actions": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 25,
+      "expected": 1,
+      "actual": 1,
+      "actions": [
+        1,
+        2,
+        3,
+        5
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 26,
+      "expected": 0,
+      "actual": 0,
+      "actions": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 27,
+      "expected": 7,
+      "actual": 7,
+      "actions": [
+        1,
+        2,
+        3,
+        11
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 28,
+      "expected": 2,
+      "actual": 2,
+      "actions": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 29,
+      "expected": 7,
+      "actual": 7,
+      "actions": [
+        1,
+        2,
+        3,
+        11
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 30,
+      "expected": 2,
+      "actual": 2,
+      "actions": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 31,
+      "expected": 5,
+      "actual": 5,
+      "actions": [
+        1,
+        2,
+        3,
+        9
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 32,
+      "expected": 0,
+      "actual": 0,
+      "actions": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 33,
+      "expected": 1,
+      "actual": 1,
+      "actions": [
+        1,
+        2,
+        3,
+        5
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 34,
+      "expected": 4,
+      "actual": 4,
+      "actions": [
+        1,
+        2,
+        3,
+        8
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 35,
+      "expected": 4,
+      "actual": 4,
+      "actions": [
+        1,
+        2,
+        3,
+        8
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 36,
+      "expected": 3,
+      "actual": 3,
+      "actions": [
+        1,
+        2,
+        3,
+        7
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 37,
+      "expected": 3,
+      "actual": 3,
+      "actions": [
+        1,
+        2,
+        3,
+        7
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 38,
+      "expected": 3,
+      "actual": 3,
+      "actions": [
+        1,
+        2,
+        3,
+        7
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 39,
+      "expected": 5,
+      "actual": 5,
+      "actions": [
+        1,
+        2,
+        3,
+        9
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 40,
+      "expected": 1,
+      "actual": 1,
+      "actions": [
+        1,
+        2,
+        3,
+        5
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 41,
+      "expected": 4,
+      "actual": 4,
+      "actions": [
+        1,
+        2,
+        3,
+        8
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 42,
+      "expected": 2,
+      "actual": 2,
+      "actions": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 43,
+      "expected": 5,
+      "actual": 5,
+      "actions": [
+        1,
+        2,
+        3,
+        9
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 44,
+      "expected": 2,
+      "actual": 2,
+      "actions": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 45,
+      "expected": 1,
+      "actual": 1,
+      "actions": [
+        1,
+        2,
+        3,
+        5
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 46,
+      "expected": 6,
+      "actual": 6,
+      "actions": [
+        1,
+        2,
+        3,
+        10
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 47,
+      "expected": 2,
+      "actual": 2,
+      "actions": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 48,
+      "expected": 6,
+      "actual": 6,
+      "actions": [
+        1,
+        2,
+        3,
+        10
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 49,
+      "expected": 3,
+      "actual": 3,
+      "actions": [
+        1,
+        2,
+        3,
+        7
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 50,
+      "expected": 6,
+      "actual": 6,
+      "actions": [
+        1,
+        2,
+        3,
+        10
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 51,
+      "expected": 1,
+      "actual": 1,
+      "actions": [
+        1,
+        2,
+        3,
+        5
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 52,
+      "expected": 2,
+      "actual": 2,
+      "actions": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 53,
+      "expected": 5,
+      "actual": 5,
+      "actions": [
+        1,
+        2,
+        3,
+        9
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 54,
+      "expected": 6,
+      "actual": 6,
+      "actions": [
+        1,
+        2,
+        3,
+        10
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 55,
+      "expected": 0,
+      "actual": 0,
+      "actions": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 56,
+      "expected": 7,
+      "actual": 7,
+      "actions": [
+        1,
+        2,
+        3,
+        11
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 57,
+      "expected": 5,
+      "actual": 5,
+      "actions": [
+        1,
+        2,
+        3,
+        9
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 58,
+      "expected": 6,
+      "actual": 6,
+      "actions": [
+        1,
+        2,
+        3,
+        10
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 59,
+      "expected": 7,
+      "actual": 7,
+      "actions": [
+        1,
+        2,
+        3,
+        11
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 60,
+      "expected": 4,
+      "actual": 4,
+      "actions": [
+        1,
+        2,
+        3,
+        8
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 61,
+      "expected": 3,
+      "actual": 3,
+      "actions": [
+        1,
+        2,
+        3,
+        7
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 62,
+      "expected": 7,
+      "actual": 7,
+      "actions": [
+        1,
+        2,
+        3,
+        11
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 63,
+      "expected": 4,
+      "actual": 4,
+      "actions": [
+        1,
+        2,
+        3,
+        8
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 64,
+      "expected": 0,
+      "actual": 0,
+      "actions": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 65,
+      "expected": 4,
+      "actual": 4,
+      "actions": [
+        1,
+        2,
+        3,
+        8
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 66,
+      "expected": 6,
+      "actual": 6,
+      "actions": [
+        1,
+        2,
+        3,
+        10
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 67,
+      "expected": 3,
+      "actual": 3,
+      "actions": [
+        1,
+        2,
+        3,
+        7
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 68,
+      "expected": 5,
+      "actual": 5,
+      "actions": [
+        1,
+        2,
+        3,
+        9
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 69,
+      "expected": 1,
+      "actual": 1,
+      "actions": [
+        1,
+        2,
+        3,
+        5
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 70,
+      "expected": 7,
+      "actual": 7,
+      "actions": [
+        1,
+        2,
+        3,
+        11
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 71,
+      "expected": 4,
+      "actual": 4,
+      "actions": [
+        1,
+        2,
+        3,
+        8
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 72,
+      "expected": 0,
+      "actual": 0,
+      "actions": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 73,
+      "expected": 2,
+      "actual": 2,
+      "actions": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 74,
+      "expected": 7,
+      "actual": 7,
+      "actions": [
+        1,
+        2,
+        3,
+        11
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 75,
+      "expected": 5,
+      "actual": 5,
+      "actions": [
+        1,
+        2,
+        3,
+        9
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 76,
+      "expected": 0,
+      "actual": 0,
+      "actions": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 77,
+      "expected": 1,
+      "actual": 1,
+      "actions": [
+        1,
+        2,
+        3,
+        5
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 78,
+      "expected": 3,
+      "actual": 3,
+      "actions": [
+        1,
+        2,
+        3,
+        7
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    },
+    {
+      "episode": 79,
+      "expected": 5,
+      "actual": 5,
+      "actions": [
+        1,
+        2,
+        3,
+        9
+      ],
+      "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # Systems World Model: DreamerV3 triage MVP
 
-**Status:** Independent confirmation **passed: 80/80 exact diagnoses**, including **10/10 in each of eight known fault families**, using a classifier over an independently trained Dreamer state (model seed 23, scenario seed 6801). Raw telemetry scored 78/80; imagined-reward diagnosis scored 70/80. This validates a limited known-regime POC, not production reliability or autonomous resolution. Baseline deployments are restored; the candidate is not promoted. Next: integrate the frozen classifier into the inference-only API and verify parity and fresh live behavior. See [latest results](reports/LATENT_CONFIRMATION_RESULTS.md).
+**Status:** The frozen Dreamer-state classifier is **deployed as the isolated lab default** (model 23, `inspect-latent`, source v20). HTTP replay matched **80/80** saved diagnoses; fresh live API validation scored **80/80**, with **10/10 in every known fault family**. Seven tests, evidence verification, rollback restoration and the post-promotion healthy check passed. This is a diagnosis-only POC for eight known regimes; broader generalization, learned investigation and LLM-driven remediation remain future work. See [results](reports/LATENT_API_RESULTS.md) and [runbook](docs/LATENT_API_RUNBOOK.md).
 
 Reuse the [DreamerV3 implementation](https://github.com/danijar/dreamerv3), train
 it on a small system-triage environment, and test whether its learned behavior

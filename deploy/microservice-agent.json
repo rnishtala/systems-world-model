@@ -93,11 +93,9 @@
                   "--root",
                   "/models",
                   "--controller",
-                  "inspect-first",
+                  "inspect-latent",
                   "--seeds",
-                  "10",
-                  "11",
-                  "12"
+                  "23"
                 ],
                 "env": [
                   {
@@ -161,7 +159,7 @@
                   {
                     "name": "results",
                     "mountPath": "/models",
-                    "subPath": "micro-v2/confirmation",
+                    "subPath": "micro-latent-api-v1/serving",
                     "readOnly": true
                   },
                   {
@@ -194,7 +192,7 @@
               {
                 "name": "source",
                 "configMap": {
-                  "name": "microservice-source-v10"
+                  "name": "microservice-source-v20"
                 }
               },
               {

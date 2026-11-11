@@ -1,0 +1,13 @@
+test_corrupt_artifact_rejected (test_latent_readout.ReadoutTests.test_corrupt_artifact_rejected) ... ok
+test_different_checkpoint_rejected (test_latent_readout.ReadoutTests.test_different_checkpoint_rejected) ... ok
+test_feature_layout_matches_confirmed_extractor (test_latent_readout.ReadoutTests.test_feature_layout_matches_confirmed_extractor) ... ok
+test_invalid_parameters_and_state_rejected (test_latent_readout.ReadoutTests.test_invalid_parameters_and_state_rejected) ... ok
+test_predictions_use_fixed_coefficients (test_latent_readout.ReadoutTests.test_predictions_use_fixed_coefficients) ... ok
+test_serving_package_excludes_examples_and_replay (test_latent_readout.ReadoutTests.test_serving_package_excludes_examples_and_replay) ... PACKAGED {"seed": 23, "checkpoint_sha256": "56e5eb36d4feb326f13baece0460c88f459e54d41c4b5016c6e606da87285757", "readout_sha256": "2adcdd2c0a3f5d5aeae254b4f5577fb2914dc111471dcfd80fb41a5504321219", "calibration_sha256": "calibration", "feature_contract": "rssm-deter-stoch-mean16-v1", "threshold": 0.0, "penalty": 1.0}
+ok
+test_wrong_feature_contract_rejected (test_latent_readout.ReadoutTests.test_wrong_feature_contract_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.037s
+
+OK

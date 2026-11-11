@@ -1,0 +1,36 @@
+{
+  "promoted": true,
+  "source": "microservice-source-v20",
+  "model_seed": 23,
+  "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f",
+  "healthy_smoke_passed": true,
+  "deployments": [
+    {
+      "name": "swm-checkout",
+      "ready": true,
+      "source": "microservice-source-v20"
+    },
+    {
+      "name": "swm-payment",
+      "ready": true,
+      "source": "microservice-source-v20"
+    },
+    {
+      "name": "swm-ledger",
+      "ready": true,
+      "source": "microservice-source-v20"
+    },
+    {
+      "name": "swm-postgres",
+      "ready": true,
+      "source": null
+    },
+    {
+      "name": "swm-inference",
+      "ready": true,
+      "source": "microservice-source-v20"
+    }
+  ],
+  "utc": "2026-11-11T02:26:58Z",
+  "scope": "Separate reviewed lab-only promotion after experiment restoration; diagnosis only."
+}

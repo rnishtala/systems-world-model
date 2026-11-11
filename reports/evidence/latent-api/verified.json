@@ -1,0 +1,13 @@
+{
+  "candidate_promoted": true,
+  "parity_matching": 80,
+  "parity_passed": true,
+  "fresh_incidents": 80,
+  "frozen_coefficients_match_confirmation": true,
+  "serving_package_excludes_data": true,
+  "checkpoint_matches_confirmation": true,
+  "protocol_unchanged": true,
+  "live_observations_match_offline_contract": true,
+  "diagnoses_match_api_scores": true,
+  "baseline_restored": true
+}

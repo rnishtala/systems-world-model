@@ -1,0 +1,41 @@
+{
+  "parity_passed": true,
+  "fresh_skipped": false,
+  "n": 80,
+  "correct": 80,
+  "families": {
+    "0": {
+      "n": 10,
+      "correct": 10
+    },
+    "1": {
+      "n": 10,
+      "correct": 10
+    },
+    "2": {
+      "n": 10,
+      "correct": 10
+    },
+    "3": {
+      "n": 10,
+      "correct": 10
+    },
+    "4": {
+      "n": 10,
+      "correct": 10
+    },
+    "5": {
+      "n": 10,
+      "correct": 10
+    },
+    "6": {
+      "n": 10,
+      "correct": 10
+    },
+    "7": {
+      "n": 10,
+      "correct": 10
+    }
+  },
+  "gate_passed": true
+}

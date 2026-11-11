@@ -1,0 +1,9 @@
+{
+  "seed": 23,
+  "checkpoint_sha256": "f9c5be169c3d87408fe03751380a14cbcb4c7999dffb74e08de8c0b8ec4c6022",
+  "readout_sha256": "4843cf1d679d2c96b996501e8e124822e8d884cc4598567c0652e72e15d2063f",
+  "calibration_sha256": "e6d217c0fcdddc2b50df296c09c95540eb3223ff5d7fcf6f0c9f179b6d903473",
+  "feature_contract": "rssm-deter-stoch-mean16-v1",
+  "threshold": 0.0,
+  "penalty": 1.0
+}

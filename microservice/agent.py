@@ -26,6 +26,9 @@ class Model:
         self.classes=8 if self.contract=='mechanisms-v1' else 4
         if self.classes==8 and controller=='inspect-guarded':raise ValueError('Guard is calibrated only for single-v1')
         self.guard=json.loads((Path(__file__).parent/"calibration/predictive-guard-v1.json").read_text()) if controller=="inspect-guarded" else None
+        from microservice.latent_readout import LatentReadout
+        if controller=='inspect-latent' and self.contract!='mechanisms-v1':raise ValueError('Latent readout requires mechanisms-v1')
+        self.readout=LatentReadout(root,seed) if controller=='inspect-latent' else None
         self.seed=seed
         c=elements.Config.load(elements.Path(root+f'/train-{seed}/config.yaml')).update(logdir=f'/tmp/inference-{seed}')
         upstream.make_env=lambda config,index,**kw:upstream.wrap_env(ShapeEnv(self.classes+5,self.supervised),config)
@@ -64,7 +67,7 @@ class Model:
         obs=dict(vector=np.array([vector],np.float32),reward=np.array([reward],np.float32),is_first=np.array([first]),is_last=np.array([False]),is_terminal=np.array([False]))
         if self.supervised:obs['mechanism_target']=np.zeros((1,3),np.float32)
         self.carry,acts,_=self.policy.policy(self.carry,obs,mode='eval');action=int(acts['action'][0]);self.calls+=1
-        if self.controller in ('inspect-first','inspect-guarded','inspect-mechanisms'):
+        if self.controller in ('inspect-first','inspect-guarded','inspect-mechanisms','inspect-latent'):
             # Fixed evidence acquisition, learned diagnosis; no expert thresholds.
             missing=[i+1 for i in range(3) if not vector[10+i]]
             with jax.transfer_guard('allow'):
@@ -75,11 +78,17 @@ class Model:
                 with jax.transfer_guard('allow'):
                     probabilities=np.asarray(self.mechanisms(self.agent.params,dyn,jax.random.PRNGKey(self.calls+900)))
                 action=4+int(np.sum((probabilities>.5)*np.array([1,2,4])))
+            if not missing and self.readout is not None:
+                from microservice.latent_readout import state_features
+                with jax.transfer_guard('allow'):features=state_features(dyn)
+                mask,latent_scores=self.readout.predict(features);action=4+mask
             guard_result=assess(self.guard,self.seed,action-4,history) if not missing and self.guard else None
             if guard_result and guard_result['escalate']:action=8
             previous=[jax.device_put(np.int32(action),ref.sharding) for ref in self.carry[-1]['action']]
             self.carry=(*self.carry[:-1],{**self.carry[-1],'action':previous})
         result={'action':action,'controller':self.controller,'action_contract':self.contract}
+        if self.readout is not None and not missing:
+            result['latent_scores']=latent_scores.tolist();result['readout_sha256']=self.readout.sha256
         if self.controller=='inspect-mechanisms' and not missing:result['mechanism_probabilities']=probabilities.tolist()
         if self.guard and not missing:
             result['guard']=guard_result;result['predicted_diagnosis_rewards']=scores.tolist()
@@ -95,7 +104,7 @@ class Model:
         return result
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--root',required=True);p.add_argument('--seeds',type=int,nargs='+',required=True);p.add_argument('--controller',choices=['native','inspect-first','inspect-guarded','inspect-mechanisms'],default='native');a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--root',required=True);p.add_argument('--seeds',type=int,nargs='+',required=True);p.add_argument('--controller',choices=['native','inspect-first','inspect-guarded','inspect-mechanisms','inspect-latent'],default='native');a=p.parse_args()
     models={s:Model(a.root,s,a.controller) for s in a.seeds};lock=threading.Lock()
     for model in models.values():
         model.act([0.]*14,True,0.,str(uuid.uuid4()))

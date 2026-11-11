@@ -1,0 +1,126 @@
+{
+  "apiVersion": "batch/v1",
+  "kind": "Job",
+  "metadata": {
+    "name": "swm-latent-api-smoke-v1",
+    "namespace": "systems-world-model-lab"
+  },
+  "spec": {
+    "backoffLimit": 0,
+    "activeDeadlineSeconds": 7200,
+    "template": {
+      "metadata": {
+        "labels": {
+          "swm-role": "runner"
+        }
+      },
+      "spec": {
+        "restartPolicy": "Never",
+        "automountServiceAccountToken": false,
+        "nodeSelector": {
+          "kubernetes.io/hostname": "amd-halo"
+        },
+        "securityContext": {
+          "runAsNonRoot": true,
+          "runAsUser": 1000,
+          "runAsGroup": 1000,
+          "fsGroup": 1000,
+          "seccompProfile": {
+            "type": "RuntimeDefault"
+          }
+        },
+        "containers": [
+          {
+            "name": "experiment",
+            "image": "python:3.11-slim",
+            "securityContext": {
+              "allowPrivilegeEscalation": false,
+              "readOnlyRootFilesystem": true,
+              "capabilities": {
+                "drop": [
+                  "ALL"
+                ]
+              }
+            },
+            "resources": {
+              "requests": {
+                "cpu": "100m",
+                "memory": "256Mi"
+              },
+              "limits": {
+                "cpu": "100m",
+                "memory": "256Mi"
+              }
+            },
+            "env": [
+              {
+                "name": "PYTHONUNBUFFERED",
+                "value": "1"
+              },
+              {
+                "name": "PYTHONDONTWRITEBYTECODE",
+                "value": "1"
+              },
+              {
+                "name": "OMP_NUM_THREADS",
+                "value": "1"
+              },
+              {
+                "name": "OPENBLAS_NUM_THREADS",
+                "value": "1"
+              },
+              {
+                "name": "XLA_FLAGS",
+                "value": "--xla_cpu_multi_thread_eigen=false intra_op_parallelism_threads=1"
+              },
+              {
+                "name": "XDG_CACHE_HOME",
+                "value": "/tmp/cache"
+              }
+            ],
+            "command": [
+              "sh",
+              "-ec",
+              "mkdir -p /results/swm-latent-api-smoke-v1-work\ntar xzf /source/app.tar.gz -C /results/swm-latent-api-smoke-v1-work\ncd /results/swm-latent-api-smoke-v1-work\nexport PYTHONPATH=/results/swm-latent-api-smoke-v1-work:/results/swm-latent-api-smoke-v1-work/deps:/results/work/upstream\nexport DREAMER_SOURCE=/results/work/upstream\n/results/venv/bin/python - <<'PYCODE'\nimport json,time,uuid\nfrom pathlib import Path\nimport numpy as np\nfrom microservice.live import wait_ready,configure,batch,reset_measurement_window,frame,reset\nfrom microservice.environment import Incident\nfrom microservice.evaluate import agent\nout=Path('/results/micro-latent-api-v1/promotion-smoke.json')\nif out.exists():raise RuntimeError('Preserve existing smoke evidence')\nexpected=json.loads(Path('/results/micro-latent-api-v1/serving/readout-23.json').read_text())['readout_sha256']\nwait_ready();start=time.monotonic()\ntry:\n n=configure(0,np.random.default_rng(6902),True)\n for _ in range(2):\n  if batch(n)!=n:raise RuntimeError('Warmup failed')\n reset_measurement_window();frames=[frame(n)];state=Incident(frames,0,compositional=True);v=state.observe().tolist();trace=[];incident=str(uuid.uuid4())\n for t in range(4):\n  r=agent(23,v,t==0,0. if t==0 else -.2,incident);trace.append(dict(observation=v,response=r))\n  if t<3:\n   if r['action']!=t+1:raise RuntimeError('Inspection mismatch')\n   frames.append(frame(n));v=state.step(r['action'])[0].tolist()\n valid=all(f['successes']==n and all(m['count']==(j+1)*n for m in f['metrics'].values()) for j,f in enumerate(frames))\n result=dict(healthy=r['action']==4,controller=r['controller'],readout_sha256=r.get('readout_sha256'),seconds=time.monotonic()-start,valid_windows=valid,trace=trace,frames=frames)\n out.write_text(json.dumps(result,indent=2)+'\\n')\n assert result['healthy'] and valid and result['seconds']<=35 and result['controller']=='inspect-latent' and result['readout_sha256']==expected\n print('HEALTHY_API_SMOKE_PASSED',flush=True)\nfinally:reset()\nPYCODE"
+            ],
+            "volumeMounts": [
+              {
+                "name": "source",
+                "mountPath": "/source",
+                "readOnly": true
+              },
+              {
+                "name": "results",
+                "mountPath": "/results"
+              },
+              {
+                "name": "tmp",
+                "mountPath": "/tmp"
+              }
+            ]
+          }
+        ],
+        "volumes": [
+          {
+            "name": "source",
+            "configMap": {
+              "name": "microservice-source-v20"
+            }
+          },
+          {
+            "name": "results",
+            "persistentVolumeClaim": {
+              "claimName": "results"
+            }
+          },
+          {
+            "name": "tmp",
+            "emptyDir": {
+              "sizeLimit": "512Mi"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
