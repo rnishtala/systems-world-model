@@ -1,4 +1,4 @@
-"""Render the one-page proposal, separating validated progress from future work."""
+"""Render the one-page proposal, describing the problem and proposed DreamerV3 triage approach."""
 from pathlib import Path
 from reportlab.platypus import SimpleDocTemplate, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -18,30 +18,30 @@ story = []
 def p(text, style='BodyX'):
     story.append(Paragraph(text, styles[style]))
 
-p('RESEARCH PROPOSAL | SYSTEMS WORLD MODEL | 10 NOVEMBER 2026', 'SmallX')
+p('RESEARCH PROPOSAL | SYSTEMS WORLD MODEL | 11 NOVEMBER 2026', 'SmallX')
 p('Learning system behavior for reliable triage', 'TitleX')
-p('<b>Objective.</b> Test whether a learned model of service behavior improves triage: distinguish failures with similar symptoms, recognize simultaneous faults, and identify the next useful diagnostic check. The goal is more accurate diagnoses with less investigation effort.')
-p('What is DreamerV3?', 'HeadX')
-p('DreamerV3 is a model-based reinforcement learning algorithm. It learns a compact, evolving representation of an environment from observations and actions, predicts future outcomes, and trains an action-selection policy using imagined trajectories. Its world model provides memory of what happened and a way to reason about what could happen next.')
-p('How we use it for system triage', 'HeadX')
-p('We reuse the upstream DreamerV3 implementation and train a new world model from scratch on measured service telemetry and diagnostic actions. Its recurrent state summarizes the incident over time. Today, auxiliary fault supervision helps train that state, and a frozen classifier converts it into a diagnosis. Next, we will test whether imagined diagnostic sequences can teach a policy to select informative checks.')
-d = Drawing(500,78)
-for x, title, sub in [(0, 'Service telemetry', 'fixed diagnostic checks'), (127, 'DreamerV3 state', 'temporal representation'), (254, 'Frozen classifier', 'identify combined faults'), (381, 'Diagnosis API', 'return the fault set')]:
-    d.add(Rect(x,24,117,42,rx=4,fillColor=colors.HexColor('#E4EFF3'),strokeColor=blue))
-    d.add(String(x+7,50,title,fontName='Helvetica-Bold',fontSize=9,fillColor=blue))
-    d.add(String(x+7,34,sub,fontName='Helvetica',fontSize=7.5,fillColor=gray))
+p('The problem: one error, several possible causes', 'HeadX')
+p('Consider a request flowing through <b>checkout &rarr; payment &rarr; ledger &rarr; PostgreSQL</b>. Customers see slow checkouts, failed payments or timeout errors. The error may appear in checkout even when the underlying problem is in a dependency. Similar symptoms can arise from processing contention in a service, waiting for a database connection, or a delayed downstream call. Multiple faults can occur together.')
+p('Triage must determine <b>where the failure originates, which mechanism explains it, and what evidence would distinguish competing explanations</b>. For a payment timeout, we might inspect processing queues, connection-pool wait times and request traces. We want to separate the originating fault from propagated symptoms, recognize combined faults, and avoid collecting every available signal before reaching a diagnosis.')
+p('Why a world model could help', 'HeadX')
+p('A snapshot of high latency cannot explain how an incident developed. A world model learns how observations evolve over time and how diagnostic actions reveal additional evidence. Its evolving internal state could connect upstream errors with earlier downstream changes, retain evidence across checks, and support choosing the next check that best separates plausible causes.')
+p('What DreamerV3 is and how we would use it', 'HeadX')
+p('<b>DreamerV3</b> is a model-based reinforcement learning algorithm: it learns a compact model of an environment and trains an action-selection policy using imagined future trajectories. We would reuse its implementation and train a new world model on service telemetry, diagnostic actions and their observed outcomes. The system-specific behavior would be learned from incident sequences, rather than supplied by pretrained game weights.')
+d = Drawing(500,85)
+for x, title, sub in [(0, 'Incident evidence', 'metrics + request traces'), (127, 'DreamerV3 model', 'learn temporal behavior'), (254, 'Diagnostic policy', 'choose a useful check'), (381, 'Triage outcome', 'faults + evidence')]:
+    d.add(Rect(x,31,117,42,rx=4,fillColor=colors.HexColor('#E4EFF3'),strokeColor=blue))
+    d.add(String(x+7,57,title,fontName='Helvetica-Bold',fontSize=9,fillColor=blue))
+    d.add(String(x+7,41,sub,fontName='Helvetica',fontSize=7.5,fillColor=gray))
 for x in (127,254,381):
-    d.add(Line(x-10,45,x,45,strokeColor=teal))
-    d.add(Polygon([x,45,x-4,48,x-4,42],fillColor=teal,strokeColor=teal))
-d.add(String(0,7,'Current decisions use learned state + classifier; imagined rewards do not select the diagnosis.',fontName='Helvetica',fontSize=8,fillColor=gray))
+    d.add(Line(x-10,52,x,52,strokeColor=teal))
+    d.add(Polygon([x,52,x-4,55,x-4,49],fillColor=teal,strokeColor=teal))
+d.add(String(0,13,'Proposed loop: run the selected check, return its real observations, and update the diagnosis.',fontName='Helvetica',fontSize=8,fillColor=gray))
 story.append(d)
-p('What the POC has demonstrated', 'HeadX')
-p('A real checkout, payment, ledger and PostgreSQL service chain provides controlled incidents: processing contention, connection-pool contention and downstream delay. Healthy operation, individual faults and their combinations form eight regimes. Training used 160 measured incidents spanning all eight; the diagnosis API is deployed in the isolated lab.')
-p('<b>Independent confirmation: 80/80 exact diagnoses.</b> A separately trained model achieved 10/10 per regime. <b>Fresh live API validation: 80/80</b> on a separate batch with no further fitting. These results support known-regime triage using fixed checks. The raw-telemetry baseline scored 78/80 in confirmation; this small difference does not establish that a world model is superior.')
-p('Research plan: make triage more effective', 'HeadX')
-p('<b>1. Prove the value of temporal state.</b> Compare Dreamer-based diagnosis against raw telemetry, non-temporal representations and fixed checklists. Test whether incident history helps separate similar symptoms and combined faults.<br/><b>2. Learn which evidence to gather.</b> Treat diagnostic checks as actions and reward correct diagnoses while charging for inspection cost. Use Dreamer\'s imagined trajectories to train a diagnostic policy, then validate its choices on fresh real-service incidents.<br/><b>3. Test limits and uncertainty.</b> Evaluate changed workloads, fault severities, startup behavior and service topology. Introduce unknown faults and test when the system should request more evidence or abstain.')
-p('<b>Success criteria.</b> On prespecified fresh tests, improve exact diagnosis accuracy at matched inspection cost, or reduce checks and time at matched accuracy. Report results by fault family, across independent training runs, with unknown-fault detection and abstention quality. Current evidence does not yet establish learned investigation planning or generalization to unseen systems.')
-p('Project: <link href="https://github.com/rnishtala/systems-world-model" color="#087E8B">github.com/rnishtala/systems-world-model</link> | Method: <link href="https://danijar.com/project/dreamerv3/" color="#087E8B">DreamerV3</link><br/>Evidence: reports/LATENT_CONFIRMATION_RESULTS.md and reports/LATENT_API_RESULTS.md', 'SmallX')
+p('Proposed approach', 'HeadX')
+p('<b>1. Learn service behavior.</b> Collect sequences from healthy operation and controlled single and combined faults. Train Dreamer\'s recurrent world model to represent incident history and predict subsequent observations; use known fault labels to train a diagnostic readout.<br/><b>2. Learn efficient investigation.</b> Treat inspections as actions. Use imagined sequences to train a policy rewarded for correct diagnoses and penalized for unnecessary checks. At runtime, execute the selected check and update the model with real evidence.<br/><b>3. Return an evidence-backed diagnosis.</b> Identify the implicated service and fault mechanism, link the conclusion to observed signals, and request further evidence or abstain when the case is outside the model\'s validated coverage.')
+p('How we would judge success', 'HeadX')
+p('Compare against raw-telemetry classifiers and fixed diagnostic checklists on fresh incidents. Measure accuracy of service and fault identification, combined-fault detection, number of checks and time to diagnosis. Test changed workloads, fault severities and unseen faults. Success means higher accuracy at matched investigation cost, or fewer checks at matched accuracy. Predicted outcomes must be validated against real observations; the benefit of learned dynamics is a research question.')
+p('Project: <link href="https://github.com/rnishtala/systems-world-model" color="#087E8B">github.com/rnishtala/systems-world-model</link><br/>Method: <link href="https://danijar.com/project/dreamerv3/" color="#087E8B">DreamerV3 - Mastering Diverse Control Tasks through World Models</link>', 'SmallX')
 out = root / 'output/pdf/systems-world-model-proposal.pdf'
 out.parent.mkdir(parents=True, exist_ok=True)
 SimpleDocTemplate(str(out), pagesize=(612,792), leftMargin=48, rightMargin=48, topMargin=30, bottomMargin=28, title='Systems World Model: One-page Research Proposal', author='Systems World Model project').build(story)
