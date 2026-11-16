@@ -57,6 +57,16 @@ class ReadoutTests(unittest.TestCase):
         result=score([dict(id='a',ranks=['a'])],truth)
         self.assertEqual(result['test']['ac_at_k']['1'],1.)
         self.assertNotIn('validation',result)
+    def test_confirmation_scorer_rejects_changed_predictions_before_labels(self):
+        import json,sys
+        from unittest.mock import patch
+        from benchmark.score_confirmation import main
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp);folder=root/'readout-42';folder.mkdir()
+            name='readout-42/post_mean_full-predictions.json'
+            (root/name).write_text('[]');(root/'frozen-hashes.json').write_text(json.dumps({name:'wrong'}))
+            argv=['score','--evidence',str(root),'--answers',str(root/'no-labels')]
+            with patch.object(sys,'argv',argv),self.assertRaises(AssertionError):main()
     def test_ridge_predicts_without_using_validation_labels(self):
         from benchmark.readout import ridge
         x=np.array([[0.,0.],[1.,1.],[2.,2.],[3.,3.]])
