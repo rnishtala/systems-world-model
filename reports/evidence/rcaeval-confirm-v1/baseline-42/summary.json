@@ -1,0 +1,1 @@
+{"seed": 42, "seconds": 69.27774702799798, "updates": 32000, "batch_size": 16, "hidden_units": 128, "parameters": 432143, "final_loss": 0.0, "test_labels_loaded": false, "scope": "Same incident labels and telemetry; capacity and compute not matched to Dreamer."}

@@ -20,9 +20,17 @@ results are frozen; no candidate was promoted.
 
 Adding training-only root-cause supervision reached **25/25 validation diagnoses
 for both seeds**, versus raw telemetry’s **23/25**. Both models passed actual
-label-isolation audits. This is development evidence; fresh confirmation and a
-supervised non-world-model control remain pending. Serving is unchanged.
+label-isolation audits. This is development evidence. The fresh confirmation below tests it against a
+supervised non-world-model control. Serving is unchanged.
 [Supervision results](reports/RCAEVAL_SUPERVISION_RESULTS.md).
+
+Fresh RE2-OB confirmation used 60 training incidents and 30 untouched test incidents.
+Dreamer scored **30/30 and 27/30** across two seeds; the supervised temporal MLP
+and raw-telemetry ridge each scored **30/30**. This does **not** demonstrate added
+value from Dreamer on this collection. All three errors were packet-loss cases.
+Test labels stayed outside the cluster; both label-isolation audits passed.
+All five lab deployments are healthy, with the serving model unchanged.
+[Confirmation results](reports/RCAEVAL_CONFIRMATION_RESULTS.md) · [Frozen protocol](reports/RCAEVAL_CONFIRMATION_PROTOCOL.md).
 
 ## Current deployment — validated live triage API
 
