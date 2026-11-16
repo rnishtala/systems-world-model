@@ -1,0 +1,46 @@
+Observations
+  vector           Space(float32, shape=(170,), low=-inf, high=inf)
+  reward           Space(float32, shape=(), low=-inf, high=inf)
+  is_first         Space(bool, shape=(), low=False, high=True)
+  is_last          Space(bool, shape=(), low=False, high=True)
+  is_terminal      Space(bool, shape=(), low=False, high=True)
+Actions
+  action           Space(int32, shape=(), low=0, high=1)
+Extras
+  consec           Space(int32, shape=(), low=-2147483648, high=2147483647)
+  stepid           Space(uint8, shape=(20,), low=0, high=255)
+  dyn/deter        Space(float32, shape=(512,), low=-inf, high=inf)
+  dyn/stoch        Space(float32, shape=(32, 4), low=-inf, high=inf)
+JAX devices (1): [TFRT_CPU_0]
+Policy devices: TFRT_CPU_0
+Train devices:  TFRT_CPU_0
+Initializing parameters...
+Optimizer opt has 658,666 params:
+       364,096 dyn
+        66,111 val
+        60,586 dec
+        57,663 rew
+        49,601 pol
+        41,153 con
+        19,456 enc
+Done initializing!
+Compiling 1 checkpoint groups...
+Largest checkpoint group: 0 GB
+Compiling train and report...
+Train cost analysis:
+  FLOPS:            2.2e+09
+  Memory (temp):    2.8e+07
+  Memory (inputs):  8.6e+06
+  Memory (outputs): 8.5e+06
+  Memory (code):    1.2e+06
+
+Report cost analysis:
+No available
+Done compiling!
+Loading checkpoint: /results/rcaeval-v1/dreamer/checkpoint/20261116T204916F581028
+Loaded checkpoint.
+READOUT 0
+READOUT 25
+READOUT 50
+READOUT 75
+READOUT_COMPLETE {"results": {"last_deter_ridge1": {"train_correct": 73, "validation_correct": 10, "validation_top3": 19, "validation_n": 25, "dimensions": 512}, "last_deter_ridge1_shuffled": {"train_correct": 14, "validation_correct": 6, "validation_top3": 13, "validation_n": 25, "dimensions": 512}, "last_deter_ridge100": {"train_correct": 60, "validation_correct": 12, "validation_top3": 18, "validation_n": 25, "dimensions": 512}, "last_deter_ridge100_shuffled": {"train_correct": 22, "validation_correct": 10, "validation_top3": 18, "validation_n": 25, "dimensions": 512}, "post_mean_deter_ridge1": {"train_correct": 73, "validation_correct": 9, "validation_top3": 17, "validation_n": 25, "dimensions": 512}, "post_mean_deter_ridge1_shuffled": {"train_correct": 12, "validation_correct": 3, "validation_top3": 14, "validation_n": 25, "dimensions": 512}, "post_mean_deter_ridge100": {"train_correct": 53, "validation_correct": 8, "validation_top3": 17, "validation_n": 25, "dimensions": 512}, "post_mean_deter_ridge100_shuffled": {"train_correct": 15, "validation_correct": 5, "validation_top3": 14, "validation_n": 25, "dimensions": 512}, "post_mean_full_ridge1": {"train_correct": 73, "validation_correct": 12, "validation_top3": 23, "validation_n": 25, "dimensions": 640}, "post_mean_full_ridge1_shuffled": {"train_correct": 14, "validation_correct": 6, "validation_top3": 14, "validation_n": 25, "dimensions": 640}, "post_mean_full_ridge100": {"train_correct": 71, "validation_correct": 14, "validation_top3": 23, "validation_n": 25, "dimensions": 640}, "post_mean_full_ridge100_shuffled": {"train_correct": 11, "validation_correct": 5, "validation_top3": 18, "validation_n": 25, "dimensions": 640}, "raw_ridge1": {"train_correct": 73, "validation_correct": 23, "validation_top3": 25, "validation_n": 25, "dimensions": 3400}, "raw_ridge1_shuffled": {"train_correct": 20, "validation_correct": 9, "validation_top3": 17, "validation_n": 25, "dimensions": 3400}, "raw_ridge100": {"train_correct": 73, "validation_correct": 23, "validation_top3": 25, "validation_n": 25, "dimensions": 3400}, "raw_ridge100_shuffled": {"train_correct": 17, "validation_correct": 7, "validation_top3": 18, "validation_n": 25, "dimensions": 3400}, "mask_only_ridge1": {"train_correct": 26, "validation_correct": 7, "validation_top3": 19, "validation_n": 25, "dimensions": 1700}, "mask_only_ridge1_shuffled": {"train_correct": 13, "validation_correct": 3, "validation_top3": 15, "validation_n": 25, "dimensions": 1700}, "mask_only_ridge100": {"train_correct": 25, "validation_correct": 8, "validation_top3": 19, "validation_n": 25, "dimensions": 1700}, "mask_only_ridge100_shuffled": {"train_correct": 11, "validation_correct": 4, "validation_top3": 16, "validation_n": 25, "dimensions": 1700}}, "seconds": 18.64867978800612, "particles": 16, "scope": "Development validation only; no test incidents loaded; weights frozen; predeclared readout menu"}

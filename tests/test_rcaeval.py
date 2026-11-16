@@ -17,4 +17,20 @@ class BenchmarkTests(unittest.TestCase):
         pred=[dict(id=str(i),ranks=["b","a"]) for i in range(3)]
         self.assertEqual(score(pred,truth)["test"]["ac_at_k"]["2"],1)
         with self.assertRaises(ValueError):score(pred[:2],truth)
+class ReadoutTests(unittest.TestCase):
+    def test_rejects_test_inputs_before_loading_model(self):
+        import json,sys
+        from unittest.mock import patch
+        from benchmark.readout import main
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp);(root/'manifest.json').write_text(json.dumps([{'id':'held-out','split':'test'}]))
+            argv=['readout','--root',str(root/'nonexistent-model'),'--data',str(root),'--answers',str(root/'no-labels'),'--out',str(root/'out')]
+            with patch.object(sys,'argv',argv),self.assertRaises(AssertionError):main()
+    def test_ridge_predicts_without_using_validation_labels(self):
+        from benchmark.readout import ridge
+        x=np.array([[0.,0.],[1.,1.],[2.,2.],[3.,3.]])
+        y=np.array([[1.,0.],[1.,0.],[0.,1.],[0.,1.]])
+        mean,scale,w,bias=ridge(x,y,1.)
+        scores=(np.array([[0.2,0.2],[2.8,2.8]])-mean)/scale@w+bias
+        self.assertEqual(scores.argmax(1).tolist(),[0,1])
 if __name__=="__main__":unittest.main()

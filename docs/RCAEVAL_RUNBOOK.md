@@ -54,3 +54,22 @@ Sources: https://arxiv.org/abs/2412.17015 ,
 https://github.com/phamquiluan/RCAEval ,
 https://huggingface.co/datasets/phamquiluan/RCAEval .
 Dataset card declares MIT. Retain attribution and the original dataset revision.
+
+## Validation-only follow-ups
+
+`benchmark.readout` refuses manifests containing test cases. It fits classifiers
+only on training rows and scores validation rows. Use a physically separate
+98-case input bundle (73 training,25 validation), not the original 123-case
+bundle. Saved short-run model: `/results/rcaeval-v1/dreamer`.
+
+`deploy/rcaeval-readout-v1.json` evaluates the frozen short-run checkpoint.
+`deploy/rcaeval-long-v1.json` trains seeds42 and43 for32,000 steps each, then runs
+the same readout menu. It invokes `benchmark.dreamer --validation-only`, which
+rejects any test inputs. Both use the same isolation and restore procedure as
+the original job; no serving package is overwritten.
+
+Readout studies include final deterministic state, mean post-onset deterministic
+state, mean post-onset full state, raw-sequence and missingness-only controls,
+ridge penalties1 and100, and shuffled training-label controls. Repeatedly using
+validation for selection makes it development evidence; a fresh independent
+confirmation set is required before making a generalization claim.

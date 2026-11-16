@@ -25,9 +25,10 @@ def fit(x,y):
     return dict(mean=mean,scale=scale,weights=z.T@np.linalg.solve(z@z.T+np.eye(len(z)),y-bias),bias=bias)
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument("--data",required=True);p.add_argument("--train-answers",required=True);p.add_argument("--out",required=True);p.add_argument("--steps",type=int,default=8000);a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument("--data",required=True);p.add_argument("--train-answers",required=True);p.add_argument("--out",required=True);p.add_argument("--steps",type=int,default=8000);p.add_argument("--seed",type=int,default=42);p.add_argument("--validation-only",action="store_true");a=p.parse_args()
     root=Path(a.data);out=Path(a.out);out.mkdir(parents=True,exist_ok=False)
     manifest=json.loads((root/"manifest.json").read_text());train=[r for r in manifest if r["split"]=="train"]
+    if a.validation_only:assert all(r["split"] in ("train","validation") for r in manifest),"Test cases prohibited"
     truth={r["id"]:r["service"] for r in json.loads(Path(a.train_answers).read_text())}
     assert set(truth)=={r["id"] for r in train},"Training labels must exclude held-out cases"
     columns=set()
@@ -42,7 +43,7 @@ def main():
     from dreamerv3 import main as upstream
     from experiment.run import configuration
     class Env:
-        def __init__(self):self.rng=np.random.default_rng(42);self.done=True
+        def __init__(self):self.rng=np.random.default_rng(a.seed);self.done=True
         @property
         def obs_space(self):return dict(vector=elements.Space(np.float32,(2*len(columns),)),reward=elements.Space(np.float32),is_first=elements.Space(bool),is_last=elements.Space(bool),is_terminal=elements.Space(bool))
         @property
@@ -54,7 +55,7 @@ def main():
             self.done=self.t==19
             return dict(vector=self.seq[self.t],reward=np.float32(0),is_first=first,is_last=self.done,is_terminal=self.done)
         def close(self):pass
-    c=configuration(42,out/"train",a.steps).update(**{"run.train_ratio":16.,"run.save_every":300})
+    c=configuration(a.seed,out/"train",a.steps).update(**{"run.train_ratio":16.,"run.save_every":300})
     upstream.make_env=lambda config,index,**kw:upstream.wrap_env(Env(),config)
     captured={}
     def build():captured["agent"]=upstream.make_agent(c);return captured["agent"]
@@ -77,14 +78,16 @@ def main():
     y=np.array([[float(truth[r["id"]]==s) for s in services] for r in train])
     methods={}
     for name,values in (("dreamer_state",features),("raw_sequence",{k:v.reshape(-1).astype(np.float64) for k,v in sequences.items()})):
+        assert all(np.isfinite(v).all() for v in values.values()),"Nonfinite features"
         probe=fit(np.array([values[r["id"]] for r in train]),y)
         np.savez_compressed(out/(name+"-probe.npz"),**probe)
         predictions=[]
         for r in manifest:
             scores=(values[r["id"]]-probe["mean"])/probe["scale"]@probe["weights"]+probe["bias"]
+            assert np.isfinite(scores).all(),"Nonfinite scores"
             predictions.append(dict(id=r["id"],ranks=[services[j] for j in np.argsort(-scores,kind="stable")]))
         (out/(name+"-predictions.json")).write_text(json.dumps(predictions,indent=2))
         methods[name]=dict(training_cases=len(train),classes=services)
-    meta=dict(methods=methods,steps=a.steps,seconds=time.monotonic()-start,seed=42,columns=columns,upstream_revision="e01491fad6434b2245a3b8ca201dd7faedcc458c",scope="Passive sequence reconstruction; no learned intervention policy; single-seed pilot; ridge penalty 1 frozen before held-out scoring")
+    meta=dict(methods=methods,steps=a.steps,seconds=time.monotonic()-start,seed=a.seed,columns=columns,upstream_revision="e01491fad6434b2245a3b8ca201dd7faedcc458c",scope="Passive sequence reconstruction; no learned intervention policy; single-seed pilot; ridge penalty 1 frozen before held-out scoring")
     (out/"metadata.json").write_text(json.dumps(meta,indent=2));print("DREAMER_COMPLETE",flush=True)
 if __name__=="__main__":main()
