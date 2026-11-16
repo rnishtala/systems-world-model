@@ -26,6 +26,14 @@ class ReadoutTests(unittest.TestCase):
             root=Path(temp);(root/'manifest.json').write_text(json.dumps([{'id':'held-out','split':'test'}]))
             argv=['readout','--root',str(root/'nonexistent-model'),'--data',str(root),'--answers',str(root/'no-labels'),'--out',str(root/'out')]
             with patch.object(sys,'argv',argv),self.assertRaises(AssertionError):main()
+    def test_validation_training_rejects_test_manifest(self):
+        import json,sys
+        from unittest.mock import patch
+        from benchmark.dreamer import main
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp);(root/'manifest.json').write_text(json.dumps([{'id':'held-out','split':'test'}]))
+            argv=['dreamer','--data',str(root),'--train-answers',str(root/'no-labels'),'--out',str(root/'out'),'--validation-only']
+            with patch.object(sys,'argv',argv),self.assertRaises(AssertionError):main()
     def test_ridge_predicts_without_using_validation_labels(self):
         from benchmark.readout import ridge
         x=np.array([[0.,0.],[1.,1.],[2.,2.],[3.,3.]])

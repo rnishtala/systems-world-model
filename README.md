@@ -12,6 +12,12 @@ BARO-style baseline **6/25**. This short Dreamer run did not improve triage.
 All lab deployments are restored; the serving model is unchanged.
 [Results](reports/RCAEVAL_RESULTS.md) · [Protocol](reports/RCAEVAL_PROTOCOL.md).
 
+A validation-only follow-up improved Dreamer from **5/25 to 14/25** through
+state averaging and regularization, then **16/25 and 19/25** after longer training
+with two seeds. Raw telemetry remains ahead at **23/25**. The original test
+results are frozen; no candidate was promoted.
+[Follow-up evidence](reports/RCAEVAL_READOUT_RESULTS.md).
+
 ## Current deployment — validated live triage API
 
 The frozen Dreamer-state classifier is **deployed as the isolated lab default** (model 23, `inspect-latent`, source v20). HTTP replay matched **80/80** saved diagnoses; fresh live API validation scored **80/80**, with **10/10 in every known fault family**. Seven tests, evidence verification, rollback restoration and the post-promotion healthy check passed. This is a diagnosis-only POC for eight known regimes; broader generalization, learned investigation and LLM-driven remediation remain future work.
