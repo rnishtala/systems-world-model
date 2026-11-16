@@ -24,6 +24,7 @@ def score(predictions,answers):
     result={}
     for split in ("train","validation","test","all"):
         rows=[r for r in predictions if split=="all" or truth[r["id"]]["split"]==split]
+        if not rows:continue
         acc={str(k):sum(truth[r["id"]]["service"] in r["ranks"][:k] for r in rows)/len(rows) for k in range(1,6)}
         faults={f:{"n":sum(truth[r["id"]]["fault"]==f for r in rows),"top1_correct":sum(truth[r["id"]]["fault"]==f and truth[r["id"]]["service"] in r["ranks"][:1] for r in rows)} for f in sorted({truth[r["id"]]["fault"] for r in rows})}
         result[split]=dict(n=len(rows),ac_at_k=acc,avg_at_5=sum(acc.values())/5,faults=faults)

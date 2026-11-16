@@ -43,6 +43,20 @@ class ReadoutTests(unittest.TestCase):
             root=Path(temp);(root/'manifest.json').write_text(json.dumps([{'id':'held-out','split':'test'}]))
             argv=['dreamer','--data',str(root),'--train-answers',str(root/'no-labels'),'--out',str(root/'out'),'--validation-only']
             with patch.object(sys,'argv',argv),self.assertRaises(AssertionError):main()
+    def test_confirmation_rejects_test_labels_before_loading_model(self):
+        import json,sys
+        from unittest.mock import patch
+        from benchmark.confirmation import main
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp);rows=[{'id':'a','split':'train'},{'id':'b','split':'test'}]
+            (root/'manifest.json').write_text(json.dumps(rows));(root/'answers.json').write_text(json.dumps(rows))
+            argv=['confirm','--root',str(root/'no-model'),'--data',str(root),'--answers',str(root/'answers.json'),'--out',str(root/'out')]
+            with patch.object(sys,'argv',argv),self.assertRaises(AssertionError):main()
+    def test_confirmation_scoring_without_validation(self):
+        truth=[dict(id='a',service='a',fault='cpu',split='test')]
+        result=score([dict(id='a',ranks=['a'])],truth)
+        self.assertEqual(result['test']['ac_at_k']['1'],1.)
+        self.assertNotIn('validation',result)
     def test_ridge_predicts_without_using_validation_labels(self):
         from benchmark.readout import ridge
         x=np.array([[0.,0.],[1.,1.],[2.,2.],[3.,3.]])
