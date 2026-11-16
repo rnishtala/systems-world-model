@@ -25,7 +25,7 @@ def fit(x,y):
     return dict(mean=mean,scale=scale,weights=z.T@np.linalg.solve(z@z.T+np.eye(len(z)),y-bias),bias=bias)
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument("--data",required=True);p.add_argument("--train-answers",required=True);p.add_argument("--out",required=True);p.add_argument("--steps",type=int,default=8000);p.add_argument("--seed",type=int,default=42);p.add_argument("--validation-only",action="store_true");a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument("--data",required=True);p.add_argument("--train-answers",required=True);p.add_argument("--out",required=True);p.add_argument("--steps",type=int,default=8000);p.add_argument("--seed",type=int,default=42);p.add_argument("--validation-only",action="store_true");p.add_argument("--diagnosis-supervision",action="store_true");a=p.parse_args()
     root=Path(a.data);out=Path(a.out);out.mkdir(parents=True,exist_ok=False)
     manifest=json.loads((root/"manifest.json").read_text());train=[r for r in manifest if r["split"]=="train"]
     if a.validation_only:assert all(r["split"] in ("train","validation") for r in manifest),"Test cases prohibited"
@@ -37,6 +37,8 @@ def main():
     columns=sorted(columns);services=sorted({c.split("_",1)[0] for c in columns})
     sequences={r["id"]:sequence(root/(r["id"]+".npz"),columns) for r in manifest}
     training=[sequences[r["id"]] for r in train]
+    targets=np.array([[float(truth[r["id"]]==service) for service in services] for r in train],np.float32)
+    from benchmark.supervision import TARGET,make_agent,audit
     import sys
     sys.path.insert(0,os.environ["DREAMER_SOURCE"])
     import elements,embodied,jax
@@ -45,24 +47,31 @@ def main():
     class Env:
         def __init__(self):self.rng=np.random.default_rng(a.seed);self.done=True
         @property
-        def obs_space(self):return dict(vector=elements.Space(np.float32,(2*len(columns),)),reward=elements.Space(np.float32),is_first=elements.Space(bool),is_last=elements.Space(bool),is_terminal=elements.Space(bool))
+        def obs_space(self):
+            space=dict(vector=elements.Space(np.float32,(2*len(columns),)),reward=elements.Space(np.float32),is_first=elements.Space(bool),is_last=elements.Space(bool),is_terminal=elements.Space(bool))
+            if a.diagnosis_supervision:space[TARGET]=elements.Space(np.float32,(len(services),),0,1)
+            return space
         @property
         def act_space(self):return dict(reset=elements.Space(bool),action=elements.Space(np.int32,(),0,1))
         def step(self,action):
             first=bool(action["reset"]) or self.done
-            if first:self.seq=training[self.rng.integers(len(training))];self.t=0
+            if first:
+                index=self.rng.integers(len(training));self.seq=training[index];self.target=targets[index];self.t=0
             else:self.t+=1
             self.done=self.t==19
-            return dict(vector=self.seq[self.t],reward=np.float32(0),is_first=first,is_last=self.done,is_terminal=self.done)
+            obs=dict(vector=self.seq[self.t],reward=np.float32(0),is_first=first,is_last=self.done,is_terminal=self.done)
+            if a.diagnosis_supervision:obs[TARGET]=self.target if self.t>=10 else np.zeros(len(services),np.float32)
+            return obs
         def close(self):pass
     c=configuration(a.seed,out/"train",a.steps).update(**{"run.train_ratio":16.,"run.save_every":300})
     upstream.make_env=lambda config,index,**kw:upstream.wrap_env(Env(),config)
     captured={}
-    def build():captured["agent"]=upstream.make_agent(c);return captured["agent"]
+    def build():captured["agent"]=make_agent(c,len(services)) if a.diagnosis_supervision else upstream.make_agent(c);return captured["agent"]
     args=elements.Config(**c.run,replica=0,replicas=1,logdir=c.logdir,batch_size=c.batch_size,batch_length=c.batch_length,report_length=c.report_length,consec_train=c.consec_train,consec_report=c.consec_report,replay_context=c.replay_context)
     Path(c.logdir).mkdir(parents=True);c.save(elements.Path(c.logdir)/"config.yaml");start=time.monotonic()
     embodied.run.train(build,lambda:upstream.make_replay(c,"replay"),lambda index:upstream.make_env(c,index),lambda replay,mode:upstream.make_stream(c,replay,mode),lambda:upstream.make_logger(c),args)
     agent=captured["agent"];cp=elements.Checkpoint(elements.Path(out/"checkpoint"));cp.agent=agent;cp.save()
+    if a.diagnosis_supervision:(out/"label-audit.json").write_text(json.dumps(audit(agent,2*len(columns),len(services)),indent=2))
     print("TRAINED",time.monotonic()-start,flush=True)
     features={}
     # Reset state per incident; zero rewards and a single no-op action throughout.
@@ -70,6 +79,7 @@ def main():
         carry=agent.init_policy(1)
         for t,v in enumerate(sequences[r["id"]]):
             obs=dict(vector=v[None],reward=np.zeros(1,np.float32),is_first=np.array([t==0]),is_last=np.array([t==19]),is_terminal=np.array([t==19]))
+            if a.diagnosis_supervision:obs[TARGET]=np.zeros((1,len(services)),np.float32)
             carry,_,_=agent.policy(carry,obs,mode="eval")
         with jax.transfer_guard("allow"):
             dyn=agent._stack(carry)[1]
@@ -88,6 +98,6 @@ def main():
             predictions.append(dict(id=r["id"],ranks=[services[j] for j in np.argsort(-scores,kind="stable")]))
         (out/(name+"-predictions.json")).write_text(json.dumps(predictions,indent=2))
         methods[name]=dict(training_cases=len(train),classes=services)
-    meta=dict(methods=methods,steps=a.steps,seconds=time.monotonic()-start,seed=a.seed,columns=columns,upstream_revision="e01491fad6434b2245a3b8ca201dd7faedcc458c",scope="Passive sequence reconstruction; no learned intervention policy; single-seed pilot; ridge penalty 1 frozen before held-out scoring")
+    meta=dict(diagnosis_supervision=a.diagnosis_supervision,auxiliary_weight=1. if a.diagnosis_supervision else 0.,methods=methods,steps=a.steps,seconds=time.monotonic()-start,seed=a.seed,columns=columns,upstream_revision="e01491fad6434b2245a3b8ca201dd7faedcc458c",scope="Passive sequence reconstruction; no learned intervention policy; single-seed pilot; ridge penalty 1 frozen before held-out scoring")
     (out/"metadata.json").write_text(json.dumps(meta,indent=2));print("DREAMER_COMPLETE",flush=True)
 if __name__=="__main__":main()

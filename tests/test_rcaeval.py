@@ -17,6 +17,15 @@ class BenchmarkTests(unittest.TestCase):
         pred=[dict(id=str(i),ranks=["b","a"]) for i in range(3)]
         self.assertEqual(score(pred,truth)["test"]["ac_at_k"]["2"],1)
         with self.assertRaises(ValueError):score(pred[:2],truth)
+class SupervisionTests(unittest.TestCase):
+    def test_targets_removed_without_mutating_input(self):
+        from benchmark.supervision import telemetry,TARGET
+        obs={'vector':np.array([1.,2.]),TARGET:np.array([0.,1.])}
+        cleaned=telemetry(obs)
+        self.assertEqual(set(cleaned),{'vector'})
+        self.assertIn(TARGET,obs)
+        self.assertIs(cleaned['vector'],obs['vector'])
+
 class ReadoutTests(unittest.TestCase):
     def test_rejects_test_inputs_before_loading_model(self):
         import json,sys
