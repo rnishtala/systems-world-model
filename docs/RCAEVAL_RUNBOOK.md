@@ -73,3 +73,19 @@ state, mean post-onset full state, raw-sequence and missingness-only controls,
 ridge penalties1 and100, and shuffled training-label controls. Repeatedly using
 validation for selection makes it development evidence; a fresh independent
 confirmation set is required before making a generalization claim.
+
+## Diagnosis-focused supervision
+
+`deploy/rcaeval-supervised-v1.json` runs the same two seeds and 32,000-step
+budget with `--diagnosis-supervision`. The new service target is stored in replay
+for the auxiliary loss only; it is removed from encoder, decoder, and policy
+inputs. Targets are nonzero only after fault onset. The original Dreamer losses
+remain enabled. Inference calls supply dummy zeros and the policy strips them.
+
+Each trained model must pass `benchmark.supervision.audit`: target fields absent
+from encoder/decoder spaces, auxiliary head included in optimizer modules, and
+bit-identical policy outputs for opposite target values under the same RNG key.
+The label-audit artifacts are exported alongside the validation summaries.
+Use the fixed pooled full-state ridge100 readout as primary; other readouts are
+secondary diagnostics. Do not select seeds or promote based on this development
+set. Existing lab inference must be restored after the experiment.

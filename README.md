@@ -18,6 +18,12 @@ with two seeds. Raw telemetry remains ahead at **23/25**. The original test
 results are frozen; no candidate was promoted.
 [Follow-up evidence](reports/RCAEVAL_READOUT_RESULTS.md).
 
+Adding training-only root-cause supervision reached **25/25 validation diagnoses
+for both seeds**, versus raw telemetry’s **23/25**. Both models passed actual
+label-isolation audits. This is development evidence; fresh confirmation and a
+supervised non-world-model control remain pending. Serving is unchanged.
+[Supervision results](reports/RCAEVAL_SUPERVISION_RESULTS.md).
+
 ## Current deployment — validated live triage API
 
 The frozen Dreamer-state classifier is **deployed as the isolated lab default** (model 23, `inspect-latent`, source v20). HTTP replay matched **80/80** saved diagnoses; fresh live API validation scored **80/80**, with **10/10 in every known fault family**. Seven tests, evidence verification, rollback restoration and the post-promotion healthy check passed. This is a diagnosis-only POC for eight known regimes; broader generalization, learned investigation and LLM-driven remediation remain future work.

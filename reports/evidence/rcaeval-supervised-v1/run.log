@@ -1,0 +1,382 @@
+Observations
+  vector           Space(float32, shape=(170,), low=-inf, high=inf)
+  reward           Space(float32, shape=(), low=-inf, high=inf)
+  is_first         Space(bool, shape=(), low=False, high=True)
+  is_last          Space(bool, shape=(), low=False, high=True)
+  is_terminal      Space(bool, shape=(), low=False, high=True)
+  root_cause_target Space(float32, shape=(15,), low=0, high=1)
+Actions
+  action           Space(int32, shape=(), low=0, high=1)
+Extras
+  consec           Space(int32, shape=(), low=-2147483648, high=2147483647)
+  stepid           Space(uint8, shape=(20,), low=0, high=255)
+  dyn/deter        Space(float32, shape=(512,), low=-inf, high=inf)
+  dyn/stoch        Space(float32, shape=(32, 4), low=-inf, high=inf)
+JAX devices (1): [TFRT_CPU_0]
+Policy devices: TFRT_CPU_0
+Train devices:  TFRT_CPU_0
+Initializing parameters...
+Optimizer opt has 668,281 params:
+       364,096 dyn
+        66,111 val
+        60,586 dec
+        57,663 rew
+        49,601 pol
+        41,153 con
+        19,456 enc
+         9,615 diagnosis
+Done initializing!
+Compiling 1 checkpoint groups...
+Largest checkpoint group: 0 GB
+Compiling train and report...
+Train cost analysis:
+  FLOPS:            2.2e+09
+  Memory (temp):    2.8e+07
+  Memory (inputs):  8.8e+06
+  Memory (outputs): 8.6e+06
+  Memory (code):    1.2e+06
+
+Report cost analysis:
+No available
+Done compiling!
+Did not find any checkpoint.
+Saving checkpoint: model-42/train/ckpt/20261116T214557F056501
+Saved checkpoint.
+Start training loop
+Start JAX profiler: model-42/train
+2026-11-16 21:46:06.170002: E external/xla/xla/python/profiler/internal/python_hooks.cc:400] Can't import tensorflow.python.profiler.trace
+Stop JAX profiler
+2026-11-16 21:46:07.959132: E external/xla/xla/python/profiler/internal/python_hooks.cc:400] Can't import tensorflow.python.profiler.trace
+
+--------------------[Agent Step 2_640]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.34 / train/loss/dyn 4.98 / train/loss/policy 0 / train/loss/rep 4.98 / train/loss/repval 10.37 / train/loss/rew 5.45 / train/loss/value 2.65 / train/loss/vector 51.02 / train/rand/action nan / replay/replay_ratio 16.27 / fps/policy 86.55 / fps/train 1313.42
+
+Writing metrics: model-42/train/scores.jsonlWriting metrics: model-42/train/metrics.jsonl
+
+
+--------------------[Agent Step 5_540]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.21 / train/loss/dyn 2.15 / train/loss/policy 0 / train/loss/rep 2.15 / train/loss/repval 8.76 / train/loss/rew 4.6 / train/loss/value 5.6 / train/loss/vector 17.8 / train/rand/action nan / replay/replay_ratio 16.98 / fps/policy 96.37 / fps/train 1539.85
+
+Writing metrics: model-42/train/metrics.jsonlWriting metrics: model-42/train/scores.jsonl
+
+
+--------------------[Agent Step 8_390]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.2 / train/loss/dyn 1.27 / train/loss/policy 0 / train/loss/rep 1.27 / train/loss/repval 5.69 / train/loss/rew 2.85 / train/loss/value 3.82 / train/loss/vector 7.63 / train/rand/action nan / replay/replay_ratio 16.99 / fps/policy 94.97 / fps/train 1518.39
+
+Writing metrics: model-42/train/scores.jsonl
+Writing metrics: model-42/train/metrics.jsonl
+
+--------------------[Agent Step 11_230]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.18 / train/loss/dyn 1.3 / train/loss/policy 0 / train/loss/rep 1.3 / train/loss/repval 2.78 / train/loss/rew 0.92 / train/loss/value 1.86 / train/loss/vector 2.54 / train/rand/action nan / replay/replay_ratio 17 / fps/policy 94.51 / fps/train 1512.11
+
+Writing metrics: model-42/train/metrics.jsonlWriting metrics: model-42/train/scores.jsonl
+
+
+--------------------[Agent Step 14_070]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.14 / train/loss/dyn 1.44 / train/loss/policy 0 / train/loss/rep 1.44 / train/loss/repval 1.03 / train/loss/rew 0.2 / train/loss/value 0.72 / train/loss/vector 1.47 / train/rand/action nan / replay/replay_ratio 17 / fps/policy 94.52 / fps/train 1512.31
+
+Writing metrics: model-42/train/metrics.jsonlWriting metrics: model-42/train/scores.jsonl
+
+
+--------------------[Agent Step 16_860]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.11 / train/loss/dyn 1.89 / train/loss/policy 0 / train/loss/rep 1.89 / train/loss/repval 0.46 / train/loss/rew 0.09 / train/loss/value 0.35 / train/loss/vector 1.39 / train/rand/action nan / replay/replay_ratio 17.01 / fps/policy 92.99 / fps/train 1488.92
+
+Writing metrics: model-42/train/scores.jsonl
+Writing metrics: model-42/train/metrics.jsonl
+
+--------------------[Agent Step 19_720]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.1 / train/loss/dyn 2.2 / train/loss/policy 0 / train/loss/rep 2.2 / train/loss/repval 0.28 / train/loss/rew 0.05 / train/loss/value 0.22 / train/loss/vector 1.35 / train/rand/action nan / replay/replay_ratio 17.02 / fps/policy 94.89 / fps/train 1520.38
+
+Writing metrics: model-42/train/scores.jsonl
+Writing metrics: model-42/train/metrics.jsonl
+
+--------------------[Agent Step 22_640]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.1 / train/loss/dyn 2.42 / train/loss/policy 0 / train/loss/rep 2.42 / train/loss/repval 0.19 / train/loss/rew 0.03 / train/loss/value 0.15 / train/loss/vector 1.3 / train/rand/action nan / replay/replay_ratio 17 / fps/policy 96.99 / fps/train 1551.87
+
+Writing metrics: model-42/train/metrics.jsonlWriting metrics: model-42/train/scores.jsonl
+
+
+--------------------[Agent Step 25_470]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.09 / train/loss/dyn 2.4 / train/loss/policy 0 / train/loss/rep 2.4 / train/loss/repval 0.14 / train/loss/rew 0.02 / train/loss/value 0.11 / train/loss/vector 1.25 / train/rand/action nan / replay/replay_ratio 16.96 / fps/policy 94.16 / fps/train 1503.44
+
+Writing metrics: model-42/train/metrics.jsonl
+Writing metrics: model-42/train/scores.jsonl
+Saving checkpoint: model-42/train/ckpt/20261116T215057F467525
+Saved checkpoint.
+
+--------------------[Agent Step 28_230]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.09 / train/loss/dyn 2.32 / train/loss/policy 0 / train/loss/rep 2.32 / train/loss/repval 0.1 / train/loss/rew 0.02 / train/loss/value 0.09 / train/loss/vector 1.22 / train/rand/action nan / replay/replay_ratio 17 / fps/policy 91.83 / fps/train 1469.21
+
+Writing metrics: model-42/train/metrics.jsonl
+Writing metrics: model-42/train/scores.jsonl
+
+--------------------[Agent Step 31_130]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.08 / train/loss/dyn 2.28 / train/loss/policy 0 / train/loss/rep 2.28 / train/loss/repval 0.08 / train/loss/rew 0.01 / train/loss/value 0.07 / train/loss/vector 1.21 / train/rand/action nan / replay/replay_ratio 17.02 / fps/policy 96.38 / fps/train 1544.21
+
+Writing metrics: model-42/train/metrics.jsonlWriting metrics: model-42/train/scores.jsonl
+
+
+--------------------[Agent Step 32_000]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20
+
+Writing metrics: model-42/train/scores.jsonlWriting metrics: model-42/train/metrics.jsonl
+
+Saving checkpoint: model-42/checkpoint/20261116T215137F419158
+Saved checkpoint.
+TRAINED 354.41935314500006
+EXTRACT 0
+EXTRACT 25
+EXTRACT 50
+EXTRACT 75
+DREAMER_COMPLETE
+Observations
+  vector           Space(float32, shape=(170,), low=-inf, high=inf)
+  reward           Space(float32, shape=(), low=-inf, high=inf)
+  is_first         Space(bool, shape=(), low=False, high=True)
+  is_last          Space(bool, shape=(), low=False, high=True)
+  is_terminal      Space(bool, shape=(), low=False, high=True)
+  root_cause_target Space(float32, shape=(15,), low=0, high=1)
+Actions
+  action           Space(int32, shape=(), low=0, high=1)
+Extras
+  consec           Space(int32, shape=(), low=-2147483648, high=2147483647)
+  stepid           Space(uint8, shape=(20,), low=0, high=255)
+  dyn/deter        Space(float32, shape=(512,), low=-inf, high=inf)
+  dyn/stoch        Space(float32, shape=(32, 4), low=-inf, high=inf)
+JAX devices (1): [TFRT_CPU_0]
+Policy devices: TFRT_CPU_0
+Train devices:  TFRT_CPU_0
+Initializing parameters...
+Optimizer opt has 668,281 params:
+       364,096 dyn
+        66,111 val
+        60,586 dec
+        57,663 rew
+        49,601 pol
+        41,153 con
+        19,456 enc
+         9,615 diagnosis
+Done initializing!
+Compiling 1 checkpoint groups...
+Largest checkpoint group: 0 GB
+Compiling train and report...
+Train cost analysis:
+  FLOPS:            2.2e+09
+  Memory (temp):    2.8e+07
+  Memory (inputs):  8.8e+06
+  Memory (outputs): 8.6e+06
+  Memory (code):    1.2e+06
+
+Report cost analysis:
+No available
+Done compiling!
+Loading checkpoint: model-42/checkpoint/20261116T215137F419158
+Loaded checkpoint.
+READOUT 0
+READOUT 25
+READOUT 50
+READOUT 75
+READOUT_COMPLETE {"results": {"last_deter_ridge1": {"train_correct": 73, "validation_correct": 25, "validation_top3": 25, "validation_n": 25, "dimensions": 512}, "last_deter_ridge1_shuffled": {"train_correct": 13, "validation_correct": 4, "validation_top3": 16, "validation_n": 25, "dimensions": 512}, "last_deter_ridge100": {"train_correct": 73, "validation_correct": 25, "validation_top3": 25, "validation_n": 25, "dimensions": 512}, "last_deter_ridge100_shuffled": {"train_correct": 43, "validation_correct": 13, "validation_top3": 21, "validation_n": 25, "dimensions": 512}, "post_mean_deter_ridge1": {"train_correct": 73, "validation_correct": 25, "validation_top3": 25, "validation_n": 25, "dimensions": 512}, "post_mean_deter_ridge1_shuffled": {"train_correct": 12, "validation_correct": 0, "validation_top3": 11, "validation_n": 25, "dimensions": 512}, "post_mean_deter_ridge100": {"train_correct": 73, "validation_correct": 25, "validation_top3": 25, "validation_n": 25, "dimensions": 512}, "post_mean_deter_ridge100_shuffled": {"train_correct": 16, "validation_correct": 7, "validation_top3": 21, "validation_n": 25, "dimensions": 512}, "post_mean_full_ridge1": {"train_correct": 73, "validation_correct": 25, "validation_top3": 25, "validation_n": 25, "dimensions": 640}, "post_mean_full_ridge1_shuffled": {"train_correct": 14, "validation_correct": 2, "validation_top3": 13, "validation_n": 25, "dimensions": 640}, "post_mean_full_ridge100": {"train_correct": 73, "validation_correct": 25, "validation_top3": 25, "validation_n": 25, "dimensions": 640}, "post_mean_full_ridge100_shuffled": {"train_correct": 9, "validation_correct": 4, "validation_top3": 9, "validation_n": 25, "dimensions": 640}, "raw_ridge1": {"train_correct": 73, "validation_correct": 23, "validation_top3": 25, "validation_n": 25, "dimensions": 3400}, "raw_ridge1_shuffled": {"train_correct": 20, "validation_correct": 9, "validation_top3": 17, "validation_n": 25, "dimensions": 3400}, "raw_ridge100": {"train_correct": 73, "validation_correct": 23, "validation_top3": 25, "validation_n": 25, "dimensions": 3400}, "raw_ridge100_shuffled": {"train_correct": 17, "validation_correct": 7, "validation_top3": 18, "validation_n": 25, "dimensions": 3400}, "mask_only_ridge1": {"train_correct": 26, "validation_correct": 7, "validation_top3": 19, "validation_n": 25, "dimensions": 1700}, "mask_only_ridge1_shuffled": {"train_correct": 13, "validation_correct": 3, "validation_top3": 15, "validation_n": 25, "dimensions": 1700}, "mask_only_ridge100": {"train_correct": 25, "validation_correct": 8, "validation_top3": 19, "validation_n": 25, "dimensions": 1700}, "mask_only_ridge100_shuffled": {"train_correct": 11, "validation_correct": 4, "validation_top3": 16, "validation_n": 25, "dimensions": 1700}}, "seconds": 17.44096901800367, "particles": 16, "scope": "Development validation only; no test incidents loaded; weights frozen; predeclared readout menu"}
+Observations
+  vector           Space(float32, shape=(170,), low=-inf, high=inf)
+  reward           Space(float32, shape=(), low=-inf, high=inf)
+  is_first         Space(bool, shape=(), low=False, high=True)
+  is_last          Space(bool, shape=(), low=False, high=True)
+  is_terminal      Space(bool, shape=(), low=False, high=True)
+  root_cause_target Space(float32, shape=(15,), low=0, high=1)
+Actions
+  action           Space(int32, shape=(), low=0, high=1)
+Extras
+  consec           Space(int32, shape=(), low=-2147483648, high=2147483647)
+  stepid           Space(uint8, shape=(20,), low=0, high=255)
+  dyn/deter        Space(float32, shape=(512,), low=-inf, high=inf)
+  dyn/stoch        Space(float32, shape=(32, 4), low=-inf, high=inf)
+JAX devices (1): [TFRT_CPU_0]
+Policy devices: TFRT_CPU_0
+Train devices:  TFRT_CPU_0
+Initializing parameters...
+Optimizer opt has 668,281 params:
+       364,096 dyn
+        66,111 val
+        60,586 dec
+        57,663 rew
+        49,601 pol
+        41,153 con
+        19,456 enc
+         9,615 diagnosis
+Done initializing!
+Compiling 1 checkpoint groups...
+Largest checkpoint group: 0 GB
+Compiling train and report...
+Train cost analysis:
+  FLOPS:            2.2e+09
+  Memory (temp):    2.8e+07
+  Memory (inputs):  8.8e+06
+  Memory (outputs): 8.6e+06
+  Memory (code):    1.2e+06
+
+Report cost analysis:
+No available
+Done compiling!
+Did not find any checkpoint.
+Saving checkpoint: model-43/train/ckpt/20261116T215213F349701
+Saved checkpoint.
+Start training loop
+Start JAX profiler: model-43/train
+2026-11-16 21:52:22.189894: E external/xla/xla/python/profiler/internal/python_hooks.cc:400] Can't import tensorflow.python.profiler.trace
+Stop JAX profiler
+2026-11-16 21:52:24.234229: E external/xla/xla/python/profiler/internal/python_hooks.cc:400] Can't import tensorflow.python.profiler.trace
+
+--------------------[Agent Step 2_690]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.44 / train/loss/dyn 4.95 / train/loss/policy 0 / train/loss/rep 4.95 / train/loss/repval 10.37 / train/loss/rew 5.44 / train/loss/value 2.21 / train/loss/vector 55 / train/rand/action nan / replay/replay_ratio 16.28 / fps/policy 88.09 / fps/train 1337.08
+
+Writing metrics: model-43/train/scores.jsonlWriting metrics: model-43/train/metrics.jsonl
+
+
+--------------------[Agent Step 5_510]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.22 / train/loss/dyn 1.46 / train/loss/policy 0 / train/loss/rep 1.46 / train/loss/repval 8.84 / train/loss/rew 4.58 / train/loss/value 5.62 / train/loss/vector 20.28 / train/rand/action nan / replay/replay_ratio 16.98 / fps/policy 93.79 / fps/train 1498.49
+
+Writing metrics: model-43/train/scores.jsonlWriting metrics: model-43/train/metrics.jsonl
+
+
+--------------------[Agent Step 8_480]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.2 / train/loss/dyn 1.33 / train/loss/policy 0 / train/loss/rep 1.33 / train/loss/repval 5.85 / train/loss/rew 2.82 / train/loss/value 3.95 / train/loss/vector 8.44 / train/rand/action nan / replay/replay_ratio 17.03 / fps/policy 98.82 / fps/train 1584.31
+
+Writing metrics: model-43/train/metrics.jsonl
+Writing metrics: model-43/train/scores.jsonl
+
+--------------------[Agent Step 11_240]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.19 / train/loss/dyn 1.37 / train/loss/policy 0 / train/loss/rep 1.37 / train/loss/repval 2.97 / train/loss/rew 0.88 / train/loss/value 2 / train/loss/vector 2.41 / train/rand/action nan / replay/replay_ratio 17 / fps/policy 91.57 / fps/train 1465.19
+
+Writing metrics: model-43/train/metrics.jsonl
+Writing metrics: model-43/train/scores.jsonl
+
+--------------------[Agent Step 14_120]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.17 / train/loss/dyn 1.98 / train/loss/policy 0 / train/loss/rep 1.98 / train/loss/repval 1.18 / train/loss/rew 0.19 / train/loss/value 0.81 / train/loss/vector 1.47 / train/rand/action nan / replay/replay_ratio 17 / fps/policy 95.99 / fps/train 1535.9
+
+Writing metrics: model-43/train/scores.jsonl
+Writing metrics: model-43/train/metrics.jsonl
+
+--------------------[Agent Step 17_100]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.13 / train/loss/dyn 2.38 / train/loss/policy 0 / train/loss/rep 2.38 / train/loss/repval 0.49 / train/loss/rew 0.08 / train/loss/value 0.36 / train/loss/vector 1.41 / train/rand/action nan / replay/replay_ratio 16.98 / fps/policy 99.19 / fps/train 1584.83
+
+Writing metrics: model-43/train/metrics.jsonl
+Writing metrics: model-43/train/scores.jsonl
+
+--------------------[Agent Step 19_920]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.12 / train/loss/dyn 2.22 / train/loss/policy 0 / train/loss/rep 2.22 / train/loss/repval 0.29 / train/loss/rew 0.05 / train/loss/value 0.22 / train/loss/vector 1.36 / train/rand/action nan / replay/replay_ratio 17.02 / fps/policy 93.68 / fps/train 1500.93
+
+Writing metrics: model-43/train/metrics.jsonl
+Writing metrics: model-43/train/scores.jsonl
+
+--------------------[Agent Step 22_770]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.1 / train/loss/dyn 2.21 / train/loss/policy 0 / train/loss/rep 2.21 / train/loss/repval 0.2 / train/loss/rew 0.03 / train/loss/value 0.15 / train/loss/vector 1.27 / train/rand/action nan / replay/replay_ratio 16.99 / fps/policy 94.82 / fps/train 1516.07
+
+Writing metrics: model-43/train/metrics.jsonl
+Writing metrics: model-43/train/scores.jsonl
+
+--------------------[Agent Step 25_720]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.1 / train/loss/dyn 2.24 / train/loss/policy 0 / train/loss/rep 2.24 / train/loss/repval 0.15 / train/loss/rew 0.02 / train/loss/value 0.11 / train/loss/vector 1.25 / train/rand/action nan / replay/replay_ratio 17.01 / fps/policy 98.19 / fps/train 1572.18
+
+Writing metrics: model-43/train/metrics.jsonlWriting metrics: model-43/train/scores.jsonl
+
+Saving checkpoint: model-43/train/ckpt/20261116T215713F871399
+Saved checkpoint.
+
+--------------------[Agent Step 28_640]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.09 / train/loss/dyn 2.25 / train/loss/policy 0 / train/loss/rep 2.25 / train/loss/repval 0.11 / train/loss/rew 0.02 / train/loss/value 0.09 / train/loss/vector 1.23 / train/rand/action nan / replay/replay_ratio 17 / fps/policy 97.02 / fps/train 1552.3
+
+Writing metrics: model-43/train/metrics.jsonl
+Writing metrics: model-43/train/scores.jsonl
+
+--------------------[Agent Step 31_510]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.08 / train/loss/dyn 2.32 / train/loss/policy 0 / train/loss/rep 2.32 / train/loss/repval 0.08 / train/loss/rew 0.01 / train/loss/value 0.07 / train/loss/vector 1.18 / train/rand/action nan / replay/replay_ratio 16.96 / fps/policy 95.61 / fps/train 1526.6
+
+Writing metrics: model-43/train/scores.jsonlWriting metrics: model-43/train/metrics.jsonl
+
+
+--------------------[Agent Step 32_000]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20
+
+Writing metrics: model-43/train/metrics.jsonlWriting metrics: model-43/train/scores.jsonl
+
+Saving checkpoint: model-43/checkpoint/20261116T215749F818907
+Saved checkpoint.
+TRAINED 351.4445599430037
+EXTRACT 0
+EXTRACT 25
+EXTRACT 50
+EXTRACT 75
+DREAMER_COMPLETE
+Observations
+  vector           Space(float32, shape=(170,), low=-inf, high=inf)
+  reward           Space(float32, shape=(), low=-inf, high=inf)
+  is_first         Space(bool, shape=(), low=False, high=True)
+  is_last          Space(bool, shape=(), low=False, high=True)
+  is_terminal      Space(bool, shape=(), low=False, high=True)
+  root_cause_target Space(float32, shape=(15,), low=0, high=1)
+Actions
+  action           Space(int32, shape=(), low=0, high=1)
+Extras
+  consec           Space(int32, shape=(), low=-2147483648, high=2147483647)
+  stepid           Space(uint8, shape=(20,), low=0, high=255)
+  dyn/deter        Space(float32, shape=(512,), low=-inf, high=inf)
+  dyn/stoch        Space(float32, shape=(32, 4), low=-inf, high=inf)
+JAX devices (1): [TFRT_CPU_0]
+Policy devices: TFRT_CPU_0
+Train devices:  TFRT_CPU_0
+Initializing parameters...
+Optimizer opt has 668,281 params:
+       364,096 dyn
+        66,111 val
+        60,586 dec
+        57,663 rew
+        49,601 pol
+        41,153 con
+        19,456 enc
+         9,615 diagnosis
+Done initializing!
+Compiling 1 checkpoint groups...
+Largest checkpoint group: 0 GB
+Compiling train and report...
+Train cost analysis:
+  FLOPS:            2.2e+09
+  Memory (temp):    2.8e+07
+  Memory (inputs):  8.8e+06
+  Memory (outputs): 8.6e+06
+  Memory (code):    1.2e+06
+
+Report cost analysis:
+No available
+Done compiling!
+Loading checkpoint: model-43/checkpoint/20261116T215749F818907
+Loaded checkpoint.
+READOUT 0
+READOUT 25
+READOUT 50
+READOUT 75
+READOUT_COMPLETE {"results": {"last_deter_ridge1": {"train_correct": 73, "validation_correct": 24, "validation_top3": 25, "validation_n": 25, "dimensions": 512}, "last_deter_ridge1_shuffled": {"train_correct": 14, "validation_correct": 5, "validation_top3": 16, "validation_n": 25, "dimensions": 512}, "last_deter_ridge100": {"train_correct": 73, "validation_correct": 23, "validation_top3": 25, "validation_n": 25, "dimensions": 512}, "last_deter_ridge100_shuffled": {"train_correct": 47, "validation_correct": 14, "validation_top3": 20, "validation_n": 25, "dimensions": 512}, "post_mean_deter_ridge1": {"train_correct": 73, "validation_correct": 25, "validation_top3": 25, "validation_n": 25, "dimensions": 512}, "post_mean_deter_ridge1_shuffled": {"train_correct": 11, "validation_correct": 2, "validation_top3": 15, "validation_n": 25, "dimensions": 512}, "post_mean_deter_ridge100": {"train_correct": 73, "validation_correct": 25, "validation_top3": 25, "validation_n": 25, "dimensions": 512}, "post_mean_deter_ridge100_shuffled": {"train_correct": 11, "validation_correct": 4, "validation_top3": 19, "validation_n": 25, "dimensions": 512}, "post_mean_full_ridge1": {"train_correct": 73, "validation_correct": 24, "validation_top3": 25, "validation_n": 25, "dimensions": 640}, "post_mean_full_ridge1_shuffled": {"train_correct": 14, "validation_correct": 6, "validation_top3": 14, "validation_n": 25, "dimensions": 640}, "post_mean_full_ridge100": {"train_correct": 73, "validation_correct": 25, "validation_top3": 25, "validation_n": 25, "dimensions": 640}, "post_mean_full_ridge100_shuffled": {"train_correct": 8, "validation_correct": 5, "validation_top3": 11, "validation_n": 25, "dimensions": 640}, "raw_ridge1": {"train_correct": 73, "validation_correct": 23, "validation_top3": 25, "validation_n": 25, "dimensions": 3400}, "raw_ridge1_shuffled": {"train_correct": 20, "validation_correct": 9, "validation_top3": 17, "validation_n": 25, "dimensions": 3400}, "raw_ridge100": {"train_correct": 73, "validation_correct": 23, "validation_top3": 25, "validation_n": 25, "dimensions": 3400}, "raw_ridge100_shuffled": {"train_correct": 17, "validation_correct": 7, "validation_top3": 18, "validation_n": 25, "dimensions": 3400}, "mask_only_ridge1": {"train_correct": 26, "validation_correct": 7, "validation_top3": 19, "validation_n": 25, "dimensions": 1700}, "mask_only_ridge1_shuffled": {"train_correct": 13, "validation_correct": 3, "validation_top3": 15, "validation_n": 25, "dimensions": 1700}, "mask_only_ridge100": {"train_correct": 25, "validation_correct": 8, "validation_top3": 19, "validation_n": 25, "dimensions": 1700}, "mask_only_ridge100_shuffled": {"train_correct": 11, "validation_correct": 4, "validation_top3": 16, "validation_n": 25, "dimensions": 1700}}, "seconds": 16.402723526989575, "particles": 16, "scope": "Development validation only; no test incidents loaded; weights frozen; predeclared readout menu"}
