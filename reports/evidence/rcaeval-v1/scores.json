@@ -1,0 +1,404 @@
+{
+  "baro_style": {
+    "train": {
+      "n": 73,
+      "ac_at_k": {
+        "1": 0.2054794520547945,
+        "2": 0.6027397260273972,
+        "3": 0.8767123287671232,
+        "4": 0.9452054794520548,
+        "5": 0.9863013698630136
+      },
+      "avg_at_5": 0.7232876712328766,
+      "faults": {
+        "cpu": {
+          "n": 14,
+          "top1_correct": 1
+        },
+        "delay": {
+          "n": 15,
+          "top1_correct": 5
+        },
+        "disk": {
+          "n": 15,
+          "top1_correct": 2
+        },
+        "loss": {
+          "n": 14,
+          "top1_correct": 2
+        },
+        "mem": {
+          "n": 15,
+          "top1_correct": 5
+        }
+      }
+    },
+    "validation": {
+      "n": 25,
+      "ac_at_k": {
+        "1": 0.2,
+        "2": 0.76,
+        "3": 0.96,
+        "4": 1.0,
+        "5": 1.0
+      },
+      "avg_at_5": 0.784,
+      "faults": {
+        "cpu": {
+          "n": 5,
+          "top1_correct": 0
+        },
+        "delay": {
+          "n": 5,
+          "top1_correct": 2
+        },
+        "disk": {
+          "n": 5,
+          "top1_correct": 2
+        },
+        "loss": {
+          "n": 5,
+          "top1_correct": 0
+        },
+        "mem": {
+          "n": 5,
+          "top1_correct": 1
+        }
+      }
+    },
+    "test": {
+      "n": 25,
+      "ac_at_k": {
+        "1": 0.24,
+        "2": 0.52,
+        "3": 0.76,
+        "4": 0.92,
+        "5": 0.96
+      },
+      "avg_at_5": 0.6799999999999999,
+      "faults": {
+        "cpu": {
+          "n": 5,
+          "top1_correct": 0
+        },
+        "delay": {
+          "n": 5,
+          "top1_correct": 2
+        },
+        "disk": {
+          "n": 5,
+          "top1_correct": 3
+        },
+        "loss": {
+          "n": 5,
+          "top1_correct": 0
+        },
+        "mem": {
+          "n": 5,
+          "top1_correct": 1
+        }
+      }
+    },
+    "all": {
+      "n": 123,
+      "ac_at_k": {
+        "1": 0.21138211382113822,
+        "2": 0.6178861788617886,
+        "3": 0.8699186991869918,
+        "4": 0.9512195121951219,
+        "5": 0.983739837398374
+      },
+      "avg_at_5": 0.7268292682926829,
+      "faults": {
+        "cpu": {
+          "n": 24,
+          "top1_correct": 1
+        },
+        "delay": {
+          "n": 25,
+          "top1_correct": 9
+        },
+        "disk": {
+          "n": 25,
+          "top1_correct": 7
+        },
+        "loss": {
+          "n": 24,
+          "top1_correct": 2
+        },
+        "mem": {
+          "n": 25,
+          "top1_correct": 7
+        }
+      }
+    }
+  },
+  "raw_sequence": {
+    "train": {
+      "n": 73,
+      "ac_at_k": {
+        "1": 1.0,
+        "2": 1.0,
+        "3": 1.0,
+        "4": 1.0,
+        "5": 1.0
+      },
+      "avg_at_5": 1.0,
+      "faults": {
+        "cpu": {
+          "n": 14,
+          "top1_correct": 14
+        },
+        "delay": {
+          "n": 15,
+          "top1_correct": 15
+        },
+        "disk": {
+          "n": 15,
+          "top1_correct": 15
+        },
+        "loss": {
+          "n": 14,
+          "top1_correct": 14
+        },
+        "mem": {
+          "n": 15,
+          "top1_correct": 15
+        }
+      }
+    },
+    "validation": {
+      "n": 25,
+      "ac_at_k": {
+        "1": 0.92,
+        "2": 1.0,
+        "3": 1.0,
+        "4": 1.0,
+        "5": 1.0
+      },
+      "avg_at_5": 0.984,
+      "faults": {
+        "cpu": {
+          "n": 5,
+          "top1_correct": 4
+        },
+        "delay": {
+          "n": 5,
+          "top1_correct": 5
+        },
+        "disk": {
+          "n": 5,
+          "top1_correct": 5
+        },
+        "loss": {
+          "n": 5,
+          "top1_correct": 4
+        },
+        "mem": {
+          "n": 5,
+          "top1_correct": 5
+        }
+      }
+    },
+    "test": {
+      "n": 25,
+      "ac_at_k": {
+        "1": 0.96,
+        "2": 1.0,
+        "3": 1.0,
+        "4": 1.0,
+        "5": 1.0
+      },
+      "avg_at_5": 0.992,
+      "faults": {
+        "cpu": {
+          "n": 5,
+          "top1_correct": 5
+        },
+        "delay": {
+          "n": 5,
+          "top1_correct": 5
+        },
+        "disk": {
+          "n": 5,
+          "top1_correct": 5
+        },
+        "loss": {
+          "n": 5,
+          "top1_correct": 5
+        },
+        "mem": {
+          "n": 5,
+          "top1_correct": 4
+        }
+      }
+    },
+    "all": {
+      "n": 123,
+      "ac_at_k": {
+        "1": 0.975609756097561,
+        "2": 1.0,
+        "3": 1.0,
+        "4": 1.0,
+        "5": 1.0
+      },
+      "avg_at_5": 0.9951219512195122,
+      "faults": {
+        "cpu": {
+          "n": 24,
+          "top1_correct": 23
+        },
+        "delay": {
+          "n": 25,
+          "top1_correct": 25
+        },
+        "disk": {
+          "n": 25,
+          "top1_correct": 25
+        },
+        "loss": {
+          "n": 24,
+          "top1_correct": 23
+        },
+        "mem": {
+          "n": 25,
+          "top1_correct": 24
+        }
+      }
+    }
+  },
+  "dreamer_state": {
+    "train": {
+      "n": 73,
+      "ac_at_k": {
+        "1": 1.0,
+        "2": 1.0,
+        "3": 1.0,
+        "4": 1.0,
+        "5": 1.0
+      },
+      "avg_at_5": 1.0,
+      "faults": {
+        "cpu": {
+          "n": 14,
+          "top1_correct": 14
+        },
+        "delay": {
+          "n": 15,
+          "top1_correct": 15
+        },
+        "disk": {
+          "n": 15,
+          "top1_correct": 15
+        },
+        "loss": {
+          "n": 14,
+          "top1_correct": 14
+        },
+        "mem": {
+          "n": 15,
+          "top1_correct": 15
+        }
+      }
+    },
+    "validation": {
+      "n": 25,
+      "ac_at_k": {
+        "1": 0.2,
+        "2": 0.32,
+        "3": 0.52,
+        "4": 0.52,
+        "5": 0.56
+      },
+      "avg_at_5": 0.42400000000000004,
+      "faults": {
+        "cpu": {
+          "n": 5,
+          "top1_correct": 0
+        },
+        "delay": {
+          "n": 5,
+          "top1_correct": 0
+        },
+        "disk": {
+          "n": 5,
+          "top1_correct": 3
+        },
+        "loss": {
+          "n": 5,
+          "top1_correct": 2
+        },
+        "mem": {
+          "n": 5,
+          "top1_correct": 0
+        }
+      }
+    },
+    "test": {
+      "n": 25,
+      "ac_at_k": {
+        "1": 0.2,
+        "2": 0.32,
+        "3": 0.64,
+        "4": 0.76,
+        "5": 0.76
+      },
+      "avg_at_5": 0.536,
+      "faults": {
+        "cpu": {
+          "n": 5,
+          "top1_correct": 0
+        },
+        "delay": {
+          "n": 5,
+          "top1_correct": 3
+        },
+        "disk": {
+          "n": 5,
+          "top1_correct": 0
+        },
+        "loss": {
+          "n": 5,
+          "top1_correct": 0
+        },
+        "mem": {
+          "n": 5,
+          "top1_correct": 2
+        }
+      }
+    },
+    "all": {
+      "n": 123,
+      "ac_at_k": {
+        "1": 0.6747967479674797,
+        "2": 0.7235772357723578,
+        "3": 0.8292682926829268,
+        "4": 0.8536585365853658,
+        "5": 0.8617886178861789
+      },
+      "avg_at_5": 0.7886178861788619,
+      "faults": {
+        "cpu": {
+          "n": 24,
+          "top1_correct": 14
+        },
+        "delay": {
+          "n": 25,
+          "top1_correct": 18
+        },
+        "disk": {
+          "n": 25,
+          "top1_correct": 18
+        },
+        "loss": {
+          "n": 24,
+          "top1_correct": 16
+        },
+        "mem": {
+          "n": 25,
+          "top1_correct": 17
+        }
+      }
+    }
+  }
+}

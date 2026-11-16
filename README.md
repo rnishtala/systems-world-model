@@ -4,6 +4,14 @@
 
 A standalone DreamerV3 experiment for system triage. The current POC learns a recurrent representation from measured checkout/payment/ledger/PostgreSQL trajectories and serves a frozen diagnostic classifier over that state. It runs on **AMD Halo, CPU only**, in its own Kubernetes namespace: `systems-world-model-lab`.
 
+## External RCAEval experiment
+
+The isolated RE1-OB pilot completed: on 25 held-out incidents, Dreamer’s state
+classifier scored **5/25**, the matched raw-telemetry classifier **24/25**, and a
+BARO-style baseline **6/25**. This short Dreamer run did not improve triage.
+All lab deployments are restored; the serving model is unchanged.
+[Results](reports/RCAEVAL_RESULTS.md) · [Protocol](reports/RCAEVAL_PROTOCOL.md).
+
 ## Current deployment — validated live triage API
 
 The frozen Dreamer-state classifier is **deployed as the isolated lab default** (model 23, `inspect-latent`, source v20). HTTP replay matched **80/80** saved diagnoses; fresh live API validation scored **80/80**, with **10/10 in every known fault family**. Seven tests, evidence verification, rollback restoration and the post-promotion healthy check passed. This is a diagnosis-only POC for eight known regimes; broader generalization, learned investigation and LLM-driven remediation remain future work.
