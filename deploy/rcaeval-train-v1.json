@@ -110,6 +110,7 @@
           }
         ]
       }
-    }
+    },
+    "ttlSecondsAfterFinished": 86400
   }
 }

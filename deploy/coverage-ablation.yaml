@@ -4,6 +4,7 @@ metadata:
   name: dreamer-coverage-v3a
   namespace: systems-world-model-lab
 spec:
+  ttlSecondsAfterFinished: 86400
   backoffLimit: 0
   activeDeadlineSeconds: 7200
   template:

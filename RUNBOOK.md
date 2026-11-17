@@ -128,3 +128,21 @@ python -m experiment.diagnose --config /results/confirmation-v4/train-10/config.
 
 This is simulated diagnosis, not a production incident or remediation service.
 The native model weights are unchanged by inference voting.
+
+## Finished job cleanup
+
+Every checked-in Job manifest and `scripts/micro_job.py` sets
+`spec.ttlSecondsAfterFinished: 86400`. Kubernetes removes successful and failed
+Jobs and their dependent pods approximately 24 hours after completion. Running
+Jobs are unaffected. New Job templates must retain this field; this is a
+repository default, not a cluster-wide admission policy.
+
+Export pod logs and job status into the experiment evidence before that window
+expires. Checkpoints and experiment artifacts on the independently managed
+`results` PVC survive Job deletion; pod logs do not. Reader/staging Pods are
+not Jobs and must still be removed explicitly by their orchestration scripts.
+
+`scripts/cleanup_finished_jobs.py` archives terminal-job status and available
+pod logs locally. With `--apply`, it rechecks job identity/terminal state and
+deletes only those archived jobs in `systems-world-model-lab`. It verifies
+that deployment specifications and PVC identities are unchanged.

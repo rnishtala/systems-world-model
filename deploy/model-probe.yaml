@@ -4,6 +4,7 @@ metadata:
   name: dreamer-model-probe-v1
   namespace: systems-world-model-lab
 spec:
+  ttlSecondsAfterFinished: 86400
   backoffLimit: 0
   activeDeadlineSeconds: 300
   template:

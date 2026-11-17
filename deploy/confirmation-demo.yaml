@@ -4,6 +4,7 @@ metadata:
   name: dreamer-confirm-demo-v1
   namespace: systems-world-model-lab
 spec:
+  ttlSecondsAfterFinished: 86400
   backoffLimit: 0
   activeDeadlineSeconds: 600
   template:

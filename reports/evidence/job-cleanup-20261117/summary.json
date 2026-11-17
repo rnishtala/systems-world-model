@@ -1,0 +1,62 @@
+{
+  "namespace": "systems-world-model-lab",
+  "archived_jobs": 31,
+  "archived_pod_logs": 31,
+  "deleted_jobs": [
+    "dreamer-combined-v4",
+    "dreamer-confirm-10-v4",
+    "dreamer-confirm-11-v4",
+    "dreamer-confirm-12-v4",
+    "dreamer-confirm-demo-v1",
+    "dreamer-coverage-v3",
+    "dreamer-coverage-v3a",
+    "dreamer-greedy-v6",
+    "dreamer-main-v1",
+    "dreamer-model-probe-v1",
+    "dreamer-model-probe-v4",
+    "dreamer-particles-v7",
+    "dreamer-penalty-v2",
+    "dreamer-planner-v5",
+    "dreamer-planner-v5a",
+    "dreamer-poc-v1",
+    "swm-calibration-v1",
+    "swm-calibration-v1a",
+    "swm-confirm-10-v1",
+    "swm-confirm-11-v1",
+    "swm-confirm-12-v1",
+    "swm-guard-pilot-v1",
+    "swm-live-confirm-v1",
+    "swm-live-dev-v1",
+    "swm-live-dev-v1a",
+    "swm-live-dev-v2",
+    "swm-live-dev-v3",
+    "swm-probe-v2",
+    "swm-train-dev-v1",
+    "swm-train-dev-v2",
+    "swm-unknown-dev-v1"
+  ],
+  "archive": "/Users/rnishtala/src/systems-world-model/artifacts/job-cleanup-20261117T023350Z",
+  "deployments_and_pvcs_unchanged": true,
+  "remaining_pods": [
+    {
+      "name": "swm-checkout-7969f869cc-6tqtv",
+      "phase": "Running"
+    },
+    {
+      "name": "swm-inference-69cd4867f5-mhhn6",
+      "phase": "Running"
+    },
+    {
+      "name": "swm-ledger-596cc8fb5c-kfbps",
+      "phase": "Running"
+    },
+    {
+      "name": "swm-payment-c9d8b49fb-rtk2b",
+      "phase": "Running"
+    },
+    {
+      "name": "swm-postgres-75bc9f7f47-vr9zl",
+      "phase": "Running"
+    }
+  ]
+}

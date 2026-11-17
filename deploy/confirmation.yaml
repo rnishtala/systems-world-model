@@ -4,6 +4,7 @@ metadata:
   name: dreamer-confirm-10-v4
   namespace: systems-world-model-lab
 spec:
+  ttlSecondsAfterFinished: 86400
   backoffLimit: 0
   activeDeadlineSeconds: 7200
   template:
@@ -74,6 +75,7 @@ metadata:
   name: dreamer-confirm-11-v4
   namespace: systems-world-model-lab
 spec:
+  ttlSecondsAfterFinished: 86400
   backoffLimit: 0
   activeDeadlineSeconds: 7200
   template:
@@ -144,6 +146,7 @@ metadata:
   name: dreamer-confirm-12-v4
   namespace: systems-world-model-lab
 spec:
+  ttlSecondsAfterFinished: 86400
   backoffLimit: 0
   activeDeadlineSeconds: 7200
   template:

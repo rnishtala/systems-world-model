@@ -111,6 +111,7 @@
         ],
         "terminationGracePeriodSeconds": 1
       }
-    }
+    },
+    "ttlSecondsAfterFinished": 86400
   }
 }
