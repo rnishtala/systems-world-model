@@ -1,6 +1,6 @@
 {
   "name": "swm-session",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "description": "Connect Headlamp logout to the lab ngrok OAuth session",
   "main": "main.js",
   "devDependencies": {

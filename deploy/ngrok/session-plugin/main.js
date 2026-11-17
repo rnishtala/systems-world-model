@@ -2,6 +2,19 @@
 (function () {
   const { React, ReactRouter, registerAppBarAction } = window.pluginLib;
   const key = 'swm.logout-generation';
+  const signedOutKey = 'swm.signed-out';
+  const returnPath = '/c/systems-world-model-lab/workloads?swm_login_complete=1';
+  const loginUrl = '/ngrok/login?redirect_path=' + encodeURIComponent(returnPath);
+  let loginReturn = false;
+  try { loginReturn = sessionStorage.getItem('swm.login-pending') === 'true'; } catch (_) {}
+  function startLogin() {
+    leaving = true;
+    document.documentElement.style.visibility = 'hidden';
+    try { sessionStorage.setItem('swm.login-pending', 'true'); } catch (_) {}
+    window.location.replace(loginUrl);
+  }
+  function isSignedOut() { try { return localStorage.getItem(signedOutKey) === 'true'; } catch (_) { return false; } }
+
   const readGeneration = () => { try { return localStorage.getItem(key); } catch (_) { return null; } };
   const initialGeneration = readGeneration();
   const channel = typeof BroadcastChannel === 'function' ? new BroadcastChannel('swm-session') : null;
@@ -10,6 +23,10 @@
   let checking = false;
   async function revalidate() {
     if (leaving || checking) return;
+    if (isSignedOut() && !loginReturn) {
+      startLogin();
+      return;
+    }
     checking = true;
     document.documentElement.style.visibility = 'hidden';
     const controller = new AbortController();
@@ -22,11 +39,19 @@
         signal: controller.signal
       });
       if (!response.ok) throw new Error('Session check failed');
-      if (!leaving) document.documentElement.style.visibility = '';
+      if (!leaving) {
+        if (loginReturn) {
+          loginReturn = false;
+          try { sessionStorage.removeItem('swm.login-pending'); } catch (_) {}
+          try { localStorage.removeItem(signedOutKey); } catch (_) {}
+          window.location.replace('/c/systems-world-model-lab/workloads');
+          return;
+        }
+        document.documentElement.style.visibility = '';
+      }
     } catch (_) {
       if (!leaving) {
-        leaving = true;
-        window.location.replace('/ngrok/login?redirect_path=%2Fc%2Fsystems-world-model-lab%2Fworkloads');
+        startLogin();
       }
     } finally {
       clearTimeout(timeout);
@@ -42,6 +67,8 @@
   }
   function logout() {
     if (leaving) return;
+    try { sessionStorage.removeItem('swm.login-pending'); } catch (_) {}
+    try { localStorage.setItem(signedOutKey, 'true'); } catch (_) {}
     try { localStorage.setItem(key, Date.now() + ':' + Math.random()); } catch (_) {}
     if (channel) channel.postMessage('logout');
     leave();

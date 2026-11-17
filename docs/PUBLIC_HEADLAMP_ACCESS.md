@@ -144,3 +144,24 @@ cross-tab logout. Live Firefox reproduced the old failure, then with 0.1.4
 Account > Log out reached Logged out and Back reached Google Choose an account.
 The session-check URL returned HTTP 302 without cookies. Only the session plugin
 ConfigMap and public UI Deployment were updated in the lab namespace.
+
+## Reopening after logout (plugin 0.1.6)
+
+The uncached request alone did not preserve explicit logout across new documents.
+Logout now persists a browser-local signed-out marker. A reopened lab document
+starts explicit ngrok login while that marker is present, even if a provider
+session is available. A tab-local pending-login marker tracks the return, and
+only a successful uncached authentication check clears signed-out state. The
+return navigates to Workloads. The server OAuth/allowlist boundary is unchanged.
+
+Do not depend on ngrok preserving the redirect_path query: the live callback
+did not reliably return our completion parameter. The initial automatic OAuth
+flow can be followed by the explicit login flow, so Google confirmation can
+appear twice. This is a remaining UX limitation; login completes rather than
+looping. Users need to load the updated plugin before logging out.
+
+Live Firefox checks: logout reached Logged out; opening both the public root
+and the original cluster bookmark in a new tab reached Choose an account.
+Completing login returned to Workloads with six healthy pods. Regression tests
+also cover reopening with an already-valid outer session and clearing the
+logout marker after successful explicit login.

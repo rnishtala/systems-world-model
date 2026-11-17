@@ -1,0 +1,9 @@
+{
+  "date": "2026-11-17",
+  "plugin": "0.1.6",
+  "new_tab_root_after_logout": "Google Choose an account",
+  "new_tab_cluster_bookmark_after_logout": "Google Choose an account",
+  "login_completed": "Workloads, 6 healthy pods",
+  "regression_tests": "passed",
+  "limitation": "An automatic OAuth flow may precede explicit login, requiring Google confirmation twice"
+}
