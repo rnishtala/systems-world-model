@@ -1,0 +1,892 @@
+Observations
+  vector           Space(float32, shape=(172,), low=-inf, high=inf)
+  reward           Space(float32, shape=(), low=-inf, high=inf)
+  is_first         Space(bool, shape=(), low=False, high=True)
+  is_last          Space(bool, shape=(), low=False, high=True)
+  is_terminal      Space(bool, shape=(), low=False, high=True)
+  root_cause_target Space(float32, shape=(16,), low=0, high=1)
+Actions
+  action           Space(int32, shape=(), low=0, high=1)
+Extras
+  consec           Space(int32, shape=(), low=-2147483648, high=2147483647)
+  stepid           Space(uint8, shape=(20,), low=0, high=255)
+  dyn/deter        Space(float32, shape=(512,), low=-inf, high=inf)
+  dyn/stoch        Space(float32, shape=(32, 4), low=-inf, high=inf)
+JAX devices (1): [TFRT_CPU_0]
+Policy devices: TFRT_CPU_0
+Train devices:  TFRT_CPU_0
+Initializing parameters...
+Optimizer opt has 669,180 params:
+       364,096 dyn
+        66,111 val
+        60,716 dec
+        57,663 rew
+        49,601 pol
+        41,153 con
+        19,584 enc
+        10,256 diagnosis
+Done initializing!
+Compiling 1 checkpoint groups...
+Largest checkpoint group: 0 GB
+Compiling train and report...
+Train cost analysis:
+  FLOPS:            2.2e+09
+  Memory (temp):    2.8e+07
+  Memory (inputs):  8.8e+06
+  Memory (outputs): 8.6e+06
+  Memory (code):    1.2e+06
+
+Report cost analysis:
+No available
+Done compiling!
+Did not find any checkpoint.
+Saving checkpoint: model-world-42/train/ckpt/20261117T030026F647105
+Saved checkpoint.
+Start training loop
+Start JAX profiler: model-world-42/train
+2026-11-17 03:00:34.815751: E external/xla/xla/python/profiler/internal/python_hooks.cc:400] Can't import tensorflow.python.profiler.trace
+Stop JAX profiler
+2026-11-17 03:00:36.723619: E external/xla/xla/python/profiler/internal/python_hooks.cc:400] Can't import tensorflow.python.profiler.trace
+
+--------------------[Agent Step 2_920]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.32 / train/loss/dyn 5.15 / train/loss/policy 0 / train/loss/rep 5.15 / train/loss/repval 10.31 / train/loss/rew 5.42 / train/loss/value 3.01 / train/loss/vector 49.25 / train/rand/action nan / replay/replay_ratio 16.34 / fps/policy 95.24 / fps/train 1452.93
+
+Writing metrics: model-world-42/train/metrics.jsonlWriting metrics: model-world-42/train/scores.jsonl
+
+
+--------------------[Agent Step 5_990]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.2 / train/loss/dyn 1.15 / train/loss/policy 0 / train/loss/rep 1.15 / train/loss/repval 8.45 / train/loss/rew 4.44 / train/loss/value 5.33 / train/loss/vector 17.58 / train/rand/action nan / replay/replay_ratio 16.97 / fps/policy 102.2 / fps/train 1632.08
+
+Writing metrics: model-world-42/train/scores.jsonlWriting metrics: model-world-42/train/metrics.jsonl
+
+
+--------------------[Agent Step 9_220]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.15 / train/loss/dyn 1.01 / train/loss/policy 0 / train/loss/rep 1.01 / train/loss/repval 5.08 / train/loss/rew 2.42 / train/loss/value 3.05 / train/loss/vector 7.89 / train/rand/action nan / replay/replay_ratio 17.01 / fps/policy 107.48 / fps/train 1720.76
+
+Writing metrics: model-world-42/train/metrics.jsonl
+Writing metrics: model-world-42/train/scores.jsonl
+
+--------------------[Agent Step 12_350]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.11 / train/loss/dyn 1.02 / train/loss/policy 0 / train/loss/rep 1.02 / train/loss/repval 2.14 / train/loss/rew 0.57 / train/loss/value 1.36 / train/loss/vector 6.18 / train/rand/action nan / replay/replay_ratio 16.99 / fps/policy 104.15 / fps/train 1665.4
+
+Writing metrics: model-world-42/train/metrics.jsonl
+Writing metrics: model-world-42/train/scores.jsonl
+
+--------------------[Agent Step 15_490]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.07 / train/loss/dyn 1.05 / train/loss/policy 0 / train/loss/rep 1.05 / train/loss/repval 0.72 / train/loss/rew 0.14 / train/loss/value 0.53 / train/loss/vector 6 / train/rand/action nan / replay/replay_ratio 17.02 / fps/policy 104.49 / fps/train 1673.91
+
+Writing metrics: model-world-42/train/scores.jsonl
+Writing metrics: model-world-42/train/metrics.jsonl
+
+--------------------[Agent Step 18_680]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.04 / train/loss/dyn 1.18 / train/loss/policy 0 / train/loss/rep 1.18 / train/loss/repval 0.35 / train/loss/rew 0.07 / train/loss/value 0.28 / train/loss/vector 5.99 / train/rand/action nan / replay/replay_ratio 17.01 / fps/policy 105.86 / fps/train 1694.77
+
+Writing metrics: model-world-42/train/metrics.jsonlWriting metrics: model-world-42/train/scores.jsonl
+
+
+--------------------[Agent Step 21_800]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.04 / train/loss/dyn 1.73 / train/loss/policy 0 / train/loss/rep 1.73 / train/loss/repval 0.22 / train/loss/rew 0.04 / train/loss/value 0.18 / train/loss/vector 5.97 / train/rand/action nan / replay/replay_ratio 17 / fps/policy 103.76 / fps/train 1660.22
+
+Writing metrics: model-world-42/train/metrics.jsonlWriting metrics: model-world-42/train/scores.jsonl
+
+
+--------------------[Agent Step 24_840]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.06 / train/loss/dyn 2.15 / train/loss/policy 0 / train/loss/rep 2.15 / train/loss/repval 0.15 / train/loss/rew 0.03 / train/loss/value 0.13 / train/loss/vector 5.97 / train/rand/action nan / replay/replay_ratio 17 / fps/policy 101.05 / fps/train 1616.78
+
+Writing metrics: model-world-42/train/scores.jsonl
+Writing metrics: model-world-42/train/metrics.jsonl
+
+--------------------[Agent Step 27_980]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.06 / train/loss/dyn 1.83 / train/loss/policy 0 / train/loss/rep 1.83 / train/loss/repval 0.11 / train/loss/rew 0.02 / train/loss/value 0.1 / train/loss/vector 5.97 / train/rand/action nan / replay/replay_ratio 16.98 / fps/policy 104.46 / fps/train 1669.28
+
+Writing metrics: model-world-42/train/scores.jsonlWriting metrics: model-world-42/train/metrics.jsonl
+
+Saving checkpoint: model-world-42/train/ckpt/20261117T030527F148877
+Saved checkpoint.
+
+--------------------[Agent Step 31_090]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.05 / train/loss/dyn 1.61 / train/loss/policy 0 / train/loss/rep 1.61 / train/loss/repval 0.09 / train/loss/rew 0.01 / train/loss/value 0.07 / train/loss/vector 5.92 / train/rand/action nan / replay/replay_ratio 17.01 / fps/policy 103.32 / fps/train 1654.2
+
+Writing metrics: model-world-42/train/scores.jsonl
+Writing metrics: model-world-42/train/metrics.jsonl
+
+--------------------[Agent Step 32_000]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20
+
+Writing metrics: model-world-42/train/metrics.jsonlWriting metrics: model-world-42/train/scores.jsonl
+
+Saving checkpoint: model-world-42/checkpoint/20261117T030537F149953
+Saved checkpoint.
+TRAINED 326.8391780189995
+EXTRACT 0
+EXTRACT 25
+EXTRACT 50
+EXTRACT 75
+DREAMER_COMPLETE
+OBJECTIVE_AUDIT {"auxiliary_only": false, "training_metric_rows_checked": 10, "optimized_equals_diagnosis": false, "base_loss_scalar_derivative": 1.0, "scope": "Actual optimized-loss metrics plus derivative of the loss-combination function; not a per-parameter gradient audit."}
+Observations
+  vector           Space(float32, shape=(172,), low=-inf, high=inf)
+  reward           Space(float32, shape=(), low=-inf, high=inf)
+  is_first         Space(bool, shape=(), low=False, high=True)
+  is_last          Space(bool, shape=(), low=False, high=True)
+  is_terminal      Space(bool, shape=(), low=False, high=True)
+  root_cause_target Space(float32, shape=(16,), low=0, high=1)
+Actions
+  action           Space(int32, shape=(), low=0, high=1)
+Extras
+  consec           Space(int32, shape=(), low=-2147483648, high=2147483647)
+  stepid           Space(uint8, shape=(20,), low=0, high=255)
+  dyn/deter        Space(float32, shape=(512,), low=-inf, high=inf)
+  dyn/stoch        Space(float32, shape=(32, 4), low=-inf, high=inf)
+JAX devices (1): [TFRT_CPU_0]
+Policy devices: TFRT_CPU_0
+Train devices:  TFRT_CPU_0
+Initializing parameters...
+Optimizer opt has 669,180 params:
+       364,096 dyn
+        66,111 val
+        60,716 dec
+        57,663 rew
+        49,601 pol
+        41,153 con
+        19,584 enc
+        10,256 diagnosis
+Done initializing!
+Compiling 1 checkpoint groups...
+Largest checkpoint group: 0 GB
+Compiling train and report...
+Train cost analysis:
+  FLOPS:            2.2e+09
+  Memory (temp):    2.8e+07
+  Memory (inputs):  8.8e+06
+  Memory (outputs): 8.6e+06
+  Memory (code):    1.2e+06
+
+Report cost analysis:
+No available
+Done compiling!
+Loading checkpoint: model-world-42/checkpoint/20261117T030537F149953
+Loaded checkpoint.
+READOUT 0
+READOUT 25
+READOUT 50
+READOUT 75
+Observations
+  vector           Space(float32, shape=(172,), low=-inf, high=inf)
+  reward           Space(float32, shape=(), low=-inf, high=inf)
+  is_first         Space(bool, shape=(), low=False, high=True)
+  is_last          Space(bool, shape=(), low=False, high=True)
+  is_terminal      Space(bool, shape=(), low=False, high=True)
+  root_cause_target Space(float32, shape=(16,), low=0, high=1)
+Actions
+  action           Space(int32, shape=(), low=0, high=1)
+Extras
+  consec           Space(int32, shape=(), low=-2147483648, high=2147483647)
+  stepid           Space(uint8, shape=(20,), low=0, high=255)
+  dyn/deter        Space(float32, shape=(512,), low=-inf, high=inf)
+  dyn/stoch        Space(float32, shape=(32, 4), low=-inf, high=inf)
+JAX devices (1): [TFRT_CPU_0]
+Policy devices: TFRT_CPU_0
+Train devices:  TFRT_CPU_0
+Initializing parameters...
+Optimizer opt has 669,180 params:
+       364,096 dyn
+        66,111 val
+        60,716 dec
+        57,663 rew
+        49,601 pol
+        41,153 con
+        19,584 enc
+        10,256 diagnosis
+Done initializing!
+Compiling 1 checkpoint groups...
+Largest checkpoint group: 0 GB
+Compiling train and report...
+Train cost analysis:
+  FLOPS:            2.2e+09
+  Memory (temp):    2.8e+07
+  Memory (inputs):  8.8e+06
+  Memory (outputs): 8.6e+06
+  Memory (code):    1.2e+06
+
+Report cost analysis:
+No available
+Done compiling!
+Loading checkpoint: model-world-42/checkpoint/20261117T030537F149953
+Loaded checkpoint.
+READOUT 0
+READOUT 25
+READOUT 50
+READOUT 75
+Observations
+  vector           Space(float32, shape=(172,), low=-inf, high=inf)
+  reward           Space(float32, shape=(), low=-inf, high=inf)
+  is_first         Space(bool, shape=(), low=False, high=True)
+  is_last          Space(bool, shape=(), low=False, high=True)
+  is_terminal      Space(bool, shape=(), low=False, high=True)
+  root_cause_target Space(float32, shape=(16,), low=0, high=1)
+Actions
+  action           Space(int32, shape=(), low=0, high=1)
+Extras
+  consec           Space(int32, shape=(), low=-2147483648, high=2147483647)
+  stepid           Space(uint8, shape=(20,), low=0, high=255)
+  dyn/deter        Space(float32, shape=(512,), low=-inf, high=inf)
+  dyn/stoch        Space(float32, shape=(32, 4), low=-inf, high=inf)
+JAX devices (1): [TFRT_CPU_0]
+Policy devices: TFRT_CPU_0
+Train devices:  TFRT_CPU_0
+Initializing parameters...
+Optimizer opt has 669,180 params:
+       364,096 dyn
+        66,111 val
+        60,716 dec
+        57,663 rew
+        49,601 pol
+        41,153 con
+        19,584 enc
+        10,256 diagnosis
+Done initializing!
+Compiling 1 checkpoint groups...
+Largest checkpoint group: 0 GB
+Compiling train and report...
+Train cost analysis:
+  FLOPS:            1.4e+09
+  Memory (temp):    2.0e+07
+  Memory (inputs):  8.8e+06
+  Memory (outputs): 8.6e+06
+  Memory (code):    9.5e+05
+
+Report cost analysis:
+No available
+Done compiling!
+Did not find any checkpoint.
+Saving checkpoint: model-control-42/train/ckpt/20261117T030635F767769
+Saved checkpoint.
+Start training loop
+Start JAX profiler: model-control-42/train
+2026-11-17 03:06:42.887271: E external/xla/xla/python/profiler/internal/python_hooks.cc:400] Can't import tensorflow.python.profiler.trace
+Stop JAX profiler
+2026-11-17 03:06:44.383938: E external/xla/xla/python/profiler/internal/python_hooks.cc:400] Can't import tensorflow.python.profiler.trace
+
+--------------------[Agent Step 3_560]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.47 / train/loss/dyn 8.18 / train/loss/policy 0 / train/loss/rep 8.18 / train/loss/repval 10.53 / train/loss/rew 5.54 / train/loss/value 1.39 / train/loss/vector 73.16 / train/rand/action nan / replay/replay_ratio 16.46 / fps/policy 115.65 / fps/train 1779.69
+
+Writing metrics: model-control-42/train/metrics.jsonl
+Writing metrics: model-control-42/train/scores.jsonl
+
+--------------------[Agent Step 7_270]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.57 / train/loss/dyn 12.36 / train/loss/policy 0 / train/loss/rep 12.36 / train/loss/repval 10.53 / train/loss/rew 5.54 / train/loss/value 1.22 / train/loss/vector 73.57 / train/rand/action nan / replay/replay_ratio 16.97 / fps/policy 123.52 / fps/train 1973.17
+
+Writing metrics: model-control-42/train/metrics.jsonlWriting metrics: model-control-42/train/scores.jsonl
+
+
+--------------------[Agent Step 11_030]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.51 / train/loss/dyn 11.73 / train/loss/policy 0 / train/loss/rep 11.73 / train/loss/repval 10.53 / train/loss/rew 5.54 / train/loss/value 1.33 / train/loss/vector 75.72 / train/rand/action nan / replay/replay_ratio 17 / fps/policy 125.21 / fps/train 2003.4
+
+Writing metrics: model-control-42/train/scores.jsonl
+Writing metrics: model-control-42/train/metrics.jsonl
+
+--------------------[Agent Step 14_830]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.55 / train/loss/dyn 14.02 / train/loss/policy 0 / train/loss/rep 14.02 / train/loss/repval 10.53 / train/loss/rew 5.54 / train/loss/value 1.13 / train/loss/vector 76.3 / train/rand/action nan / replay/replay_ratio 17 / fps/policy 126.55 / fps/train 2024.75
+
+Writing metrics: model-control-42/train/scores.jsonl
+Writing metrics: model-control-42/train/metrics.jsonl
+
+--------------------[Agent Step 18_600]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.55 / train/loss/dyn 15.17 / train/loss/policy 0 / train/loss/rep 15.17 / train/loss/repval 10.53 / train/loss/rew 5.54 / train/loss/value 1.12 / train/loss/vector 75.73 / train/rand/action nan / replay/replay_ratio 17.03 / fps/policy 125.52 / fps/train 2011.47
+
+Writing metrics: model-control-42/train/scores.jsonl
+Writing metrics: model-control-42/train/metrics.jsonl
+
+--------------------[Agent Step 22_380]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.57 / train/loss/dyn 15.28 / train/loss/policy 0 / train/loss/rep 15.28 / train/loss/repval 10.53 / train/loss/rew 5.54 / train/loss/value 1.09 / train/loss/vector 75.58 / train/rand/action nan / replay/replay_ratio 16.98 / fps/policy 125.76 / fps/train 2010.06
+
+Writing metrics: model-control-42/train/scores.jsonl
+Writing metrics: model-control-42/train/metrics.jsonl
+
+--------------------[Agent Step 26_130]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.56 / train/loss/dyn 15.66 / train/loss/policy 0 / train/loss/rep 15.66 / train/loss/repval 10.53 / train/loss/rew 5.54 / train/loss/value 1.1 / train/loss/vector 75.07 / train/rand/action nan / replay/replay_ratio 17.01 / fps/policy 124.95 / fps/train 2000.33
+
+Writing metrics: model-control-42/train/metrics.jsonl
+Writing metrics: model-control-42/train/scores.jsonl
+
+--------------------[Agent Step 29_940]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.57 / train/loss/dyn 15.79 / train/loss/policy 0 / train/loss/rep 15.79 / train/loss/repval 10.52 / train/loss/rew 5.54 / train/loss/value 1.07 / train/loss/vector 74.98 / train/rand/action nan / replay/replay_ratio 16.99 / fps/policy 126.95 / fps/train 2030.16
+
+Writing metrics: model-control-42/train/metrics.jsonl
+Writing metrics: model-control-42/train/scores.jsonl
+
+--------------------[Agent Step 32_000]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20
+
+Writing metrics: model-control-42/train/metrics.jsonl
+Writing metrics: model-control-42/train/scores.jsonl
+Saving checkpoint: model-control-42/checkpoint/20261117T031052F897921
+Saved checkpoint.
+TRAINED 272.0635826309881
+EXTRACT 0
+EXTRACT 25
+EXTRACT 50
+EXTRACT 75
+DREAMER_COMPLETE
+OBJECTIVE_AUDIT {"auxiliary_only": true, "training_metric_rows_checked": 8, "optimized_equals_diagnosis": true, "base_loss_scalar_derivative": 0.0, "scope": "Actual optimized-loss metrics plus derivative of the loss-combination function; not a per-parameter gradient audit."}
+Observations
+  vector           Space(float32, shape=(172,), low=-inf, high=inf)
+  reward           Space(float32, shape=(), low=-inf, high=inf)
+  is_first         Space(bool, shape=(), low=False, high=True)
+  is_last          Space(bool, shape=(), low=False, high=True)
+  is_terminal      Space(bool, shape=(), low=False, high=True)
+  root_cause_target Space(float32, shape=(16,), low=0, high=1)
+Actions
+  action           Space(int32, shape=(), low=0, high=1)
+Extras
+  consec           Space(int32, shape=(), low=-2147483648, high=2147483647)
+  stepid           Space(uint8, shape=(20,), low=0, high=255)
+  dyn/deter        Space(float32, shape=(512,), low=-inf, high=inf)
+  dyn/stoch        Space(float32, shape=(32, 4), low=-inf, high=inf)
+JAX devices (1): [TFRT_CPU_0]
+Policy devices: TFRT_CPU_0
+Train devices:  TFRT_CPU_0
+Initializing parameters...
+Optimizer opt has 669,180 params:
+       364,096 dyn
+        66,111 val
+        60,716 dec
+        57,663 rew
+        49,601 pol
+        41,153 con
+        19,584 enc
+        10,256 diagnosis
+Done initializing!
+Compiling 1 checkpoint groups...
+Largest checkpoint group: 0 GB
+Compiling train and report...
+Train cost analysis:
+  FLOPS:            1.4e+09
+  Memory (temp):    2.0e+07
+  Memory (inputs):  8.8e+06
+  Memory (outputs): 8.6e+06
+  Memory (code):    9.5e+05
+
+Report cost analysis:
+No available
+Done compiling!
+Loading checkpoint: model-control-42/checkpoint/20261117T031052F897921
+Loaded checkpoint.
+READOUT 0
+READOUT 25
+READOUT 50
+READOUT 75
+Observations
+  vector           Space(float32, shape=(172,), low=-inf, high=inf)
+  reward           Space(float32, shape=(), low=-inf, high=inf)
+  is_first         Space(bool, shape=(), low=False, high=True)
+  is_last          Space(bool, shape=(), low=False, high=True)
+  is_terminal      Space(bool, shape=(), low=False, high=True)
+  root_cause_target Space(float32, shape=(16,), low=0, high=1)
+Actions
+  action           Space(int32, shape=(), low=0, high=1)
+Extras
+  consec           Space(int32, shape=(), low=-2147483648, high=2147483647)
+  stepid           Space(uint8, shape=(20,), low=0, high=255)
+  dyn/deter        Space(float32, shape=(512,), low=-inf, high=inf)
+  dyn/stoch        Space(float32, shape=(32, 4), low=-inf, high=inf)
+JAX devices (1): [TFRT_CPU_0]
+Policy devices: TFRT_CPU_0
+Train devices:  TFRT_CPU_0
+Initializing parameters...
+Optimizer opt has 669,180 params:
+       364,096 dyn
+        66,111 val
+        60,716 dec
+        57,663 rew
+        49,601 pol
+        41,153 con
+        19,584 enc
+        10,256 diagnosis
+Done initializing!
+Compiling 1 checkpoint groups...
+Largest checkpoint group: 0 GB
+Compiling train and report...
+Train cost analysis:
+  FLOPS:            1.4e+09
+  Memory (temp):    2.0e+07
+  Memory (inputs):  8.8e+06
+  Memory (outputs): 8.6e+06
+  Memory (code):    9.5e+05
+
+Report cost analysis:
+No available
+Done compiling!
+Loading checkpoint: model-control-42/checkpoint/20261117T031052F897921
+Loaded checkpoint.
+READOUT 0
+READOUT 25
+READOUT 50
+READOUT 75
+Observations
+  vector           Space(float32, shape=(172,), low=-inf, high=inf)
+  reward           Space(float32, shape=(), low=-inf, high=inf)
+  is_first         Space(bool, shape=(), low=False, high=True)
+  is_last          Space(bool, shape=(), low=False, high=True)
+  is_terminal      Space(bool, shape=(), low=False, high=True)
+  root_cause_target Space(float32, shape=(16,), low=0, high=1)
+Actions
+  action           Space(int32, shape=(), low=0, high=1)
+Extras
+  consec           Space(int32, shape=(), low=-2147483648, high=2147483647)
+  stepid           Space(uint8, shape=(20,), low=0, high=255)
+  dyn/deter        Space(float32, shape=(512,), low=-inf, high=inf)
+  dyn/stoch        Space(float32, shape=(32, 4), low=-inf, high=inf)
+JAX devices (1): [TFRT_CPU_0]
+Policy devices: TFRT_CPU_0
+Train devices:  TFRT_CPU_0
+Initializing parameters...
+Optimizer opt has 669,180 params:
+       364,096 dyn
+        66,111 val
+        60,716 dec
+        57,663 rew
+        49,601 pol
+        41,153 con
+        19,584 enc
+        10,256 diagnosis
+Done initializing!
+Compiling 1 checkpoint groups...
+Largest checkpoint group: 0 GB
+Compiling train and report...
+Train cost analysis:
+  FLOPS:            2.2e+09
+  Memory (temp):    2.8e+07
+  Memory (inputs):  8.8e+06
+  Memory (outputs): 8.6e+06
+  Memory (code):    1.2e+06
+
+Report cost analysis:
+No available
+Done compiling!
+Did not find any checkpoint.
+Saving checkpoint: model-world-43/train/ckpt/20261117T031146F949577
+Saved checkpoint.
+Start training loop
+Start JAX profiler: model-world-43/train
+2026-11-17 03:11:55.196350: E external/xla/xla/python/profiler/internal/python_hooks.cc:400] Can't import tensorflow.python.profiler.trace
+Stop JAX profiler
+2026-11-17 03:11:57.060835: E external/xla/xla/python/profiler/internal/python_hooks.cc:400] Can't import tensorflow.python.profiler.trace
+
+--------------------[Agent Step 2_910]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.43 / train/loss/dyn 4.66 / train/loss/policy 0 / train/loss/rep 4.66 / train/loss/repval 10.33 / train/loss/rew 5.42 / train/loss/value 2.46 / train/loss/vector 52.63 / train/rand/action nan / replay/replay_ratio 16.31 / fps/policy 95.42 / fps/train 1452.24
+
+Writing metrics: model-world-43/train/metrics.jsonl
+Writing metrics: model-world-43/train/scores.jsonl
+
+--------------------[Agent Step 5_990]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.21 / train/loss/dyn 1.12 / train/loss/policy 0 / train/loss/rep 1.12 / train/loss/repval 8.5 / train/loss/rew 4.39 / train/loss/value 5.56 / train/loss/vector 18.1 / train/rand/action nan / replay/replay_ratio 17 / fps/policy 102.66 / fps/train 1642.57
+
+Writing metrics: model-world-43/train/metrics.jsonlWriting metrics: model-world-43/train/scores.jsonl
+
+
+--------------------[Agent Step 9_170]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.16 / train/loss/dyn 1.01 / train/loss/policy 0 / train/loss/rep 1.01 / train/loss/repval 5.19 / train/loss/rew 2.36 / train/loss/value 3.18 / train/loss/vector 9.13 / train/rand/action nan / replay/replay_ratio 17.02 / fps/policy 105.86 / fps/train 1695.92
+
+Writing metrics: model-world-43/train/metrics.jsonlWriting metrics: model-world-43/train/scores.jsonl
+
+
+--------------------[Agent Step 12_350]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.12 / train/loss/dyn 1.04 / train/loss/policy 0 / train/loss/rep 1.04 / train/loss/repval 2.26 / train/loss/rew 0.52 / train/loss/value 1.42 / train/loss/vector 6.36 / train/rand/action nan / replay/replay_ratio 16.98 / fps/policy 105.91 / fps/train 1692.45
+
+Writing metrics: model-world-43/train/scores.jsonlWriting metrics: model-world-43/train/metrics.jsonl
+
+
+--------------------[Agent Step 15_530]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.07 / train/loss/dyn 1.11 / train/loss/policy 0 / train/loss/rep 1.11 / train/loss/repval 0.76 / train/loss/rew 0.12 / train/loss/value 0.54 / train/loss/vector 6.03 / train/rand/action nan / replay/replay_ratio 17.02 / fps/policy 105.93 / fps/train 1697
+
+Writing metrics: model-world-43/train/scores.jsonlWriting metrics: model-world-43/train/metrics.jsonl
+
+
+--------------------[Agent Step 18_720]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.04 / train/loss/dyn 1.44 / train/loss/policy 0 / train/loss/rep 1.44 / train/loss/repval 0.36 / train/loss/rew 0.06 / train/loss/value 0.28 / train/loss/vector 5.99 / train/rand/action nan / replay/replay_ratio 17.01 / fps/policy 106.13 / fps/train 1699.18
+
+Writing metrics: model-world-43/train/scores.jsonlWriting metrics: model-world-43/train/metrics.jsonl
+
+
+--------------------[Agent Step 21_880]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.05 / train/loss/dyn 1.79 / train/loss/policy 0 / train/loss/rep 1.79 / train/loss/repval 0.22 / train/loss/rew 0.04 / train/loss/value 0.18 / train/loss/vector 5.91 / train/rand/action nan / replay/replay_ratio 17 / fps/policy 105.32 / fps/train 1685.2
+
+Writing metrics: model-world-43/train/metrics.jsonlWriting metrics: model-world-43/train/scores.jsonl
+
+
+--------------------[Agent Step 25_030]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.06 / train/loss/dyn 1.81 / train/loss/policy 0 / train/loss/rep 1.81 / train/loss/repval 0.16 / train/loss/rew 0.02 / train/loss/value 0.13 / train/loss/vector 5.89 / train/rand/action nan / replay/replay_ratio 16.97 / fps/policy 104.81 / fps/train 1673.77
+
+Writing metrics: model-world-43/train/scores.jsonl
+Writing metrics: model-world-43/train/metrics.jsonl
+
+--------------------[Agent Step 28_220]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.06 / train/loss/dyn 1.68 / train/loss/policy 0 / train/loss/rep 1.68 / train/loss/repval 0.11 / train/loss/rew 0.02 / train/loss/value 0.09 / train/loss/vector 5.88 / train/rand/action nan / replay/replay_ratio 17.01 / fps/policy 106.31 / fps/train 1702.08
+
+Writing metrics: model-world-43/train/metrics.jsonl
+Writing metrics: model-world-43/train/scores.jsonl
+Saving checkpoint: model-world-43/train/ckpt/20261117T031647F402429
+Saved checkpoint.
+
+--------------------[Agent Step 31_400]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.05 / train/loss/dyn 1.63 / train/loss/policy 0 / train/loss/rep 1.63 / train/loss/repval 0.09 / train/loss/rew 0.01 / train/loss/value 0.07 / train/loss/vector 5.84 / train/rand/action nan / replay/replay_ratio 17.02 / fps/policy 104.8 / fps/train 1678.86
+
+Writing metrics: model-world-43/train/metrics.jsonl
+Writing metrics: model-world-43/train/scores.jsonl
+
+--------------------[Agent Step 32_000]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20
+
+Writing metrics: model-world-43/train/metrics.jsonlWriting metrics: model-world-43/train/scores.jsonl
+
+Saving checkpoint: model-world-43/checkpoint/20261117T031653F608207
+Saved checkpoint.
+TRAINED 321.72569142900466
+EXTRACT 0
+EXTRACT 25
+EXTRACT 50
+EXTRACT 75
+DREAMER_COMPLETE
+OBJECTIVE_AUDIT {"auxiliary_only": false, "training_metric_rows_checked": 10, "optimized_equals_diagnosis": false, "base_loss_scalar_derivative": 1.0, "scope": "Actual optimized-loss metrics plus derivative of the loss-combination function; not a per-parameter gradient audit."}
+Observations
+  vector           Space(float32, shape=(172,), low=-inf, high=inf)
+  reward           Space(float32, shape=(), low=-inf, high=inf)
+  is_first         Space(bool, shape=(), low=False, high=True)
+  is_last          Space(bool, shape=(), low=False, high=True)
+  is_terminal      Space(bool, shape=(), low=False, high=True)
+  root_cause_target Space(float32, shape=(16,), low=0, high=1)
+Actions
+  action           Space(int32, shape=(), low=0, high=1)
+Extras
+  consec           Space(int32, shape=(), low=-2147483648, high=2147483647)
+  stepid           Space(uint8, shape=(20,), low=0, high=255)
+  dyn/deter        Space(float32, shape=(512,), low=-inf, high=inf)
+  dyn/stoch        Space(float32, shape=(32, 4), low=-inf, high=inf)
+JAX devices (1): [TFRT_CPU_0]
+Policy devices: TFRT_CPU_0
+Train devices:  TFRT_CPU_0
+Initializing parameters...
+Optimizer opt has 669,180 params:
+       364,096 dyn
+        66,111 val
+        60,716 dec
+        57,663 rew
+        49,601 pol
+        41,153 con
+        19,584 enc
+        10,256 diagnosis
+Done initializing!
+Compiling 1 checkpoint groups...
+Largest checkpoint group: 0 GB
+Compiling train and report...
+Train cost analysis:
+  FLOPS:            2.2e+09
+  Memory (temp):    2.8e+07
+  Memory (inputs):  8.8e+06
+  Memory (outputs): 8.6e+06
+  Memory (code):    1.2e+06
+
+Report cost analysis:
+No available
+Done compiling!
+Loading checkpoint: model-world-43/checkpoint/20261117T031653F608207
+Loaded checkpoint.
+READOUT 0
+READOUT 25
+READOUT 50
+READOUT 75
+Observations
+  vector           Space(float32, shape=(172,), low=-inf, high=inf)
+  reward           Space(float32, shape=(), low=-inf, high=inf)
+  is_first         Space(bool, shape=(), low=False, high=True)
+  is_last          Space(bool, shape=(), low=False, high=True)
+  is_terminal      Space(bool, shape=(), low=False, high=True)
+  root_cause_target Space(float32, shape=(16,), low=0, high=1)
+Actions
+  action           Space(int32, shape=(), low=0, high=1)
+Extras
+  consec           Space(int32, shape=(), low=-2147483648, high=2147483647)
+  stepid           Space(uint8, shape=(20,), low=0, high=255)
+  dyn/deter        Space(float32, shape=(512,), low=-inf, high=inf)
+  dyn/stoch        Space(float32, shape=(32, 4), low=-inf, high=inf)
+JAX devices (1): [TFRT_CPU_0]
+Policy devices: TFRT_CPU_0
+Train devices:  TFRT_CPU_0
+Initializing parameters...
+Optimizer opt has 669,180 params:
+       364,096 dyn
+        66,111 val
+        60,716 dec
+        57,663 rew
+        49,601 pol
+        41,153 con
+        19,584 enc
+        10,256 diagnosis
+Done initializing!
+Compiling 1 checkpoint groups...
+Largest checkpoint group: 0 GB
+Compiling train and report...
+Train cost analysis:
+  FLOPS:            2.2e+09
+  Memory (temp):    2.8e+07
+  Memory (inputs):  8.8e+06
+  Memory (outputs): 8.6e+06
+  Memory (code):    1.2e+06
+
+Report cost analysis:
+No available
+Done compiling!
+Loading checkpoint: model-world-43/checkpoint/20261117T031653F608207
+Loaded checkpoint.
+READOUT 0
+READOUT 25
+READOUT 50
+READOUT 75
+Observations
+  vector           Space(float32, shape=(172,), low=-inf, high=inf)
+  reward           Space(float32, shape=(), low=-inf, high=inf)
+  is_first         Space(bool, shape=(), low=False, high=True)
+  is_last          Space(bool, shape=(), low=False, high=True)
+  is_terminal      Space(bool, shape=(), low=False, high=True)
+  root_cause_target Space(float32, shape=(16,), low=0, high=1)
+Actions
+  action           Space(int32, shape=(), low=0, high=1)
+Extras
+  consec           Space(int32, shape=(), low=-2147483648, high=2147483647)
+  stepid           Space(uint8, shape=(20,), low=0, high=255)
+  dyn/deter        Space(float32, shape=(512,), low=-inf, high=inf)
+  dyn/stoch        Space(float32, shape=(32, 4), low=-inf, high=inf)
+JAX devices (1): [TFRT_CPU_0]
+Policy devices: TFRT_CPU_0
+Train devices:  TFRT_CPU_0
+Initializing parameters...
+Optimizer opt has 669,180 params:
+       364,096 dyn
+        66,111 val
+        60,716 dec
+        57,663 rew
+        49,601 pol
+        41,153 con
+        19,584 enc
+        10,256 diagnosis
+Done initializing!
+Compiling 1 checkpoint groups...
+Largest checkpoint group: 0 GB
+Compiling train and report...
+Train cost analysis:
+  FLOPS:            1.4e+09
+  Memory (temp):    2.0e+07
+  Memory (inputs):  8.8e+06
+  Memory (outputs): 8.6e+06
+  Memory (code):    9.5e+05
+
+Report cost analysis:
+No available
+Done compiling!
+Did not find any checkpoint.
+Saving checkpoint: model-control-43/train/ckpt/20261117T031754F685681
+Saved checkpoint.
+Start training loop
+Start JAX profiler: model-control-43/train
+2026-11-17 03:18:01.851538: E external/xla/xla/python/profiler/internal/python_hooks.cc:400] Can't import tensorflow.python.profiler.trace
+Stop JAX profiler
+2026-11-17 03:18:03.396050: E external/xla/xla/python/profiler/internal/python_hooks.cc:400] Can't import tensorflow.python.profiler.trace
+
+--------------------[Agent Step 3_560]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.68 / train/loss/dyn 8.64 / train/loss/policy 0 / train/loss/rep 8.64 / train/loss/repval 10.53 / train/loss/rew 5.54 / train/loss/value 0.85 / train/loss/vector 84.95 / train/rand/action nan / replay/replay_ratio 16.46 / fps/policy 114.99 / fps/train 1769.51
+
+Writing metrics: model-control-43/train/metrics.jsonl
+Writing metrics: model-control-43/train/scores.jsonl
+
+--------------------[Agent Step 7_410]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.7 / train/loss/dyn 10.94 / train/loss/policy 0 / train/loss/rep 10.94 / train/loss/repval 10.53 / train/loss/rew 5.54 / train/loss/value 0.77 / train/loss/vector 87.27 / train/rand/action nan / replay/replay_ratio 16.99 / fps/policy 128.17 / fps/train 2049.7
+
+Writing metrics: model-control-43/train/metrics.jsonlWriting metrics: model-control-43/train/scores.jsonl
+
+
+--------------------[Agent Step 11_250]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.83 / train/loss/dyn 12.19 / train/loss/policy 0 / train/loss/rep 12.19 / train/loss/repval 10.53 / train/loss/rew 5.54 / train/loss/value 0.64 / train/loss/vector 94.66 / train/rand/action nan / replay/replay_ratio 17 / fps/policy 127.9 / fps/train 2046.36
+
+Writing metrics: model-control-43/train/scores.jsonl
+Writing metrics: model-control-43/train/metrics.jsonl
+
+--------------------[Agent Step 15_070]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.78 / train/loss/dyn 14.51 / train/loss/policy 0 / train/loss/rep 14.51 / train/loss/repval 10.53 / train/loss/rew 5.54 / train/loss/value 0.72 / train/loss/vector 98.27 / train/rand/action nan / replay/replay_ratio 16.98 / fps/policy 127.02 / fps/train 2030.15
+
+Writing metrics: model-control-43/train/metrics.jsonl
+Writing metrics: model-control-43/train/scores.jsonl
+
+--------------------[Agent Step 18_900]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.75 / train/loss/dyn 15.13 / train/loss/policy 0 / train/loss/rep 15.13 / train/loss/repval 10.53 / train/loss/rew 5.54 / train/loss/value 0.77 / train/loss/vector 97.55 / train/rand/action nan / replay/replay_ratio 17.01 / fps/policy 127.62 / fps/train 2042.97
+
+Writing metrics: model-control-43/train/scores.jsonlWriting metrics: model-control-43/train/metrics.jsonl
+
+
+--------------------[Agent Step 22_750]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.72 / train/loss/dyn 15.42 / train/loss/policy 0 / train/loss/rep 15.42 / train/loss/repval 10.53 / train/loss/rew 5.54 / train/loss/value 0.82 / train/loss/vector 98.08 / train/rand/action nan / replay/replay_ratio 16.99 / fps/policy 128.27 / fps/train 2051.18
+
+Writing metrics: model-control-43/train/metrics.jsonlWriting metrics: model-control-43/train/scores.jsonl
+
+
+--------------------[Agent Step 26_590]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.72 / train/loss/dyn 15.83 / train/loss/policy 0 / train/loss/rep 15.83 / train/loss/repval 10.53 / train/loss/rew 5.54 / train/loss/value 0.82 / train/loss/vector 98.55 / train/rand/action nan / replay/replay_ratio 17 / fps/policy 127.9 / fps/train 2046.43
+
+Writing metrics: model-control-43/train/metrics.jsonl
+Writing metrics: model-control-43/train/scores.jsonl
+
+--------------------[Agent Step 30_410]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20 / train/loss/con 0.73 / train/loss/dyn 16.36 / train/loss/policy 0 / train/loss/rep 16.36 / train/loss/repval 10.53 / train/loss/rew 5.54 / train/loss/value 0.83 / train/loss/vector 98.65 / train/rand/action nan / replay/replay_ratio 17.02 / fps/policy 127.28 / fps/train 2038.59
+
+Writing metrics: model-control-43/train/scores.jsonl
+Writing metrics: model-control-43/train/metrics.jsonl
+
+--------------------[Agent Step 32_000]--------------------
+Metrics filtered by: 'score|length|fps|ratio|train/loss/|train/rand/'
+episode/score 0 / episode/length 20
+
+Writing metrics: model-control-43/train/metrics.jsonl
+Writing metrics: model-control-43/train/scores.jsonl
+Saving checkpoint: model-control-43/checkpoint/20261117T032208F288466
+Saved checkpoint.
+TRAINED 269.3994212319958
+EXTRACT 0
+EXTRACT 25
+EXTRACT 50
+EXTRACT 75
+DREAMER_COMPLETE
+OBJECTIVE_AUDIT {"auxiliary_only": true, "training_metric_rows_checked": 8, "optimized_equals_diagnosis": true, "base_loss_scalar_derivative": 0.0, "scope": "Actual optimized-loss metrics plus derivative of the loss-combination function; not a per-parameter gradient audit."}
+Observations
+  vector           Space(float32, shape=(172,), low=-inf, high=inf)
+  reward           Space(float32, shape=(), low=-inf, high=inf)
+  is_first         Space(bool, shape=(), low=False, high=True)
+  is_last          Space(bool, shape=(), low=False, high=True)
+  is_terminal      Space(bool, shape=(), low=False, high=True)
+  root_cause_target Space(float32, shape=(16,), low=0, high=1)
+Actions
+  action           Space(int32, shape=(), low=0, high=1)
+Extras
+  consec           Space(int32, shape=(), low=-2147483648, high=2147483647)
+  stepid           Space(uint8, shape=(20,), low=0, high=255)
+  dyn/deter        Space(float32, shape=(512,), low=-inf, high=inf)
+  dyn/stoch        Space(float32, shape=(32, 4), low=-inf, high=inf)
+JAX devices (1): [TFRT_CPU_0]
+Policy devices: TFRT_CPU_0
+Train devices:  TFRT_CPU_0
+Initializing parameters...
+Optimizer opt has 669,180 params:
+       364,096 dyn
+        66,111 val
+        60,716 dec
+        57,663 rew
+        49,601 pol
+        41,153 con
+        19,584 enc
+        10,256 diagnosis
+Done initializing!
+Compiling 1 checkpoint groups...
+Largest checkpoint group: 0 GB
+Compiling train and report...
+Train cost analysis:
+  FLOPS:            1.4e+09
+  Memory (temp):    2.0e+07
+  Memory (inputs):  8.8e+06
+  Memory (outputs): 8.6e+06
+  Memory (code):    9.5e+05
+
+Report cost analysis:
+No available
+Done compiling!
+Loading checkpoint: model-control-43/checkpoint/20261117T032208F288466
+Loaded checkpoint.
+READOUT 0
+READOUT 25
+READOUT 50
+READOUT 75
+Observations
+  vector           Space(float32, shape=(172,), low=-inf, high=inf)
+  reward           Space(float32, shape=(), low=-inf, high=inf)
+  is_first         Space(bool, shape=(), low=False, high=True)
+  is_last          Space(bool, shape=(), low=False, high=True)
+  is_terminal      Space(bool, shape=(), low=False, high=True)
+  root_cause_target Space(float32, shape=(16,), low=0, high=1)
+Actions
+  action           Space(int32, shape=(), low=0, high=1)
+Extras
+  consec           Space(int32, shape=(), low=-2147483648, high=2147483647)
+  stepid           Space(uint8, shape=(20,), low=0, high=255)
+  dyn/deter        Space(float32, shape=(512,), low=-inf, high=inf)
+  dyn/stoch        Space(float32, shape=(32, 4), low=-inf, high=inf)
+JAX devices (1): [TFRT_CPU_0]
+Policy devices: TFRT_CPU_0
+Train devices:  TFRT_CPU_0
+Initializing parameters...
+Optimizer opt has 669,180 params:
+       364,096 dyn
+        66,111 val
+        60,716 dec
+        57,663 rew
+        49,601 pol
+        41,153 con
+        19,584 enc
+        10,256 diagnosis
+Done initializing!
+Compiling 1 checkpoint groups...
+Largest checkpoint group: 0 GB
+Compiling train and report...
+Train cost analysis:
+  FLOPS:            1.4e+09
+  Memory (temp):    2.0e+07
+  Memory (inputs):  8.8e+06
+  Memory (outputs): 8.6e+06
+  Memory (code):    9.5e+05
+
+Report cost analysis:
+No available
+Done compiling!
+Loading checkpoint: model-control-43/checkpoint/20261117T032208F288466
+Loaded checkpoint.
+READOUT 0
+READOUT 25
+READOUT 50
+READOUT 75

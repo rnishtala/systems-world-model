@@ -1,0 +1,7 @@
+{
+  "auxiliary_only": true,
+  "training_metric_rows_checked": 8,
+  "optimized_equals_diagnosis": true,
+  "base_loss_scalar_derivative": 0.0,
+  "scope": "Actual optimized-loss metrics plus derivative of the loss-combination function; not a per-parameter gradient audit."
+}

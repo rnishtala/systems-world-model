@@ -32,6 +32,14 @@ Test labels stayed outside the cluster; both label-isolation audits passed.
 All five lab deployments are healthy, with the serving model unchanged.
 [Confirmation results](reports/RCAEVAL_CONFIRMATION_RESULTS.md) · [Frozen protocol](reports/RCAEVAL_CONFIRMATION_PROTOCOL.md).
 
+A fresh **partial-telemetry Sock Shop** experiment hid half the service groups
+at each post-fault step. On 30 held-out incidents, Dreamer scored **30/30 and 28/30**;
+the same recurrent architecture trained only for diagnosis scored **30/30 and 29/30**,
+and raw telemetry scored **28/30**. This matched comparison did not demonstrate
+added value from the world-model objectives. All four audits passed; the serving
+model is unchanged and only the five service pods remain.
+[Partial-telemetry results](reports/RCAEVAL_PARTIAL_RESULTS.md) · [Frozen protocol](reports/RCAEVAL_PARTIAL_PROTOCOL.md).
+
 ## Current deployment — validated live triage API
 
 The frozen Dreamer-state classifier is **deployed as the isolated lab default** (model 23, `inspect-latent`, source v20). HTTP replay matched **80/80** saved diagnoses; fresh live API validation scored **80/80**, with **10/10 in every known fault family**. Seven tests, evidence verification, rollback restoration and the post-promotion healthy check passed. This is a diagnosis-only POC for eight known regimes; broader generalization, learned investigation and LLM-driven remediation remain future work.
