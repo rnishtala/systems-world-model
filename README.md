@@ -48,6 +48,13 @@ reliability target. Test traces are frozen; the lab is restored with five servic
 pods and no model promotion.
 [Acquisition results](reports/RCAEVAL_ACQUISITION_RESULTS.md) · [Frozen protocol](reports/RCAEVAL_ACQUISITION_PROTOCOL.md).
 
+A **training-only forecast audit** now identifies weak check ranking: imagined
+entropy agrees with actual shared-classifier usefulness only **52.8% / 49.3%**
+of candidate pairs. Decoded telemetry also has large outlier errors. Both frozen
+models and the held-out results are unchanged; inference is restored. Next: audit
+feature scaling and align acquisition with the actual diagnostic classifier before
+another confirmation run. [Audit results](reports/RCAEVAL_FORECAST_AUDIT_RESULTS.md).
+
 ## Current deployment — validated live triage API
 
 The frozen Dreamer-state classifier is **deployed as the isolated lab default** (model 23, `inspect-latent`, source v20). HTTP replay matched **80/80** saved diagnoses; fresh live API validation scored **80/80**, with **10/10 in every known fault family**. Seven tests, evidence verification, rollback restoration and the post-promotion healthy check passed. This is a diagnosis-only POC for eight known regimes; broader generalization, learned investigation and LLM-driven remediation remain future work.

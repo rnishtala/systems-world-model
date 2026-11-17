@@ -1,0 +1,14 @@
+{
+  "seed": 43,
+  "training_cases": 60,
+  "candidate_records": 900,
+  "seconds": 20.68230118000065,
+  "checkpoint_hashes_unchanged": true,
+  "checkpoint_hashes": {
+    "checkpoint/20261117T173555F331057/agent.pkl": "c6586ff2a50a4a96780643287985b73a1a425981e39444ef145fb454ba248ee9",
+    "checkpoint/20261117T173555F331057/done": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "checkpoint/latest": "af976298bf7a7325c3c6a5a3b72066db2af20bf7132f4a8cb9ca916c278ad5d0"
+  },
+  "test_arrays_loaded": false,
+  "scope": "In-sample development mechanism audit; no confirmation or promotion"
+}
