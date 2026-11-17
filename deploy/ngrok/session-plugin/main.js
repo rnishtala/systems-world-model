@@ -7,6 +7,32 @@
   const channel = typeof BroadcastChannel === 'function' ? new BroadcastChannel('swm-session') : null;
   let subscribed = false;
   let leaving = false;
+  let checking = false;
+  async function revalidate() {
+    if (leaving || checking) return;
+    checking = true;
+    document.documentElement.style.visibility = 'hidden';
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+    try {
+      // History can restore the app shell even after the OAuth cookie is gone.
+      // Do not follow an IdP redirect inside fetch; start a top-level login instead.
+      const response = await fetch('/?swm_session_check=' + Date.now(), {
+        credentials: 'same-origin', cache: 'no-store', redirect: 'error',
+        signal: controller.signal
+      });
+      if (!response.ok) throw new Error('Session check failed');
+      if (!leaving) document.documentElement.style.visibility = '';
+    } catch (_) {
+      if (!leaving) {
+        leaving = true;
+        window.location.replace('/ngrok/login?redirect_path=%2Fc%2Fsystems-world-model-lab%2Fworkloads');
+      }
+    } finally {
+      clearTimeout(timeout);
+      checking = false;
+    }
+  }
   function leave() {
     if (leaving) return;
     leaving = true;
@@ -28,10 +54,12 @@
   window.addEventListener('pageshow', event => {
     checkGeneration();
     // A restored document must revalidate with ngrok before showing cached data.
-    if (event.persisted && !leaving) window.location.reload();
+    if (event.persisted && !leaving) revalidate();
   });
   window.addEventListener('pagehide', () => { document.documentElement.style.visibility = 'hidden'; });
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) checkGeneration(); });
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) { checkGeneration(); revalidate(); }
+  });
   function finishLogout(location) {
     if (new URLSearchParams(location.search).get('logout') === 'true') logout();
   }
@@ -49,4 +77,5 @@
     return null;
   }
   registerAppBarAction(SessionBridge);
+  revalidate();
 })();

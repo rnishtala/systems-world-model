@@ -126,3 +126,21 @@ Refresh every tab opened before this update once to install the new client code.
 Older already-running JavaScript cannot receive this behavior retroactively.
 Validation: `node scripts/test_headlamp_session.cjs`, plus two-tab Firefox logout
 and Back navigation. Both live tabs reached the signed-out page after one logout.
+
+## Cached shell correction (2026-11-17)
+
+The earlier Back-navigation check was insufficient: Firefox could reconstruct
+a fresh Headlamp shell after logout, which accepted the current local logout
+generation and displayed an empty permission-warning screen. Plugin 0.1.4 hides
+the shell while making an uncached same-origin request on startup, restored-page
+activation, and tab focus. Redirects are not followed inside that request. A
+failed check starts explicit `/ngrok/login`, returning successful logins to lab
+Workloads. A network failure also requires a fresh sign-in; no cached UI is shown.
+This client behavior complements the server OAuth boundary; it does not grant
+permissions or replace server authentication. Google itself remains signed in.
+
+Validation: regression tests cover fresh documents, restored pages, focus, and
+cross-tab logout. Live Firefox reproduced the old failure, then with 0.1.4
+Account > Log out reached Logged out and Back reached Google Choose an account.
+The session-check URL returned HTTP 302 without cookies. Only the session plugin
+ConfigMap and public UI Deployment were updated in the lab namespace.

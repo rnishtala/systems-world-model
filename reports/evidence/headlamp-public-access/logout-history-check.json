@@ -1,0 +1,9 @@
+{
+  "date": "2026-11-17",
+  "plugin": "0.1.4",
+  "before": "Firefox logout then Back reconstructed Headlamp Overview without prompt",
+  "after": "Firefox Account logout reached Logged out; Back reached Google Choose an account",
+  "anonymous_session_probe_http_status": 302,
+  "regression_tests": "passed",
+  "scope": "systems-world-model-lab"
+}
