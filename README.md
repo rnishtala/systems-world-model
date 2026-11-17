@@ -40,6 +40,14 @@ added value from the world-model objectives. All four audits passed; the serving
 model is unchanged and only the five service pods remain.
 [Partial-telemetry results](reports/RCAEVAL_PARTIAL_RESULTS.md) · [Frozen protocol](reports/RCAEVAL_PARTIAL_PROTOCOL.md).
 
+The next **active check-selection experiment** used 30 fresh Train Ticket incidents
+and one shared diagnosis classifier. Dreamer’s mean accuracy across budgets 1–4
+was **66.7% / 70.0%**, versus **70.8%** for a fixed check order. It did not reduce
+the checks needed. All methods reached **28/30** with full information, below the
+reliability target. Test traces are frozen; the lab is restored with five service
+pods and no model promotion.
+[Acquisition results](reports/RCAEVAL_ACQUISITION_RESULTS.md) · [Frozen protocol](reports/RCAEVAL_ACQUISITION_PROTOCOL.md).
+
 ## Current deployment — validated live triage API
 
 The frozen Dreamer-state classifier is **deployed as the isolated lab default** (model 23, `inspect-latent`, source v20). HTTP replay matched **80/80** saved diagnoses; fresh live API validation scored **80/80**, with **10/10 in every known fault family**. Seven tests, evidence verification, rollback restoration and the post-promotion healthy check passed. This is a diagnosis-only POC for eight known regimes; broader generalization, learned investigation and LLM-driven remediation remain future work.

@@ -3,16 +3,24 @@ from pathlib import Path
 R=Path("/Users/rnishtala/src/systems-world-model");O=R/"reports/evidence/rcaeval-acquisition-v1";O.mkdir(parents=True,exist_ok=False)
 SSH=['ssh','-o','BatchMode=yes','-o','ConnectTimeout=10','-o','HostName=100.98.114.55','-o','HostKeyAlias=amd-halo','rajnishtala@amd-halo'];K='kubectl --kubeconfig=$HOME/.kube/graphrobin.yaml -n systems-world-model-lab '
 def run(cmd,timeout=65):
- p=subprocess.run(SSH+[K+cmd],capture_output=True,text=True,timeout=timeout)
- if p.returncode:raise RuntimeError(p.stderr[-1500:])
- return p.stdout
+ attempts=5 if cmd.startswith(('get ','logs ','rollout ','scale ','delete ')) else 1
+ error=None
+ for attempt in range(attempts):
+  try:
+   p=subprocess.run(SSH+[K+cmd],capture_output=True,text=True,timeout=timeout)
+   if p.returncode:raise RuntimeError(p.stderr[-1500:])
+   return p.stdout
+  except (RuntimeError,subprocess.TimeoutExpired) as exc:
+   error=exc
+   if attempt+1<attempts:time.sleep(2)
+ raise error
 subprocess.run(['scp',*SSH[1:-1],str(R/'deploy/rcaeval-acquisition-v1.json'),SSH[-1]+':/tmp/rcaeval-acquisition-v1.json'],check=True,timeout=30)
 active=[j['metadata']['name'] for j in json.loads(run('get jobs -o json'))['items'] if j.get('status',{}).get('active',0)];assert not active,active
 print(run('create -f /tmp/rcaeval-stage-v1.json'),flush=True);print(run('wait pod/swm-rcaeval-stage-v1 --for=condition=Ready --timeout=55s'),flush=True)
 try:
  print(run('exec swm-rcaeval-stage-v1 -- mkdir /results/rcaeval-acquisition-v1'))
  with open('/tmp/rcaeval-acquisition-v1.tar.gz','rb') as f:subprocess.run(SSH+[K+'exec -i swm-rcaeval-stage-v1 -- tar xzf - -C /results/rcaeval-acquisition-v1'],stdin=f,check=True,timeout=90)
-finally:print(run('delete pod swm-rcaeval-stage-v1 --grace-period=1 --wait=true --timeout=55s'),flush=True)
+finally:print(run('delete pod swm-rcaeval-stage-v1 --grace-period=1 --wait=true --timeout=55s --ignore-not-found=true'),flush=True)
 before=json.loads(run('get deployment swm-inference -o json'));(O/'before.json').write_text(json.dumps(before['spec'],indent=2));paused=False;created=False
 try:
  print(run('scale deployment swm-inference --replicas=0'),flush=True);paused=True
@@ -32,7 +40,7 @@ try:
  else:raise TimeoutError('Readout deadline')
 finally:
  try:
-  if created:print(run('delete job swm-rcaeval-acquisition-v1 --wait=true --timeout=55s'),flush=True)
+  if created:print(run('delete job swm-rcaeval-acquisition-v1 --wait=true --timeout=55s --ignore-not-found=true'),flush=True)
  finally:
   if paused:
    print(run('scale deployment swm-inference --replicas='+str(before['spec']['replicas'])),flush=True);print(run('rollout status deployment/swm-inference --timeout=55s'),flush=True)
@@ -45,5 +53,5 @@ try:
  for name,content in data['files'].items():
   path=O/name;path.parent.mkdir(exist_ok=True);path.write_text(content)
  (O/'frozen-hashes.json').write_text(json.dumps(data['hashes'],indent=2))
-finally:print(run('delete pod swm-rcaeval-stage-v1 --grace-period=1 --wait=true --timeout=55s'),flush=True)
+finally:print(run('delete pod swm-rcaeval-stage-v1 --grace-period=1 --wait=true --timeout=55s --ignore-not-found=true'),flush=True)
 print('READOUT_EXPORTED',flush=True)
