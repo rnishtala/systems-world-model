@@ -1,5 +1,8 @@
 # Private lab resource UI
 
+> Superseded by [public Google-authenticated access](PUBLIC_HEADLAMP_ACCESS.md).
+> The private deployment is scaled to zero and its Tailscale route is disabled.
+
 Headlamp v0.46.0 is deployed only in `systems-world-model-lab`. The image is pinned
 by digest in `deploy/headlamp.json`. The five existing services are unchanged.
 

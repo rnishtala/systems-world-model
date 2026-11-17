@@ -1,0 +1,445 @@
+{
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "v1",
+      "kind": "ServiceAccount",
+      "metadata": {
+        "name": "swm-headlamp-public",
+        "namespace": "systems-world-model-lab",
+        "labels": {
+          "app.kubernetes.io/part-of": "systems-world-model",
+          "app.kubernetes.io/component": "public-lab-access"
+        }
+      },
+      "automountServiceAccountToken": false
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "RoleBinding",
+      "metadata": {
+        "name": "swm-headlamp-public",
+        "namespace": "systems-world-model-lab",
+        "labels": {
+          "app.kubernetes.io/part-of": "systems-world-model",
+          "app.kubernetes.io/component": "public-lab-access"
+        }
+      },
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "swm-ui-operator"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "name": "swm-headlamp-public",
+          "namespace": "systems-world-model-lab"
+        }
+      ]
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "ConfigMap",
+      "metadata": {
+        "name": "swm-ngrok-agent",
+        "namespace": "systems-world-model-lab",
+        "labels": {
+          "app.kubernetes.io/part-of": "systems-world-model",
+          "app.kubernetes.io/component": "public-lab-access"
+        }
+      },
+      "data": {
+        "ngrok.yml": "{\"version\": \"3\", \"agent\": {\"web_addr\": false, \"update_check\": false}, \"endpoints\": [{\"name\": \"swm-headlamp\", \"url\": \"https://swm-headlamp.internal\", \"upstream\": {\"url\": \"http://127.0.0.1:4466\"}, \"traffic_policy\": {\"on_http_request\": [{\"actions\": [{\"type\": \"add-headers\", \"config\": {\"headers\": {\"host\": \"127.0.0.1:4466\"}}}]}]}}]}"
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "swm-headlamp-public",
+        "namespace": "systems-world-model-lab",
+        "labels": {
+          "app.kubernetes.io/part-of": "systems-world-model",
+          "app.kubernetes.io/component": "public-lab-access"
+        }
+      },
+      "spec": {
+        "replicas": 0,
+        "strategy": {
+          "type": "Recreate"
+        },
+        "selector": {
+          "matchLabels": {
+            "app": "swm-headlamp-public"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "swm-headlamp-public"
+            }
+          },
+          "spec": {
+            "serviceAccountName": "swm-headlamp-public",
+            "automountServiceAccountToken": false,
+            "securityContext": {
+              "runAsNonRoot": true,
+              "runAsUser": 1000,
+              "runAsGroup": 1000,
+              "fsGroup": 1000,
+              "seccompProfile": {
+                "type": "RuntimeDefault"
+              }
+            },
+            "containers": [
+              {
+                "name": "headlamp",
+                "image": "ghcr.io/headlamp-k8s/headlamp:v0.46.0@sha256:8a0ef97527544baa2b35825940ddf4db6e2d09c30cd5aa31fd269ff604cc8b75",
+                "args": [
+                  "-in-cluster",
+                  "-in-cluster-context-name=systems-world-model-lab",
+                  "-unsafe-use-service-account-token=true",
+                  "-proxy-auth=true",
+                  "-proxy-auth-username-header=X-Swm-Authenticated-Email",
+                  "-proxy-auth-email-header=X-Swm-Authenticated-Email",
+                  "-listen-addr=127.0.0.1",
+                  "-enable-dynamic-clusters=false"
+                ],
+                "resources": {
+                  "requests": {
+                    "cpu": "10m",
+                    "memory": "32Mi"
+                  },
+                  "limits": {
+                    "cpu": "25m",
+                    "memory": "128Mi"
+                  }
+                },
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "readOnlyRootFilesystem": true,
+                  "capabilities": {
+                    "drop": [
+                      "ALL"
+                    ]
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "name": "kube-api-access",
+                    "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                    "readOnly": true
+                  },
+                  {
+                    "name": "headlamp-tmp",
+                    "mountPath": "/tmp"
+                  },
+                  {
+                    "name": "headlamp-home",
+                    "mountPath": "/home/headlamp"
+                  }
+                ],
+                "readinessProbe": {
+                  "exec": {
+                    "command": [
+                      "sh",
+                      "-ec",
+                      "grep -q '0100007F:1172 .*0A' /proc/net/tcp"
+                    ]
+                  },
+                  "initialDelaySeconds": 5,
+                  "timeoutSeconds": 5
+                }
+              },
+              {
+                "name": "ngrok",
+                "image": "ngrok/ngrok:3@sha256:ff3b5c3674432d14a786349908b7bdf28ee56c25662637afcbe7180d471993ef",
+                "args": [
+                  "start",
+                  "--all",
+                  "--config=/etc/ngrok/ngrok.yml",
+                  "--log=stdout",
+                  "--log-format=json",
+                  "--log-level=warn"
+                ],
+                "env": [
+                  {
+                    "name": "NGROK_AUTHTOKEN",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "swm-ngrok-credential",
+                        "key": "authtoken"
+                      }
+                    }
+                  },
+                  {
+                    "name": "HOME",
+                    "value": "/tmp"
+                  }
+                ],
+                "resources": {
+                  "requests": {
+                    "cpu": "10m",
+                    "memory": "32Mi"
+                  },
+                  "limits": {
+                    "cpu": "25m",
+                    "memory": "128Mi"
+                  }
+                },
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "readOnlyRootFilesystem": true,
+                  "capabilities": {
+                    "drop": [
+                      "ALL"
+                    ]
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "name": "ngrok-config",
+                    "mountPath": "/etc/ngrok",
+                    "readOnly": true
+                  },
+                  {
+                    "name": "ngrok-tmp",
+                    "mountPath": "/tmp"
+                  },
+                  {
+                    "name": "ngrok-state",
+                    "mountPath": "/var/lib/ngrok"
+                  }
+                ],
+                "command": [
+                  "ngrok"
+                ]
+              }
+            ],
+            "volumes": [
+              {
+                "name": "kube-api-access",
+                "projected": {
+                  "defaultMode": 420,
+                  "sources": [
+                    {
+                      "serviceAccountToken": {
+                        "path": "token",
+                        "expirationSeconds": 3600
+                      }
+                    },
+                    {
+                      "configMap": {
+                        "name": "kube-root-ca.crt",
+                        "items": [
+                          {
+                            "key": "ca.crt",
+                            "path": "ca.crt"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "downwardAPI": {
+                        "items": [
+                          {
+                            "path": "namespace",
+                            "fieldRef": {
+                              "fieldPath": "metadata.namespace"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "ngrok-config",
+                "configMap": {
+                  "name": "swm-ngrok-agent"
+                }
+              },
+              {
+                "name": "headlamp-tmp",
+                "emptyDir": {
+                  "sizeLimit": "128Mi"
+                }
+              },
+              {
+                "name": "headlamp-home",
+                "emptyDir": {
+                  "sizeLimit": "8Mi"
+                }
+              },
+              {
+                "name": "ngrok-tmp",
+                "emptyDir": {
+                  "sizeLimit": "16Mi"
+                }
+              },
+              {
+                "name": "ngrok-state",
+                "emptyDir": {
+                  "medium": "Memory",
+                  "sizeLimit": "8Mi"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "name": "swm-headlamp-public",
+        "namespace": "systems-world-model-lab",
+        "labels": {
+          "app.kubernetes.io/part-of": "systems-world-model",
+          "app.kubernetes.io/component": "public-lab-access"
+        }
+      },
+      "spec": {
+        "podSelector": {
+          "matchLabels": {
+            "app": "swm-headlamp-public"
+          }
+        },
+        "policyTypes": [
+          "Ingress",
+          "Egress"
+        ],
+        "ingress": [],
+        "egress": [
+          {
+            "to": [
+              {
+                "ipBlock": {
+                  "cidr": "10.43.0.1/32"
+                }
+              },
+              {
+                "ipBlock": {
+                  "cidr": "100.98.114.55/32"
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 443,
+                "protocol": "TCP"
+              },
+              {
+                "port": 6443,
+                "protocol": "TCP"
+              }
+            ]
+          },
+          {
+            "to": [
+              {
+                "namespaceSelector": {
+                  "matchLabels": {
+                    "kubernetes.io/metadata.name": "kube-system"
+                  }
+                },
+                "podSelector": {
+                  "matchLabels": {
+                    "k8s-app": "kube-dns"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 53,
+                "protocol": "UDP"
+              },
+              {
+                "port": 53,
+                "protocol": "TCP"
+              }
+            ]
+          },
+          {
+            "to": [
+              {
+                "ipBlock": {
+                  "cidr": "0.0.0.0/0",
+                  "except": [
+                    "10.0.0.0/8",
+                    "172.16.0.0/12",
+                    "192.168.0.0/16",
+                    "100.64.0.0/10",
+                    "127.0.0.0/8",
+                    "169.254.0.0/16"
+                  ]
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 443,
+                "protocol": "TCP"
+              }
+            ]
+          },
+          {
+            "to": [
+              {
+                "ipBlock": {
+                  "cidr": "3.171.171.123/32"
+                }
+              },
+              {
+                "ipBlock": {
+                  "cidr": "3.171.171.41/32"
+                }
+              },
+              {
+                "ipBlock": {
+                  "cidr": "3.171.171.51/32"
+                }
+              },
+              {
+                "ipBlock": {
+                  "cidr": "3.171.171.55/32"
+                }
+              },
+              {
+                "ipBlock": {
+                  "cidr": "18.160.46.126/32"
+                }
+              },
+              {
+                "ipBlock": {
+                  "cidr": "18.160.46.5/32"
+                }
+              },
+              {
+                "ipBlock": {
+                  "cidr": "18.160.46.59/32"
+                }
+              },
+              {
+                "ipBlock": {
+                  "cidr": "18.160.46.8/32"
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 80,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

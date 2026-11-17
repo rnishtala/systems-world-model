@@ -1,0 +1,101 @@
+[
+  {
+    "verb": "get",
+    "resource": "pods",
+    "name": null,
+    "namespace": "systems-world-model-lab",
+    "expected": true,
+    "allowed": true,
+    "passed": true
+  },
+  {
+    "verb": "create",
+    "resource": "jobs.batch",
+    "name": null,
+    "namespace": "systems-world-model-lab",
+    "expected": true,
+    "allowed": true,
+    "passed": true
+  },
+  {
+    "verb": "patch",
+    "resource": "deployments.apps",
+    "name": "swm-checkout",
+    "namespace": "systems-world-model-lab",
+    "expected": true,
+    "allowed": true,
+    "passed": true
+  },
+  {
+    "verb": "patch",
+    "resource": "deployments.apps",
+    "name": "swm-headlamp-public",
+    "namespace": "systems-world-model-lab",
+    "expected": false,
+    "allowed": false,
+    "passed": true
+  },
+  {
+    "verb": "get",
+    "resource": "secrets",
+    "name": null,
+    "namespace": "systems-world-model-lab",
+    "expected": false,
+    "allowed": false,
+    "passed": true
+  },
+  {
+    "verb": "create",
+    "resource": "rolebindings.rbac.authorization.k8s.io",
+    "name": null,
+    "namespace": "systems-world-model-lab",
+    "expected": false,
+    "allowed": false,
+    "passed": true
+  },
+  {
+    "verb": "patch",
+    "resource": "resourcequotas",
+    "name": null,
+    "namespace": "systems-world-model-lab",
+    "expected": false,
+    "allowed": false,
+    "passed": true
+  },
+  {
+    "verb": "patch",
+    "resource": "networkpolicies.networking.k8s.io",
+    "name": null,
+    "namespace": "systems-world-model-lab",
+    "expected": false,
+    "allowed": false,
+    "passed": true
+  },
+  {
+    "verb": "get",
+    "resource": "pods",
+    "name": null,
+    "namespace": "default",
+    "expected": false,
+    "allowed": false,
+    "passed": true
+  },
+  {
+    "verb": "get",
+    "resource": "pods",
+    "name": null,
+    "namespace": "bearbank-default",
+    "expected": false,
+    "allowed": false,
+    "passed": true
+  },
+  {
+    "verb": "get",
+    "resource": "nodes",
+    "name": null,
+    "namespace": null,
+    "expected": false,
+    "allowed": false,
+    "passed": true
+  }
+]

@@ -1,0 +1,32 @@
+{
+  "version": "3",
+  "agent": {
+    "web_addr": false,
+    "update_check": false
+  },
+  "endpoints": [
+    {
+      "name": "swm-headlamp",
+      "url": "https://swm-headlamp.internal",
+      "upstream": {
+        "url": "http://127.0.0.1:4466"
+      },
+      "traffic_policy": {
+        "on_http_request": [
+          {
+            "actions": [
+              {
+                "type": "add-headers",
+                "config": {
+                  "headers": {
+                    "host": "127.0.0.1:4466"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
