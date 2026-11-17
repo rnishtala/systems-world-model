@@ -1,0 +1,471 @@
+{
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "v1",
+      "kind": "ServiceAccount",
+      "metadata": {
+        "name": "swm-headlamp",
+        "namespace": "systems-world-model-lab",
+        "labels": {
+          "app.kubernetes.io/part-of": "systems-world-model",
+          "app.kubernetes.io/component": "lab-access"
+        }
+      },
+      "automountServiceAccountToken": false
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "ConfigMap",
+      "metadata": {
+        "name": "swm-headlamp-config",
+        "namespace": "systems-world-model-lab",
+        "labels": {
+          "app.kubernetes.io/part-of": "systems-world-model",
+          "app.kubernetes.io/component": "lab-access"
+        }
+      },
+      "data": {
+        "config": "{\"apiVersion\": \"v1\", \"kind\": \"Config\", \"clusters\": [{\"name\": \"lab\", \"cluster\": {\"server\": \"https://10.43.0.1:443\", \"certificate-authority\": \"/ca/ca.crt\"}}], \"contexts\": [{\"name\": \"systems-world-model-lab\", \"context\": {\"cluster\": \"lab\", \"user\": \"browser-login\", \"namespace\": \"systems-world-model-lab\"}}], \"current-context\": \"systems-world-model-lab\", \"users\": [{\"name\": \"browser-login\", \"user\": {}}]}"
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "swm-headlamp",
+        "namespace": "systems-world-model-lab",
+        "labels": {
+          "app.kubernetes.io/part-of": "systems-world-model",
+          "app.kubernetes.io/component": "lab-access"
+        }
+      },
+      "spec": {
+        "replicas": 1,
+        "strategy": {
+          "type": "Recreate"
+        },
+        "selector": {
+          "matchLabels": {
+            "app": "swm-headlamp"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "swm-headlamp"
+            }
+          },
+          "spec": {
+            "serviceAccountName": "swm-headlamp",
+            "automountServiceAccountToken": false,
+            "securityContext": {
+              "runAsNonRoot": true,
+              "runAsUser": 1000,
+              "runAsGroup": 1000,
+              "fsGroup": 1000,
+              "seccompProfile": {
+                "type": "RuntimeDefault"
+              }
+            },
+            "containers": [
+              {
+                "name": "headlamp",
+                "image": "ghcr.io/headlamp-k8s/headlamp:v0.46.0@sha256:8a0ef97527544baa2b35825940ddf4db6e2d09c30cd5aa31fd269ff604cc8b75",
+                "args": [
+                  "-kubeconfig=/config/config",
+                  "-enable-dynamic-clusters=false"
+                ],
+                "ports": [
+                  {
+                    "name": "http",
+                    "containerPort": 4466
+                  }
+                ],
+                "resources": {
+                  "requests": {
+                    "cpu": "25m",
+                    "memory": "64Mi"
+                  },
+                  "limits": {
+                    "cpu": "50m",
+                    "memory": "256Mi"
+                  }
+                },
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "readOnlyRootFilesystem": true,
+                  "capabilities": {
+                    "drop": [
+                      "ALL"
+                    ]
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "name": "config",
+                    "mountPath": "/config",
+                    "readOnly": true
+                  },
+                  {
+                    "name": "ca",
+                    "mountPath": "/ca",
+                    "readOnly": true
+                  },
+                  {
+                    "name": "tmp",
+                    "mountPath": "/tmp"
+                  },
+                  {
+                    "name": "home",
+                    "mountPath": "/home/headlamp"
+                  }
+                ],
+                "readinessProbe": {
+                  "httpGet": {
+                    "path": "/",
+                    "port": "http"
+                  },
+                  "initialDelaySeconds": 5,
+                  "timeoutSeconds": 5
+                },
+                "livenessProbe": {
+                  "httpGet": {
+                    "path": "/",
+                    "port": "http"
+                  },
+                  "initialDelaySeconds": 30,
+                  "timeoutSeconds": 5
+                }
+              }
+            ],
+            "volumes": [
+              {
+                "name": "config",
+                "configMap": {
+                  "name": "swm-headlamp-config"
+                }
+              },
+              {
+                "name": "ca",
+                "configMap": {
+                  "name": "kube-root-ca.crt"
+                }
+              },
+              {
+                "name": "tmp",
+                "emptyDir": {
+                  "sizeLimit": "32Mi"
+                }
+              },
+              {
+                "name": "home",
+                "emptyDir": {
+                  "sizeLimit": "16Mi"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "swm-headlamp",
+        "namespace": "systems-world-model-lab",
+        "labels": {
+          "app.kubernetes.io/part-of": "systems-world-model",
+          "app.kubernetes.io/component": "lab-access"
+        }
+      },
+      "spec": {
+        "selector": {
+          "app": "swm-headlamp"
+        },
+        "ports": [
+          {
+            "name": "http",
+            "port": 4466,
+            "targetPort": "http"
+          }
+        ],
+        "type": "ClusterIP"
+      }
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "name": "swm-headlamp",
+        "namespace": "systems-world-model-lab",
+        "labels": {
+          "app.kubernetes.io/part-of": "systems-world-model",
+          "app.kubernetes.io/component": "lab-access"
+        }
+      },
+      "spec": {
+        "podSelector": {
+          "matchLabels": {
+            "app": "swm-headlamp"
+          }
+        },
+        "policyTypes": [
+          "Ingress",
+          "Egress"
+        ],
+        "ingress": [
+          {
+            "from": [
+              {
+                "ipBlock": {
+                  "cidr": "10.42.0.1/32"
+                }
+              },
+              {
+                "ipBlock": {
+                  "cidr": "100.98.114.55/32"
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 4466,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        ],
+        "egress": [
+          {
+            "to": [
+              {
+                "ipBlock": {
+                  "cidr": "10.43.0.1/32"
+                }
+              },
+              {
+                "ipBlock": {
+                  "cidr": "100.98.114.55/32"
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 443,
+                "protocol": "TCP"
+              },
+              {
+                "port": 6443,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "Role",
+      "metadata": {
+        "name": "swm-ui-viewer",
+        "namespace": "systems-world-model-lab",
+        "labels": {
+          "app.kubernetes.io/part-of": "systems-world-model",
+          "app.kubernetes.io/component": "lab-access"
+        }
+      },
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "pods",
+            "pods/log",
+            "services",
+            "endpoints",
+            "events",
+            "persistentvolumeclaims",
+            "resourcequotas",
+            "limitranges"
+          ],
+          "verbs": [
+            "get",
+            "list",
+            "watch"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resources": [
+            "deployments",
+            "replicasets",
+            "statefulsets",
+            "daemonsets",
+            "deployments/scale"
+          ],
+          "verbs": [
+            "get",
+            "list",
+            "watch"
+          ]
+        },
+        {
+          "apiGroups": [
+            "batch"
+          ],
+          "resources": [
+            "jobs",
+            "cronjobs"
+          ],
+          "verbs": [
+            "get",
+            "list",
+            "watch"
+          ]
+        },
+        {
+          "apiGroups": [
+            "networking.k8s.io"
+          ],
+          "resources": [
+            "networkpolicies"
+          ],
+          "verbs": [
+            "get",
+            "list",
+            "watch"
+          ]
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "Role",
+      "metadata": {
+        "name": "swm-ui-operator",
+        "namespace": "systems-world-model-lab",
+        "labels": {
+          "app.kubernetes.io/part-of": "systems-world-model",
+          "app.kubernetes.io/component": "lab-access"
+        }
+      },
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "pods",
+            "pods/log",
+            "services",
+            "endpoints",
+            "events",
+            "persistentvolumeclaims",
+            "resourcequotas",
+            "limitranges"
+          ],
+          "verbs": [
+            "get",
+            "list",
+            "watch"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resources": [
+            "deployments",
+            "replicasets",
+            "statefulsets",
+            "daemonsets",
+            "deployments/scale"
+          ],
+          "verbs": [
+            "get",
+            "list",
+            "watch"
+          ]
+        },
+        {
+          "apiGroups": [
+            "batch"
+          ],
+          "resources": [
+            "jobs",
+            "cronjobs"
+          ],
+          "verbs": [
+            "get",
+            "list",
+            "watch"
+          ]
+        },
+        {
+          "apiGroups": [
+            "networking.k8s.io"
+          ],
+          "resources": [
+            "networkpolicies"
+          ],
+          "verbs": [
+            "get",
+            "list",
+            "watch"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resources": [
+            "deployments",
+            "deployments/scale"
+          ],
+          "resourceNames": [
+            "swm-checkout",
+            "swm-payment",
+            "swm-ledger",
+            "swm-postgres",
+            "swm-inference"
+          ],
+          "verbs": [
+            "patch",
+            "update"
+          ]
+        },
+        {
+          "apiGroups": [
+            "batch"
+          ],
+          "resources": [
+            "jobs"
+          ],
+          "verbs": [
+            "create",
+            "patch",
+            "update",
+            "delete"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "pods"
+          ],
+          "verbs": [
+            "delete"
+          ]
+        }
+      ]
+    }
+  ]
+}

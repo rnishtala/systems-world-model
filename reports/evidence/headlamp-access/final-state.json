@@ -1,0 +1,144 @@
+{
+  "deployments": [
+    {
+      "name": "swm-checkout",
+      "ready": 1,
+      "containers": [
+        {
+          "name": "checkout",
+          "image": "python:3.11-slim",
+          "resources": {
+            "limits": {
+              "cpu": "300m",
+              "memory": "128Mi"
+            },
+            "requests": {
+              "cpu": "50m",
+              "memory": "64Mi"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "swm-headlamp",
+      "ready": 1,
+      "containers": [
+        {
+          "name": "headlamp",
+          "image": "ghcr.io/headlamp-k8s/headlamp:v0.46.0@sha256:8a0ef97527544baa2b35825940ddf4db6e2d09c30cd5aa31fd269ff604cc8b75",
+          "resources": {
+            "limits": {
+              "cpu": "50m",
+              "memory": "256Mi"
+            },
+            "requests": {
+              "cpu": "25m",
+              "memory": "64Mi"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "swm-inference",
+      "ready": 1,
+      "containers": [
+        {
+          "name": "agent",
+          "image": "python:3.11-slim",
+          "resources": {
+            "limits": {
+              "cpu": "2300m",
+              "memory": "4Gi"
+            },
+            "requests": {
+              "cpu": "300m",
+              "memory": "512Mi"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "swm-ledger",
+      "ready": 1,
+      "containers": [
+        {
+          "name": "ledger",
+          "image": "python:3.11-slim",
+          "resources": {
+            "limits": {
+              "cpu": "400m",
+              "memory": "256Mi"
+            },
+            "requests": {
+              "cpu": "50m",
+              "memory": "64Mi"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "swm-payment",
+      "ready": 1,
+      "containers": [
+        {
+          "name": "payment",
+          "image": "python:3.11-slim",
+          "resources": {
+            "limits": {
+              "cpu": "600m",
+              "memory": "256Mi"
+            },
+            "requests": {
+              "cpu": "50m",
+              "memory": "64Mi"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "swm-postgres",
+      "ready": 1,
+      "containers": [
+        {
+          "name": "postgres",
+          "image": "postgres:16-bookworm",
+          "resources": {
+            "limits": {
+              "cpu": "300m",
+              "memory": "384Mi"
+            },
+            "requests": {
+              "cpu": "50m",
+              "memory": "128Mi"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "quota": {
+    "hard": {
+      "limits.cpu": "4",
+      "limits.memory": "6Gi",
+      "persistentvolumeclaims": "1",
+      "pods": "8",
+      "requests.cpu": "4",
+      "requests.memory": "6Gi",
+      "requests.storage": "10Gi"
+    },
+    "used": {
+      "limits.cpu": "3950m",
+      "limits.memory": "5376Mi",
+      "persistentvolumeclaims": "1",
+      "pods": "6",
+      "requests.cpu": "525m",
+      "requests.memory": "896Mi",
+      "requests.storage": "10Gi"
+    }
+  }
+}

@@ -34,6 +34,7 @@ finally:
   if paused:
    print(run('scale deployment swm-inference --replicas='+str(before['spec']['replicas'])),flush=True);print(run('rollout status deployment/swm-inference --timeout=55s'),flush=True)
    after=json.loads(run('get deployment swm-inference -o json'));assert after['spec']['template']==before['spec']['template'];(O/'restored.json').write_text(json.dumps({'template_unchanged':True,'replicas':after['spec']['replicas'],'ready':True}))
+subprocess.run(['scp',*SSH[1:-1],str(R/'deploy/rcaeval-stage-v1.json'),SSH[-1]+':/tmp/rcaeval-stage-v1.json'],check=True,timeout=30)
 print(run('create -f /tmp/rcaeval-stage-v1.json'),flush=True);print(run('wait pod/swm-rcaeval-stage-v1 --for=condition=Ready --timeout=55s'),flush=True)
 try:
 

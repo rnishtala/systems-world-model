@@ -146,3 +146,8 @@ not Jobs and must still be removed explicitly by their orchestration scripts.
 pod logs locally. With `--apply`, it rechecks job identity/terminal state and
 deletes only those archived jobs in `systems-world-model-lab`. It verifies
 that deployment specifications and PVC identities are unchanged.
+
+## Private namespace management UI
+
+See [Headlamp access](docs/HEADLAMP_ACCESS.md) for the private Tailscale URL,
+individual expiring tokens, viewer/operator roles, and current staging capacity.

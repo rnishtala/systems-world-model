@@ -1,4 +1,5 @@
 import json,subprocess,time
+from decimal import Decimal
 from pathlib import Path
 R=Path("/Users/rnishtala/src/systems-world-model");O=R/"reports/evidence/rcaeval-acquisition-v1";O.mkdir(parents=True,exist_ok=False)
 SSH=['ssh','-o','BatchMode=yes','-o','ConnectTimeout=10','-o','HostName=100.98.114.55','-o','HostKeyAlias=amd-halo','rajnishtala@amd-halo'];K='kubectl --kubeconfig=$HOME/.kube/graphrobin.yaml -n systems-world-model-lab '
@@ -15,6 +16,7 @@ def run(cmd,timeout=65):
    if attempt+1<attempts:time.sleep(2)
  raise error
 subprocess.run(['scp',*SSH[1:-1],str(R/'deploy/rcaeval-acquisition-v1.json'),SSH[-1]+':/tmp/rcaeval-acquisition-v1.json'],check=True,timeout=30)
+subprocess.run(['scp',*SSH[1:-1],str(R/'deploy/rcaeval-stage-v1.json'),SSH[-1]+':/tmp/rcaeval-stage-v1.json'],check=True,timeout=30)
 active=[j['metadata']['name'] for j in json.loads(run('get jobs -o json'))['items'] if j.get('status',{}).get('active',0)];assert not active,active
 print(run('create -f /tmp/rcaeval-stage-v1.json'),flush=True);print(run('wait pod/swm-rcaeval-stage-v1 --for=condition=Ready --timeout=55s'),flush=True)
 try:
@@ -26,7 +28,10 @@ try:
  print(run('scale deployment swm-inference --replicas=0'),flush=True);paused=True
  for _ in range(30):
   q=json.loads(run('get resourcequota lab-budget -o json'))
-  if q['status']['used']['limits.cpu'] in ('1600m','1.6'):break
+  # Leave 2 CPU for training; account for the persistent lab UI.
+  cpu=q['status']['used']['limits.cpu']
+  used=Decimal(cpu[:-1])/1000 if cpu.endswith('m') else Decimal(cpu)
+  if used <= 2:break
   time.sleep(2)
  else:raise RuntimeError('Quota not released')
  print(run('create -f /tmp/rcaeval-acquisition-v1.json'),flush=True);created=True
