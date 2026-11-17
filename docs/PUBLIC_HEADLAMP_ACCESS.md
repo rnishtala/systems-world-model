@@ -113,3 +113,16 @@ A real login attempt with non-allowlisted `raj.nishtala@gmail.com` was blocked b
 automatic approval review, which requires explicit authorization for that test
 account. No denial-test result is claimed. Allowlist changes/revocation should
 also be tested with a dedicated authorized test identity.
+
+## Cross-tab logout and browser history
+
+Session plugin 0.1.3 broadcasts logout to same-origin tabs with BroadcastChannel
+and a localStorage generation marker. Tabs immediately hide rendered data and
+navigate to ngrok logout, unloading watches and connections. Restored browser
+cache pages revalidate with a full navigation before showing data. Authenticated
+Headlamp responses use Cache-Control: no-store. Google itself remains signed in.
+
+Refresh every tab opened before this update once to install the new client code.
+Older already-running JavaScript cannot receive this behavior retroactively.
+Validation: `node scripts/test_headlamp_session.cjs`, plus two-tab Firefox logout
+and Back navigation. Both live tabs reached the signed-out page after one logout.

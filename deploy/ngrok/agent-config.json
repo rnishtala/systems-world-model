@@ -25,6 +25,21 @@
               }
             ]
           }
+        ],
+        "on_http_response": [
+          {
+            "actions": [
+              {
+                "type": "add-headers",
+                "config": {
+                  "headers": {
+                    "cache-control": "no-store",
+                    "pragma": "no-cache"
+                  }
+                }
+              }
+            ]
+          }
         ]
       }
     }
