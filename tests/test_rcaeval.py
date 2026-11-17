@@ -38,6 +38,16 @@ class PartialTelemetryTests(unittest.TestCase):
             self.assertEqual(int((row[:8]==0).sum()),4)
             np.testing.assert_array_equal(row[:8],row[8:])
             for j in range(0,8,2):self.assertEqual(row[j],row[j+1])
+    def test_partial_scorer_rejects_modified_predictions_before_answers(self):
+        import json,sys
+        from unittest.mock import patch
+        from benchmark.score_partial import main
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp);folder=root/'readout-world-42-partial';folder.mkdir()
+            name='readout-world-42-partial/post_mean_full-predictions.json'
+            (root/name).write_text('[]');(root/'frozen-hashes.json').write_text(json.dumps({name:'wrong'}))
+            argv=['score','--evidence',str(root),'--answers',str(root/'nonexistent-answers')]
+            with patch.object(sys,'argv',argv),self.assertRaises(AssertionError):main()
     def test_disabled_world_objective_cannot_contribute(self):
         from benchmark.supervision import objective
         self.assertEqual(objective(float('nan'),2.,True),2.)
