@@ -71,7 +71,12 @@ permission warning. Use Workloads for the lab view.
 
 To sign out of ngrok, visit:
 https://noninstructive-unprevalently-minerva.ngrok-free.dev/ngrok/logout
-Headlamp's own logout does not necessarily clear the outer ngrok session.
+Headlamp's Account > Log out also navigates to this endpoint through the shipped
+`swm-session` plugin, clearing the outer ngrok session after local token cleanup.
+Refresh an already-open tab once to load the plugin. This logs out of the lab,
+not the user's Google account. The page-lifetime router listener remains active
+when logout unmounts the app bar; plugin versions must change when metadata
+changes because Headlamp caches compatibility by name and version.
 
 ## Runtime details and maintenance
 

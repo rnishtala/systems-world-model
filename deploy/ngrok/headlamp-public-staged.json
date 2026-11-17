@@ -139,6 +139,11 @@
                   {
                     "name": "headlamp-home",
                     "mountPath": "/home/headlamp"
+                  },
+                  {
+                    "name": "session-plugin",
+                    "mountPath": "/headlamp/static-plugins/swm-session",
+                    "readOnly": true
                   }
                 ],
                 "readinessProbe": {
@@ -285,6 +290,12 @@
                 "emptyDir": {
                   "medium": "Memory",
                   "sizeLimit": "8Mi"
+                }
+              },
+              {
+                "name": "session-plugin",
+                "configMap": {
+                  "name": "swm-headlamp-session"
                 }
               }
             ]
@@ -439,6 +450,18 @@
             ]
           }
         ]
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "ConfigMap",
+      "metadata": {
+        "name": "swm-headlamp-session",
+        "namespace": "systems-world-model-lab"
+      },
+      "data": {
+        "main.js": "/* Lab-only integration for Headlamp v0.46.0 behind ngrok OAuth. */\n(function () {\n  const { React, ReactRouter, registerAppBarAction } = window.pluginLib;\n  let subscribed = false;\n  function finishLogout(location) {\n    if (new URLSearchParams(location.search).get('logout') === 'true') {\n      window.location.replace('/ngrok/logout');\n    }\n  }\n  finishLogout(window.location);\n  function SessionBridge() {\n    const history = ReactRouter.useHistory();\n    React.useEffect(() => {\n      if (!subscribed) {\n        subscribed = true;\n        // Keep this page-lifetime listener when logout unmounts the app bar.\n        history.listen(finishLogout);\n        finishLogout(history.location);\n      }\n    }, [history]);\n    return null;\n  }\n  registerAppBarAction(SessionBridge);\n})();\n",
+        "package.json": "{\"name\": \"swm-session\", \"version\": \"0.1.2\", \"description\": \"Connect Headlamp logout to the lab ngrok OAuth session\", \"main\": \"main.js\", \"devDependencies\": {\"@kinvolk/headlamp-plugin\": \"0.13.1\"}}"
       }
     }
   ]

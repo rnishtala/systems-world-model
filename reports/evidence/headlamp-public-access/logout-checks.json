@@ -1,0 +1,12 @@
+{
+  "date": "2026-11-17",
+  "plugin_version": "0.1.2",
+  "checks": {
+    "javascript_syntax": "passed",
+    "deployment_rollout": "passed",
+    "normal_account_menu_logout": "passed",
+    "logout_destination": "/ngrok/logout",
+    "signed_out_page": "You have been logged out.",
+    "reopen_lab_after_logout": "Google Choose an account page; no automatic return to Headlamp"
+  }
+}
