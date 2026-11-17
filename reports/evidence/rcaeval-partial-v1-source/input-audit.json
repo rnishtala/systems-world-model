@@ -1,0 +1,21 @@
+{
+  "training_cases": 60,
+  "test_cases": 30,
+  "test_labels_uploaded": 0,
+  "bundle_sha256": "7bc529c26a0ecf27df3b9c4c17b26a2fdc72c19d0dddbdaf32793ac6c6712a6b",
+  "source_hashes": {
+    "supervised_baseline.py": "a6a45785153db171d026a45538fb962dad9eb0f01390d0da860a5ad521b65ce3",
+    "objective_audit.py": "35c7702f0e8fb8c61970c1ea7cce6cd085892aa6c87144bddce7149819a7bd91",
+    "dreamer.py": "ad919dbab5752ced81f391315d10da3a61a0321d942c0376fd20778d17aa2b85",
+    "__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "masking.py": "f091e55a074291fcacf50e1dad24071bf5c9c6e810a076e1e55b6403e1c11fa6",
+    "prepare_partial.py": "093dfa647e69a42c06c176b920384aa7bbc509093ad36a594207f2d335ef47f1",
+    "confirmation.py": "a4c0c9a7a7c906703749e100a9df2fb43d6c25e58d1e412095fac2c199836289",
+    "supervision.py": "78a43bd446c0a29c6c457959f570a92a09cc3b71f8aa602b128ac0afdfd46aa4",
+    "prepare_confirmation.py": "b6fe9462eb8505a529dff17e83f8547bd9ebe23a1084fcd85ed40d586897a83e",
+    "readout.py": "18299f66ba9db67463787e58030576e35c85f82c266db997cdfac8bd3629d85b",
+    "evaluate.py": "e6c402c2039fa8d6d0ba0663008428cd56833dcd50f3341022303624746477b1",
+    "prepare.py": "11e6890f5f31acb24c7f60f52a46bab7497fec0971d11b10d355741612a29d10",
+    "score_confirmation.py": "8b9bb74299df562f3d62a88fc16093f3f0d9f1561c4e036d35d6042eda1f2745"
+  }
+}
