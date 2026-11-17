@@ -19,6 +19,15 @@ class AcquisitionTests(unittest.TestCase):
         seen=np.array([True,False,False,False,False]);obs=np.zeros(15);changed=obs.copy();changed[[1,2,3,4,6,7,8,9]]=999
         a=retrieval_action(obs,seen,x,y,self.g);b=retrieval_action(changed,seen,x,y,self.g)
         self.assertEqual(a,b);self.assertNotEqual(a,0)
+    def test_scorer_checks_frozen_files_before_opening_answers(self):
+        import tempfile,json,sys
+        from pathlib import Path
+        from unittest.mock import patch
+        from benchmark.score_acquisition import main
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp);(root/'readout-42').mkdir();name='readout-42/predictions.json'
+            (root/name).write_text('[]');(root/'frozen-hashes.json').write_text(json.dumps({name:'modified'}))
+            with patch.object(sys,'argv',['score','--evidence',str(root),'--answers',str(root/'missing')]),self.assertRaises(AssertionError):main()
     def test_shared_classifier_and_distinct_queries(self):
         x=np.concatenate([np.eye(5)*5,np.ones((5,5))],1);y=np.arange(5)
         probe=fit_shared(x,y,self.g)
