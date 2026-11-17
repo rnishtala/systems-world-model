@@ -2,7 +2,10 @@
 TARGET='root_cause_target'
 def telemetry(obs):return {k:v for k,v in obs.items() if k!=TARGET}
 
-def make_agent(config,classes):
+def objective(base,diagnosis,auxiliary_only):
+    return diagnosis if auxiliary_only else base+diagnosis
+
+def make_agent(config,classes,auxiliary_only=False):
     from dreamerv3 import agent as module,main
     import embodied.jax.nets as nn
     import jax,jax.numpy as jnp
@@ -23,7 +26,10 @@ def make_agent(config,classes):
             ce=-(target*jax.nn.log_softmax(logits,-1)).sum(-1)
             aux=(ce*valid).sum()/count
             metrics=dict(metrics,diagnosis_loss=aux,diagnosis_accuracy=((logits.argmax(-1)==target.argmax(-1))*valid).sum()/count)
-            return loss+aux,(carry,entries,outs,metrics)
+            total=objective(loss,aux,auxiliary_only)
+            metrics["optimized_loss"]=total
+            metrics["world_model_objective_enabled"]=jnp.asarray(not auxiliary_only,jnp.float32)
+            return total,(carry,entries,outs,metrics)
     module.Agent=DiagnosisAgent
     try:return main.make_agent(config)
     finally:module.Agent=original

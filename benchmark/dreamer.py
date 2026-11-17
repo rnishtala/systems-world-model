@@ -25,7 +25,8 @@ def fit(x,y):
     return dict(mean=mean,scale=scale,weights=z.T@np.linalg.solve(z@z.T+np.eye(len(z)),y-bias),bias=bias)
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument("--data",required=True);p.add_argument("--train-answers",required=True);p.add_argument("--out",required=True);p.add_argument("--steps",type=int,default=8000);p.add_argument("--seed",type=int,default=42);p.add_argument("--validation-only",action="store_true");p.add_argument("--diagnosis-supervision",action="store_true");a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument("--data",required=True);p.add_argument("--train-answers",required=True);p.add_argument("--out",required=True);p.add_argument("--steps",type=int,default=8000);p.add_argument("--seed",type=int,default=42);p.add_argument("--validation-only",action="store_true");p.add_argument("--diagnosis-supervision",action="store_true");p.add_argument("--auxiliary-only",action="store_true");p.add_argument("--telemetry-mask",choices=("none","half-services"),default="none");a=p.parse_args()
+    assert not a.auxiliary_only or a.diagnosis_supervision
     root=Path(a.data);out=Path(a.out);out.mkdir(parents=True,exist_ok=False)
     manifest=json.loads((root/"manifest.json").read_text());train=[r for r in manifest if r["split"]=="train"]
     if a.validation_only:assert all(r["split"] in ("train","validation") for r in manifest),"Test cases prohibited"
@@ -35,7 +36,8 @@ def main():
     for r in train:
         with np.load(root/(r["id"]+".npz"),allow_pickle=False) as d:columns.update(d["columns"].tolist())
     columns=sorted(columns);services=sorted({c.split("_",1)[0] for c in columns})
-    sequences={r["id"]:sequence(root/(r["id"]+".npz"),columns) for r in manifest}
+    from benchmark.masking import observation
+    sequences={r["id"]:observation(root/(r["id"]+".npz"),columns,a.telemetry_mask) for r in manifest}
     training=[sequences[r["id"]] for r in train]
     targets=np.array([[float(truth[r["id"]]==service) for service in services] for r in train],np.float32)
     from benchmark.supervision import TARGET,make_agent,audit
@@ -66,7 +68,7 @@ def main():
     c=configuration(a.seed,out/"train",a.steps).update(**{"run.train_ratio":16.,"run.save_every":300})
     upstream.make_env=lambda config,index,**kw:upstream.wrap_env(Env(),config)
     captured={}
-    def build():captured["agent"]=make_agent(c,len(services)) if a.diagnosis_supervision else upstream.make_agent(c);return captured["agent"]
+    def build():captured["agent"]=make_agent(c,len(services),auxiliary_only=a.auxiliary_only) if a.diagnosis_supervision else upstream.make_agent(c);return captured["agent"]
     args=elements.Config(**c.run,replica=0,replicas=1,logdir=c.logdir,batch_size=c.batch_size,batch_length=c.batch_length,report_length=c.report_length,consec_train=c.consec_train,consec_report=c.consec_report,replay_context=c.replay_context)
     Path(c.logdir).mkdir(parents=True);c.save(elements.Path(c.logdir)/"config.yaml");start=time.monotonic()
     embodied.run.train(build,lambda:upstream.make_replay(c,"replay"),lambda index:upstream.make_env(c,index),lambda replay,mode:upstream.make_stream(c,replay,mode),lambda:upstream.make_logger(c),args)
@@ -98,6 +100,6 @@ def main():
             predictions.append(dict(id=r["id"],ranks=[services[j] for j in np.argsort(-scores,kind="stable")]))
         (out/(name+"-predictions.json")).write_text(json.dumps(predictions,indent=2))
         methods[name]=dict(training_cases=len(train),classes=services)
-    meta=dict(diagnosis_supervision=a.diagnosis_supervision,auxiliary_weight=1. if a.diagnosis_supervision else 0.,methods=methods,steps=a.steps,seconds=time.monotonic()-start,seed=a.seed,columns=columns,upstream_revision="e01491fad6434b2245a3b8ca201dd7faedcc458c",scope="Passive sequence reconstruction; no learned intervention policy; single-seed pilot; ridge penalty 1 frozen before held-out scoring")
+    meta=dict(telemetry_mask=a.telemetry_mask,auxiliary_only=a.auxiliary_only,diagnosis_supervision=a.diagnosis_supervision,auxiliary_weight=1. if a.diagnosis_supervision else 0.,methods=methods,steps=a.steps,seconds=time.monotonic()-start,seed=a.seed,columns=columns,upstream_revision="e01491fad6434b2245a3b8ca201dd7faedcc458c",scope="Passive sequence reconstruction; no learned intervention policy; single-seed pilot; ridge penalty 1 frozen before held-out scoring")
     (out/"metadata.json").write_text(json.dumps(meta,indent=2));print("DREAMER_COMPLETE",flush=True)
 if __name__=="__main__":main()

@@ -26,6 +26,23 @@ class SupervisionTests(unittest.TestCase):
         self.assertIn(TARGET,obs)
         self.assertIs(cleaned['vector'],obs['vector'])
 
+class PartialTelemetryTests(unittest.TestCase):
+    def test_service_mask_is_deterministic_grouped_and_preserves_prehistory(self):
+        from benchmark.masking import mask_sequence
+        cols=['a_cpu','a_mem','b_cpu','b_mem','c_cpu','c_mem','d_cpu','d_mem']
+        original=np.ones((20,16),np.float32);x=mask_sequence(original,cols,'case-a')
+        np.testing.assert_array_equal(x[:10],original[:10]);self.assertTrue((original==1).all())
+        np.testing.assert_array_equal(x,mask_sequence(original,cols,'case-a'))
+        self.assertFalse(np.array_equal(x,mask_sequence(original,cols,'case-b')))
+        for row in x[10:]:
+            self.assertEqual(int((row[:8]==0).sum()),4)
+            np.testing.assert_array_equal(row[:8],row[8:])
+            for j in range(0,8,2):self.assertEqual(row[j],row[j+1])
+    def test_disabled_world_objective_cannot_contribute(self):
+        from benchmark.supervision import objective
+        self.assertEqual(objective(float('nan'),2.,True),2.)
+        self.assertEqual(objective(7.,2.,False),9.)
+
 class ReadoutTests(unittest.TestCase):
     def test_rejects_test_inputs_before_loading_model(self):
         import json,sys

@@ -10,14 +10,16 @@ def ridge(x,y,penalty):
     return mean,scale,z.T@np.linalg.solve(z@z.T+np.eye(len(z))*penalty,y-bias),bias
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--root',required=True);p.add_argument('--data',required=True);p.add_argument('--answers',required=True);p.add_argument('--out',required=True);a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--root',required=True);p.add_argument('--data',required=True);p.add_argument('--answers',required=True);p.add_argument('--out',required=True);p.add_argument("--telemetry-mask",choices=("none","half-services"));a=p.parse_args()
     start=time.monotonic();root=Path(a.root);data=Path(a.data);out=Path(a.out);out.mkdir(parents=True,exist_ok=False)
     manifest=json.loads((data/'manifest.json').read_text());assert all(r['split'] in ('train','test') for r in manifest)
     truth={r['id']:r for r in json.loads(Path(a.answers).read_text())};assert set(truth)=={r['id'] for r in manifest if r['split']=='train'};assert all(r['split']=='train' for r in truth.values())
     meta=json.loads((root/'metadata.json').read_text());cols=meta['columns'];services=meta['methods']['dreamer_state']['classes']
     supervised=meta.get('diagnosis_supervision',False)
     from benchmark.supervision import TARGET,make_agent
-    seq={r['id']:sequence(data/(r['id']+'.npz'),cols) for r in manifest}
+    from benchmark.masking import observation
+    mask=a.telemetry_mask if a.telemetry_mask is not None else meta.get('telemetry_mask','none')
+    seq={r['id']:observation(data/(r['id']+'.npz'),cols,mask) for r in manifest}
     sys.path.insert(0,os.environ['DREAMER_SOURCE'])
     import elements,jax
     from dreamerv3 import main as up
@@ -28,7 +30,7 @@ def main():
     if supervised:Shape.obs_space[TARGET]=elements.Space(np.float32,(len(services),),0,1)
     c=elements.Config.load(elements.Path(root/'train/config.yaml')).update(logdir=str(out/'inference'))
     up.make_env=lambda config,index,**kw:up.wrap_env(Shape(),config)
-    agent=make_agent(c,len(services)) if supervised else up.make_agent(c);cp=elements.Checkpoint(elements.Path(root/'checkpoint'));cp.agent=agent;cp.load(keys=['agent'])
+    agent=make_agent(c,len(services),auxiliary_only=meta.get("auxiliary_only",False)) if supervised else up.make_agent(c);cp=elements.Checkpoint(elements.Path(root/'checkpoint'));cp.agent=agent;cp.load(keys=['agent'])
     features={name:[] for name in ('last_deter','post_mean_deter','post_mean_full','raw','mask_only')}
     # Average 16 posterior particles to reduce stochastic-state noise.
     for i,r in enumerate(manifest):
@@ -51,5 +53,5 @@ def main():
         ranks=np.argsort(-scores,axis=1,kind='stable')
         (out/(name+'-predictions.json')).write_text(json.dumps([dict(id=r['id'],split=r['split'],ranks=[services[j] for j in ranks[i]]) for i,r in enumerate(manifest)]))
         np.savez_compressed(out/(name+'-probe.npz'),mean=mean,scale=scale,weights=w,bias=bias)
-    (out/'summary.json').write_text(json.dumps(dict(seconds=time.monotonic()-start,particles=16,training_cases=int(train.sum()),test_cases=int((~train).sum()),test_labels_loaded=False)))
+    (out/'summary.json').write_text(json.dumps(dict(telemetry_mask=mask,seconds=time.monotonic()-start,particles=16,training_cases=int(train.sum()),test_cases=int((~train).sum()),test_labels_loaded=False)))
 if __name__=='__main__':main()
