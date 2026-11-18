@@ -1,4 +1,4 @@
-import base64,json,subprocess,time
+import base64,json,subprocess,time,sys
 from decimal import Decimal
 from pathlib import Path
 R=Path("/Users/rnishtala/src/systems-world-model");O=R/"reports/evidence/lab-temporal-v1";O.mkdir(parents=True,exist_ok=False)
@@ -51,14 +51,7 @@ finally:
   if paused:
    print(run('scale deployment swm-inference --replicas='+str(before['spec']['replicas'])),flush=True);print(run('rollout status deployment/swm-inference --timeout=55s'),flush=True)
    after=json.loads(run('get deployment swm-inference -o json'));assert after['spec']['template']==before['spec']['template'];(O/'restored.json').write_text(json.dumps({'template_unchanged':True,'replicas':after['spec']['replicas'],'ready':True}))
-print(run('create -f /tmp/rcaeval-stage-v1.json'),flush=True);print(run('wait pod/swm-rcaeval-stage-v1 --for=condition=Ready --timeout=55s'),flush=True)
-try:
-
- code="from pathlib import Path\nimport base64,json,hashlib\nr=Path('/results/lab-temporal-v1')\npaths=list(r.glob('collection/*.json*'))+list(r.glob('evaluation/*.json*'))+list(r.glob('evaluation/*.npz'))+list(r.glob('models/*.json'))\nfiles={str(p.relative_to(r)):(base64.b64encode(p.read_bytes()).decode() if p.suffix=='.npz' else p.read_text()) for p in paths}\nhashes={str(p.relative_to(r)):hashlib.sha256(p.read_bytes()).hexdigest() for p in paths}\nmodel_hashes={str(p.relative_to(r)):hashlib.sha256(p.read_bytes()).hexdigest() for p in r.glob('models/final-61/**/*') if p.is_file()}\nfiles['checkpoint-hashes.json']=json.dumps(model_hashes,indent=2)\nprint(json.dumps(dict(files=files,hashes=hashes)))"
- data=json.loads(subprocess.run(SSH+[K+'exec -i swm-rcaeval-stage-v1 -- /results/venv/bin/python -'],input=code,text=True,capture_output=True,check=True,timeout=65).stdout)
- for name,content in data['files'].items():
-  path=O/name;path.parent.mkdir(exist_ok=True);path.write_bytes(base64.b64decode(content)) if path.suffix=='.npz' else path.write_text(content)
- (O/'frozen-hashes.json').write_text(json.dumps(data['hashes'],indent=2))
-finally:print(run('delete pod swm-rcaeval-stage-v1 --grace-period=1 --wait=true --timeout=55s --ignore-not-found=true'),flush=True)
+# Bounded read-only exports avoid large exec-stream failures.
+subprocess.run([sys.executable,str(R/'scripts/export_lab_temporal.py')],check=True)
 print('TEMPORAL_EVIDENCE_EXPORTED',flush=True)
 if failed:raise RuntimeError('Experiment failed; evidence exported and inference restored')

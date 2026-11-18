@@ -55,6 +55,16 @@ def main():
         for f,stats in s['families'].items():
             indices=np.array([r['fault']==int(f) for r in sets['test']])
             assert int(sum((pred==target)&indices))==stats['correct']
+    for name in ('history','latest'):
+        latent=np.array(saved['latent']);baseline=np.array(saved[name])
+        wins=int(sum((latent==target)&(baseline!=target)))
+        losses=int(sum((latent!=target)&(baseline==target)))
+        n=wins+losses
+        pvalue=min(1.,2*sum(math.comb(n,k) for k in range(min(wins,losses)+1))/(2**n)) if n else 1.
+        assert summary['paired'][name]==dict(latent_only_correct=wins,baseline_only_correct=losses,two_sided_exact_p=pvalue)
+    methods=summary['methods']
+    gate=bool(methods['latent']['gate_passed'] and methods['latent']['correct']-max(methods[n]['correct'] for n in ('history','latest'))>=4)
+    assert gate==summary['added_value_gate'] and summary['checkpoint_unchanged']
     assert all(json.loads((R/'evaluation/audit.json').read_text()).values())
     assert json.loads((R/'restored.json').read_text())['template_unchanged']
     clipping={}

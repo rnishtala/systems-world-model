@@ -1,0 +1,6 @@
+{
+  "job_succeeded": true,
+  "inference_restored_before_export": true,
+  "bulk_export_succeeded": false,
+  "recovery": "Read-only chunked export; no training or evaluation rerun"
+}

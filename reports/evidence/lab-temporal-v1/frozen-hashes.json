@@ -1,0 +1,14 @@
+{
+  "collection/train.jsonl": "5d17c7d809893e67e579fd5afc4ef886dbe81ef4981191df87e07ddffa27e3db",
+  "collection/identity.json": "26fc209dd33941e47de3f46e13a4b74b35e0e4a24f6ee881fb211396c9aa68d8",
+  "evaluation/audit.json": "4f8c82b9b1b4615055a34720cbef0181c2c6c1ac5b8397f1bbf33643ec91f3f8",
+  "evaluation/frozen.json": "972cae2ca4744e5d996272bf96149942ffeab095471d677fbe7f59123cf8b4dd",
+  "evaluation/test.jsonl": "0a5f5a1859dc4a6737d5fc8c5503b4afc79796906b9271ae247480abe7adfd75",
+  "evaluation/predictions.json": "9e89fe75545fdb7348ef9d04fd26113f3d9152504b694edd39010b60de0bbb13",
+  "evaluation/summary.json": "95541d6bfc0fbf8b347f01a251d9b0d79ddacd9cb2fe8486650894fca58db8e6",
+  "evaluation/readouts.npz": "cb4d9e4d81bcc148b1a26522073d73b3a7ca6aef6cbfdd322406003e25e5df4e",
+  "evaluation/train-features.npz": "c30caf584382f9350d58b04343f81a1cf26832131d84fd82fe0f2563ca351980",
+  "evaluation/test-features.npz": "96f61c6bdceac9e57471602888554af9de99edc4f0e00f300a5b42f51aba0d90",
+  "models/identity-61.json": "4b6e90bba9ab0197636dc9c7e9a7a1b70e9c4af431eae4636dea19a56709ea81",
+  "models/training-61.json": "241b5a6226d3441fb4ff271e35ca9679d0c751898c4d38fd6a7e738442bdcd2a"
+}

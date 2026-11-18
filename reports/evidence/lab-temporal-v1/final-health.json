@@ -1,0 +1,15 @@
+{
+  "inference_template_unchanged": true,
+  "replicas": 1,
+  "all_remaining_pods_ready": true,
+  "no_experiment_or_export_pods": true,
+  "no_active_jobs": true,
+  "pods": [
+    "swm-checkout-7969f869cc-6tqtv",
+    "swm-headlamp-public-54cdc9f945-b55g7",
+    "swm-inference-69cd4867f5-bcvvh",
+    "swm-ledger-596cc8fb5c-kfbps",
+    "swm-payment-c9d8b49fb-rtk2b",
+    "swm-postgres-75bc9f7f47-vr9zl"
+  ]
+}

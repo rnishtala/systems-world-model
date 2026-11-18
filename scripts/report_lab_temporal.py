@@ -28,6 +28,23 @@ def main():
     lines+=['',f"Exploratory added-value gate: **{'passed' if s['added_value_gate'] else 'failed'}**. It requires reliability and four more correct diagnoses than the stronger telemetry baseline.",'']
     for name,p in s['paired'].items():
         lines.append(f"Against {name}: Dreamer alone correct on {p['latent_only_correct']}, baseline alone correct on {p['baseline_only_correct']}; two-sided exact paired p={p['two_sided_exact_p']:.4g}.")
+    lines+=['','| Fault family | Dreamer state | History | Latest |','|---|---:|---:|---:|']
+    for f,label in enumerate(('Healthy','CPU','Pool','Delay','CPU + delay','CPU + pool','Pool + delay','All three')):
+        counts=[s['methods'][name]['families'][str(f)]['correct'] for name in ('latent','history','latest')]
+        lines.append(f'| {label} | {counts[0]}/10 | {counts[1]}/10 | {counts[2]}/10 |')
+    clips=v['clipping_above_upper_bound']
+    lines+=['', f"Checkout latency exceeded the fixed 600 ms normalization ceiling in {clips['train']['0']}/320 training windows and {clips['test']['0']}/320 test windows. Both methods received the same capped values. Ledger and downstream trace timing clipped in {clips['test']['8']} and {clips['test']['9']} test windows respectively. This is a measured information-loss limitation, not proof that it caused all diagnosis errors."]
+    lines+=['','## Interpretation and next step','',
+        'The new experiment did not meet the reliability gate. A small aggregate lead is not '
+        'sufficient evidence of a useful world-model advantage; per-family errors and the paired '
+        'comparison above are the relevant limits. This harder task changes the observation view '
+        'and test workload relative to earlier experiments, so their accuracy numbers are not '
+        'directly comparable.', '',
+        'Next, revise the latency scaling using development data, broaden training workload coverage, and select readouts using development splits '
+        'separated by operating regime, then evaluate on newly collected held-out sequences. '
+        'The current random incident folds cannot measure extrapolation to a wholly different '
+        'load range. Preserve this test batch as evaluation-only. There is no evidence here '
+        'that a larger or more complex model is the necessary next change.']
     lines+=['','## Limits and operational outcome','',
         'One model seed and 80 controlled test incidents cannot establish general superiority. '
         'No action-selection, counterfactual-remediation, or early-stopping benefit was tested. '
@@ -36,6 +53,9 @@ def main():
         'Local verification reproduced frozen readouts, test predictions and collection boundaries; '
         'latent features were not independently regenerated locally.', '',
         'Checkpoint and readouts remained unchanged during evaluation. The previous inference template '
-        'and replica count were restored, and the temporary Job/stager were removed. No model was promoted.', '']
+        'and replica count were restored, and the temporary Job/stager were removed. No model was promoted. '
+        'The Kubernetes job completed in 26m28s. Bulk export subsequently failed; a temporary read-only '
+        'exporter recovered all evidence in 32 KiB chunks and checked file hashes. This did not rerun '
+        'training or evaluation. Future runs use the bounded exporter by default.', '']
     (R/'reports/LAB_TEMPORAL_RESULTS.md').write_text('\n'.join(lines))
 if __name__=='__main__':main()

@@ -1,6 +1,6 @@
 # Systems World Model
 
-Latest: [training status and inspection-policy audit](reports/LAB_ORDER_STABILITY_RESULTS.md) (2026-11-18). Core training is complete; known-fault diagnosis works, but a world-model investigation-efficiency advantage remains unproven.
+Latest: [trace-only training and held-out workload evaluation](reports/LAB_TEMPORAL_RESULTS.md) (2026-11-18). Dreamer scored 54/80 versus full-history telemetry 49/80; reliability and added-value gates failed. The previous serving model is restored.
 
 [One-page research proposal](output/pdf/systems-world-model-proposal.pdf)
 
