@@ -80,6 +80,14 @@ and confidence on development data before another confirmation run. Serving is
 unchanged and the lab is restored.
 [Efficiency results](reports/LAB_EFFICIENCY_RESULTS.md) · [Protocol](reports/LAB_EFFICIENCY_PROTOCOL.md).
 
+A **development-only partial-readout comparison** improved Dreamer two-check
+accuracy from **56/80 to 62/80** on matched nested cross-validation folds. Reliable
+stopping still averaged **2.9875 of 3 checks**, so the gate for a fresh live run
+failed. Remaining two-check Dreamer errors all concern delay, whose direct trace
+inspection comes last. Next: compare check orders on development data against a
+matched telemetry policy. No cluster changes or model promotion.
+[Partial-readout results](reports/LAB_PARTIAL_READOUT_RESULTS.md).
+
 ## Current deployment — validated live triage API
 
 The frozen Dreamer-state classifier is **deployed as the isolated lab default** (model 23, `inspect-latent`, source v20). HTTP replay matched **80/80** saved diagnoses; fresh live API validation scored **80/80**, with **10/10 in every known fault family**. Seven tests, evidence verification, rollback restoration and the post-promotion healthy check passed. This is a diagnosis-only POC for eight known regimes; broader generalization, learned investigation and LLM-driven remediation remain future work.
