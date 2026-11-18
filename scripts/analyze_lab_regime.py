@@ -9,13 +9,7 @@ from microservice.partial_readout import score,diagnose
 from microservice.mechanisms import FAULT_MASK
 R=Path(__file__).resolve().parents[1];E=R/'reports/evidence/lab-regime-v1'
 
-def response(row):
-    # Observed request counts and trace latencies only; no labels/controls/counters.
-    x=np.array([vector(row,t)[[0,3,4,5]] for t in range(4)])
-    n=np.array([f['requests'] for f in row['frames']],float)
-    low=x[n==n.min()].mean(0);high=x[n==n.max()].mean(0)
-    slope=(high-low)/(n.max()-n.min())
-    return np.concatenate([low,high,slope,[n.min()/12,n.max()/12]])
+from microservice.load_response import response
 
 def main():
     rows={s:[json.loads(l) for l in (E/('collection/train.jsonl' if s=='train' else 'evaluation/validation.jsonl')).read_text().splitlines()] for s in ('train','validation')}

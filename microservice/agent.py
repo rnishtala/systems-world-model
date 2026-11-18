@@ -9,10 +9,10 @@ from pathlib import Path
 from dreamerv3 import main as upstream
 
 class ShapeEnv:
-    def __init__(self,count=9,supervised=False):
+    def __init__(self,count=9,supervised=False,workload=False):
         self.obs_space=dict(vector=elements.Space(np.float32,(14,)),reward=elements.Space(np.float32),is_first=elements.Space(bool),is_last=elements.Space(bool),is_terminal=elements.Space(bool))
         if supervised:self.obs_space['mechanism_target']=elements.Space(np.float32,(3,),0,1)
-        self.act_space=dict(reset=elements.Space(bool),action=elements.Space(np.int32,(),0,count))
+        self.act_space=dict(reset=elements.Space(bool),action=elements.Space(np.float32,(),0,1) if workload else elements.Space(np.int32,(),0,count))
     def close(self):pass
 
 class Model:
@@ -22,8 +22,9 @@ class Model:
         self.supervised=meta.get('mechanism_supervision',False)
         if controller=='inspect-mechanisms' and not self.supervised:raise ValueError('Auxiliary head missing')
         self.contract=meta.get('action_contract','single-v1')
-        if self.contract not in ('single-v1','mechanisms-v1'):raise ValueError('Unknown action contract')
-        self.classes=8 if self.contract=='mechanisms-v1' else 4
+        if self.contract not in ('single-v1','mechanisms-v1','workload-continuous-v1'):raise ValueError('Unknown action contract')
+        self.classes=8 if self.contract!='single-v1' else 4
+        if self.contract=='workload-continuous-v1' and controller!='native':raise ValueError('Workload checkpoint is offline only')
         if self.classes==8 and controller=='inspect-guarded':raise ValueError('Guard is calibrated only for single-v1')
         self.guard=json.loads((Path(__file__).parent/"calibration/predictive-guard-v1.json").read_text()) if controller=="inspect-guarded" else None
         from microservice.latent_readout import LatentReadout
@@ -31,14 +32,15 @@ class Model:
         self.readout=LatentReadout(root,seed) if controller=='inspect-latent' else None
         self.seed=seed
         c=elements.Config.load(elements.Path(root+f'/train-{seed}/config.yaml')).update(logdir=f'/tmp/inference-{seed}')
-        upstream.make_env=lambda config,index,**kw:upstream.wrap_env(ShapeEnv(self.classes+5,self.supervised),config)
+        upstream.make_env=lambda config,index,**kw:upstream.wrap_env(ShapeEnv(self.classes+5,self.supervised,self.contract=='workload-continuous-v1'),config)
         from microservice.supervision import make_agent
         self.agent=(make_agent if self.supervised else upstream.make_agent)(c);cp=elements.Checkpoint(elements.Path(root+f'/final-{seed}'));cp.agent=self.agent;cp.load(keys=['agent'])
-        self.policy=ParticleActor(self.agent);self.carry=None;self.calls=0;self.sessions={}
+        from microservice.workload import WorkloadActor
+        self.policy=WorkloadActor(self.agent) if self.contract=='workload-continuous-v1' else ParticleActor(self.agent);self.carry=None;self.calls=0;self.sessions={}
         model=self.agent.model
         @nj.pure
         def forecast(dyn,action):
-            _,(feat,_)=model.dyn.imagine(dyn,{'action':jnp.full((16,),action,dtype=jnp.int32)},1,False,single=True)
+            _,(feat,_)=model.dyn.imagine(dyn,{'action':jnp.full((16,),action,dtype=jnp.float32 if self.contract=='workload-continuous-v1' else jnp.int32)},1,False,single=True)
             _,_,pred=model.dec(model.dec.initial(16),feat,jnp.zeros(16,bool),training=False,single=True)
             return pred['vector'].pred().mean(0)
         @nj.pure
@@ -53,6 +55,7 @@ class Model:
         self.forecast=jax.jit(lambda params,dyn,act,key:forecast(params,dyn,act,seed=key,create=False,modify=False)[1])
         self.rewards=jax.jit(lambda params,dyn,key:rewards(params,dyn,seed=key,create=False,modify=False)[1])
     def act(self,vector,first,reward,incident_id):
+        if self.contract=='workload-continuous-v1':raise ValueError('Offline workload checkpoint cannot serve diagnosis actions')
         uuid.UUID(incident_id)
         self.sessions={k:v for k,v in self.sessions.items() if time.monotonic()-v[1]<300}
         if first:
