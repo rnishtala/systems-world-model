@@ -1,0 +1,109 @@
+{
+  "seed": 43,
+  "curves": {
+    "auxiliary": [
+      23,
+      33,
+      36,
+      45,
+      48
+    ],
+    "matched": [
+      29,
+      36,
+      45,
+      48,
+      48
+    ],
+    "matched_clipped": [
+      24,
+      30,
+      41,
+      45,
+      48
+    ],
+    "fixed": [
+      24,
+      32,
+      36,
+      42,
+      48
+    ]
+  },
+  "n": 60,
+  "fold_ids": {
+    "0": [
+      "incident-0000",
+      "incident-0003",
+      "incident-0006",
+      "incident-0009",
+      "incident-0012",
+      "incident-0015",
+      "incident-0018",
+      "incident-0021",
+      "incident-0024",
+      "incident-0027",
+      "incident-0030",
+      "incident-0033",
+      "incident-0036",
+      "incident-0039",
+      "incident-0042",
+      "incident-0045",
+      "incident-0048",
+      "incident-0051",
+      "incident-0054",
+      "incident-0057",
+      "incident-0060",
+      "incident-0063",
+      "incident-0066",
+      "incident-0069",
+      "incident-0072",
+      "incident-0075",
+      "incident-0078",
+      "incident-0081",
+      "incident-0084",
+      "incident-0087"
+    ],
+    "1": [
+      "incident-0001",
+      "incident-0004",
+      "incident-0007",
+      "incident-0010",
+      "incident-0013",
+      "incident-0016",
+      "incident-0019",
+      "incident-0022",
+      "incident-0025",
+      "incident-0028",
+      "incident-0031",
+      "incident-0034",
+      "incident-0037",
+      "incident-0040",
+      "incident-0043",
+      "incident-0046",
+      "incident-0049",
+      "incident-0052",
+      "incident-0055",
+      "incident-0058",
+      "incident-0061",
+      "incident-0064",
+      "incident-0067",
+      "incident-0070",
+      "incident-0073",
+      "incident-0076",
+      "incident-0079",
+      "incident-0082",
+      "incident-0085",
+      "incident-0088"
+    ]
+  },
+  "seconds": 22.267298066988587,
+  "checkpoint_hashes": {
+    "checkpoint/20261117T173555F331057/agent.pkl": "c6586ff2a50a4a96780643287985b73a1a425981e39444ef145fb454ba248ee9",
+    "checkpoint/20261117T173555F331057/done": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "checkpoint/latest": "af976298bf7a7325c3c6a5a3b72066db2af20bf7132f4a8cb9ca916c278ad5d0"
+  },
+  "checkpoint_hashes_unchanged": true,
+  "test_arrays_loaded": false,
+  "world_model_training_exposure": true
+}

@@ -55,6 +55,15 @@ models and the held-out results are unchanged; inference is restored. Next: audi
 feature scaling and align acquisition with the actual diagnostic classifier before
 another confirmation run. [Audit results](reports/RCAEVAL_FORECAST_AUDIT_RESULTS.md).
 
+A subsequent **development alignment comparison** found mixed results: matching
+acquisition to the final classifier changed mean accuracy from **61.7% to 60.8%**
+(seed 42) and **57.1% to 65.8%** (seed 43). Range clipping did not improve on matched
+scoring. One nearly constant error-rate feature explains over **99.9%** of the
+large standardized forecast error. The cross-fitted diagnostic classifier reaches
+only **48/60** with full information. No candidate is promoted; a genuinely separate
+world-model development split and stronger diagnosis baseline are next.
+[Alignment results](reports/RCAEVAL_ALIGNMENT_RESULTS.md).
+
 ## Current deployment — validated live triage API
 
 The frozen Dreamer-state classifier is **deployed as the isolated lab default** (model 23, `inspect-latent`, source v20). HTTP replay matched **80/80** saved diagnoses; fresh live API validation scored **80/80**, with **10/10 in every known fault family**. Seven tests, evidence verification, rollback restoration and the post-promotion healthy check passed. This is a diagnosis-only POC for eight known regimes; broader generalization, learned investigation and LLM-driven remediation remain future work.
