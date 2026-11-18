@@ -64,6 +64,13 @@ only **48/60** with full information. No candidate is promoted; a genuinely sepa
 world-model development split and stronger diagnosis baseline are next.
 [Alignment results](reports/RCAEVAL_ALIGNMENT_RESULTS.md).
 
+A **fresh live-lab split** trained Dreamer on 80 new incidents and evaluated on
+80 later incidents after freezing both diagnostic readouts. Dreamer state scored
+**80/80** versus **79/80** for the same full observation history with a raw-telemetry
+ridge classifier. Prespecified added-value signal: **not met**. This is one
+model and known regimes, not production reliability. Serving remains unchanged.
+[Fresh lab results](reports/LAB_FRESH_SPLIT_RESULTS.md).
+
 ## Current deployment — validated live triage API
 
 The frozen Dreamer-state classifier is **deployed as the isolated lab default** (model 23, `inspect-latent`, source v20). HTTP replay matched **80/80** saved diagnoses; fresh live API validation scored **80/80**, with **10/10 in every known fault family**. Seven tests, evidence verification, rollback restoration and the post-promotion healthy check passed. This is a diagnosis-only POC for eight known regimes; broader generalization, learned investigation and LLM-driven remediation remain future work.

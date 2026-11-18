@@ -1,0 +1,12 @@
+{
+  "measurement_window": "post-warmup",
+  "utc": 1794973929.0314987,
+  "calibration_sha256": "7823fa350169d6415291b87af0b4454beb14c676ca7a4ab98a6e9b9f5d0354fa",
+  "checkpoint_sha256": "2f98d72b8834e6b8135f6370da9ac4b002c4d817a9e566e8ac2bc25bfc1a49e0",
+  "raw_dimensions": 56,
+  "latent_dimensions": 640,
+  "penalty": 1.0,
+  "threshold": 0.0,
+  "seed": 8102,
+  "scope": "Full-history raw and latent probes frozen before collecting fresh test incidents."
+}
