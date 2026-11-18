@@ -1,0 +1,117 @@
+{
+  "apiVersion": "batch/v1",
+  "kind": "Job",
+  "metadata": {
+    "name": "swm-lab-fresh-v1",
+    "namespace": "systems-world-model-lab"
+  },
+  "spec": {
+    "backoffLimit": 0,
+    "activeDeadlineSeconds": 7200,
+    "template": {
+      "metadata": {
+        "labels": {
+          "swm-role": "runner"
+        }
+      },
+      "spec": {
+        "restartPolicy": "Never",
+        "automountServiceAccountToken": false,
+        "nodeSelector": {
+          "kubernetes.io/hostname": "amd-halo"
+        },
+        "securityContext": {
+          "runAsNonRoot": true,
+          "runAsUser": 1000,
+          "runAsGroup": 1000,
+          "fsGroup": 1000,
+          "seccompProfile": {
+            "type": "RuntimeDefault"
+          }
+        },
+        "containers": [
+          {
+            "name": "experiment",
+            "image": "python:3.11-slim",
+            "securityContext": {
+              "allowPrivilegeEscalation": false,
+              "readOnlyRootFilesystem": true,
+              "capabilities": {
+                "drop": [
+                  "ALL"
+                ]
+              }
+            },
+            "resources": {
+              "requests": {
+                "cpu": "1",
+                "memory": "3Gi"
+              },
+              "limits": {
+                "cpu": "2",
+                "memory": "4Gi"
+              }
+            },
+            "env": [
+              {
+                "name": "PYTHONUNBUFFERED",
+                "value": "1"
+              },
+              {
+                "name": "PYTHONDONTWRITEBYTECODE",
+                "value": "1"
+              },
+              {
+                "name": "OMP_NUM_THREADS",
+                "value": "1"
+              },
+              {
+                "name": "OPENBLAS_NUM_THREADS",
+                "value": "1"
+              },
+              {
+                "name": "XLA_FLAGS",
+                "value": "--xla_cpu_multi_thread_eigen=false intra_op_parallelism_threads=1"
+              },
+              {
+                "name": "XDG_CACHE_HOME",
+                "value": "/tmp/cache"
+              }
+            ],
+            "command": [
+              "sh",
+              "-ec",
+              "cd /results/lab-fresh-v1\nexport PYTHONPATH=/results/lab-fresh-v1:/results/work/upstream\nexport DREAMER_SOURCE=/results/work/upstream\n/results/venv/bin/python -m microservice.fresh_collect --out collection\n/results/venv/bin/python -m microservice.train --data collection/train.jsonl --out models --seed 51 --steps 100000 --compositional --mechanism-supervision\n/results/venv/bin/python -m microservice.fresh_evaluate --root /results/lab-fresh-v1/models --model-seed 51 --calibration collection/train.jsonl --out evaluation --scenario-seed 8102 --measurement-window post-warmup\n"
+            ],
+            "volumeMounts": [
+              {
+                "name": "results",
+                "mountPath": "/results"
+              },
+              {
+                "name": "tmp",
+                "mountPath": "/tmp"
+              }
+            ]
+          }
+        ],
+        "volumes": [
+          {
+            "name": "results",
+            "persistentVolumeClaim": {
+              "claimName": "results"
+            }
+          },
+          {
+            "name": "tmp",
+            "emptyDir": {
+              "sizeLimit": "512Mi"
+            }
+          }
+        ],
+        "terminationGracePeriodSeconds": 1
+      }
+    },
+    "ttlSecondsAfterFinished": 86400
+  }
+}
