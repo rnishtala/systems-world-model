@@ -2,6 +2,8 @@
 
 Latest: [uncapped trace training with separate workload-regime validation](reports/LAB_REGIME_RESULTS.md) (2026-11-18). Dreamer scored 50/64 versus full-history telemetry 49/64 on validation used for readout selection. The screening gate failed, so no final test was run. The previous serving model is restored.
 
+Follow-up: [trace ambiguity and load-response analysis](reports/LAB_REGIME_DIAGNOSTICS.md). A load-response baseline reached 59/64 on reused development data; combined CPU-and-delay remains unreliable. No new independent test or training run.
+
 [One-page research proposal](output/pdf/systems-world-model-proposal.pdf)
 
 A standalone DreamerV3 experiment for system triage. The current POC learns a recurrent representation from measured checkout/payment/ledger/PostgreSQL trajectories and serves a frozen diagnostic classifier over that state. It runs on **AMD Halo, CPU only**, in its own Kubernetes namespace: `systems-world-model-lab`.
