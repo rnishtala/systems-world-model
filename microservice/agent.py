@@ -42,7 +42,8 @@ class Model:
         def forecast(dyn,action):
             _,(feat,_)=model.dyn.imagine(dyn,{'action':jnp.full((16,1) if self.contract=='workload-continuous-v1' else (16,),action,dtype=jnp.float32 if self.contract=='workload-continuous-v1' else jnp.int32)},1,False,single=True)
             _,_,pred=model.dec(model.dec.initial(16),feat,jnp.zeros(16,bool),training=False,single=True)
-            return pred['vector'].pred().mean(0)
+            from microservice.decoder_units import observation_prediction
+            return observation_prediction(pred['vector'].pred(),model.dec.symlog,jnp).mean(0)
         @nj.pure
         def rewards(dyn):
             dyn=jax.tree.map(lambda x:jnp.repeat(x,self.classes,axis=0),dyn)

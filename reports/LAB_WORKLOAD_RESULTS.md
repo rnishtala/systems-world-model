@@ -1,5 +1,7 @@
 # Workload-conditioned Dreamer results
 
+**Correction:** the original forecast scores below used decoder symlog outputs without inversion. The [frozen-checkpoint audit](WORKLOAD_FORECAST_AUDIT.md) corrects validation MSE to **0.032954**, versus persistence **0.099973**. Forecasting passes; diagnosis and the overall screening gate still fail. Original measured artifacts are preserved.
+
 2026-11-18. [Frozen protocol](LAB_WORKLOAD_PROTOCOL.md). [Evidence](evidence/lab-workload-v2/evaluation/summary.json).
 
 Training completed 100,000 steps in 18.0 minutes using the original 128 training incidents. Seed 81 was trained from scratch. Fresh validation used 64 incidents with seed 8802.

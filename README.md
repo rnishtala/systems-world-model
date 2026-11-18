@@ -1,6 +1,6 @@
 # Systems World Model
 
-Latest: [workload-conditioned Dreamer training and fresh validation](reports/LAB_WORKLOAD_RESULTS.md) (2026-11-18). Dreamer scored 56/64 versus the load-response baseline at 60/64. Forecast error was 2.52× persistence. Screening failed; no final test or model promotion. The previous serving model is restored.
+Latest: [frozen-checkpoint forecast audit](reports/WORKLOAD_FORECAST_AUDIT.md) (2026-11-18). Fixed a decoder-unit bug: corrected validation forecast error is 67% below persistence without retraining. Diagnosis remains 56/64 versus the load-response baseline at 60/64, so the overall screening gate still fails. No model promotion; lab restored.
 
 Follow-up: [trace ambiguity and load-response analysis](reports/LAB_REGIME_DIAGNOSTICS.md). A load-response baseline reached 59/64 on reused development data; combined CPU-and-delay remains unreliable. No new independent test or training run.
 

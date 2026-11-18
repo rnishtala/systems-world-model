@@ -1,0 +1,11 @@
+{
+  "verified": true,
+  "forecast_gate": true,
+  "diagnosis_gate": false,
+  "combined_gate": false,
+  "validation_error_reduction": 0.670366906005144,
+  "no_retraining": true,
+  "no_new_incidents": true,
+  "original_evidence_preserved": true,
+  "scope": "Local verification recomputes metrics and compares raw replay output to original forecasts; checkpoint replay and production adapter equivalence were checked in the audit pod."
+}
