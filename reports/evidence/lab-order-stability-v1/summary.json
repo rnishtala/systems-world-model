@@ -1,0 +1,1798 @@
+{
+  "scope": "Development diagnostics only; no independent performance estimate",
+  "hashes": {
+    "development": "a39a291fb9869b3cbd86327bf9db8907dd6e38c980f580c26bd2d0fb40b0486c",
+    "features": "f963bb972c8be359e97ef83a9125f2925c21818f8512cd7de3c72feedb03cf87",
+    "policy": "11a7d7bb945362dc2f446d68996e7cae43d37b5bfa084eccfa9129d639c79dd9",
+    "readouts": "ec3087ef94061a29746db184d3f236dcd7fda32f2631db2bc573088c8364cff3"
+  },
+  "methods": {
+    "latent": {
+      "transfer": {
+        "selected_out_of_fold": {
+          "stats": {
+            "n": 80,
+            "correct": 80,
+            "mean_checks": 2.95,
+            "families": {
+              "0": {
+                "n": 10,
+                "correct": 10
+              },
+              "1": {
+                "n": 10,
+                "correct": 10
+              },
+              "2": {
+                "n": 10,
+                "correct": 10
+              },
+              "3": {
+                "n": 10,
+                "correct": 10
+              },
+              "4": {
+                "n": 10,
+                "correct": 10
+              },
+              "5": {
+                "n": 10,
+                "correct": 10
+              },
+              "6": {
+                "n": 10,
+                "correct": 10
+              },
+              "7": {
+                "n": 10,
+                "correct": 10
+              }
+            },
+            "gate_passed": true
+          },
+          "margin_quantiles": [
+            [
+              0.0031986124543253256,
+              0.001309633085601673,
+              0.03859454349527953,
+              0.1993046883793701
+            ],
+            [
+              0.04576706448570046,
+              0.2232753789742979,
+              0.19713779772929557,
+              0.5429319363543192
+            ],
+            [
+              0.07804870759672147,
+              0.5962845071430869,
+              0.6464196131488885,
+              0.7037216763188283
+            ],
+            [
+              0.15492257239304488,
+              0.852647842649524,
+              0.9045203709545473,
+              0.8410166674069403
+            ],
+            [
+              0.6399064224302775,
+              1.029141684611678,
+              0.9835514411513743,
+              0.9596855368156313
+            ]
+          ],
+          "above_threshold_per_prefix": [
+            0,
+            2,
+            0,
+            0
+          ]
+        },
+        "final_fit_in_sample": {
+          "stats": {
+            "n": 80,
+            "correct": 80,
+            "mean_checks": 2.95,
+            "families": {
+              "0": {
+                "n": 10,
+                "correct": 10
+              },
+              "1": {
+                "n": 10,
+                "correct": 10
+              },
+              "2": {
+                "n": 10,
+                "correct": 10
+              },
+              "3": {
+                "n": 10,
+                "correct": 10
+              },
+              "4": {
+                "n": 10,
+                "correct": 10
+              },
+              "5": {
+                "n": 10,
+                "correct": 10
+              },
+              "6": {
+                "n": 10,
+                "correct": 10
+              },
+              "7": {
+                "n": 10,
+                "correct": 10
+              }
+            },
+            "gate_passed": true
+          },
+          "margin_quantiles": [
+            [
+              0.0024243308098501593,
+              0.9081612623758045,
+              0.47907357187219923,
+              0.3078557900799042
+            ],
+            [
+              0.03368672131921327,
+              0.9589617516593534,
+              0.6635116518936247,
+              0.5961643030069339
+            ],
+            [
+              0.08188923339065894,
+              0.9825027848983509,
+              0.8545022297168768,
+              0.755211140332879
+            ],
+            [
+              0.17303599924501656,
+              0.9931475546317694,
+              0.9673590589965871,
+              0.8650136347752444
+            ],
+            [
+              0.7134706011905019,
+              1.0016639280314232,
+              0.9996942601840451,
+              0.9664566755757072
+            ]
+          ],
+          "above_threshold_per_prefix": [
+            0,
+            2,
+            0,
+            0
+          ]
+        }
+      },
+      "selections": [
+        {
+          "seed": 8400,
+          "order": "213",
+          "threshold": 1.0,
+          "readouts": [
+            {
+              "kind": "linear",
+              "penalty": 1000.0
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.1
+            },
+            {
+              "kind": "linear",
+              "penalty": 1000.0
+            }
+          ],
+          "selection_stats": {
+            "n": 80,
+            "correct": 80,
+            "mean_checks": 2.95,
+            "families": {
+              "0": {
+                "n": 10,
+                "correct": 10
+              },
+              "1": {
+                "n": 10,
+                "correct": 10
+              },
+              "2": {
+                "n": 10,
+                "correct": 10
+              },
+              "3": {
+                "n": 10,
+                "correct": 10
+              },
+              "4": {
+                "n": 10,
+                "correct": 10
+              },
+              "5": {
+                "n": 10,
+                "correct": 10
+              },
+              "6": {
+                "n": 10,
+                "correct": 10
+              },
+              "7": {
+                "n": 10,
+                "correct": 10
+              }
+            },
+            "gate_passed": true
+          }
+        },
+        {
+          "seed": 8500,
+          "order": "123",
+          "threshold": null,
+          "readouts": [
+            {
+              "kind": "linear",
+              "penalty": 1.0
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.1
+            },
+            {
+              "kind": "linear",
+              "penalty": 1000.0
+            },
+            {
+              "kind": "linear",
+              "penalty": 1000.0
+            }
+          ],
+          "selection_stats": {
+            "n": 80,
+            "correct": 80,
+            "mean_checks": 3.0,
+            "families": {
+              "0": {
+                "n": 10,
+                "correct": 10
+              },
+              "1": {
+                "n": 10,
+                "correct": 10
+              },
+              "2": {
+                "n": 10,
+                "correct": 10
+              },
+              "3": {
+                "n": 10,
+                "correct": 10
+              },
+              "4": {
+                "n": 10,
+                "correct": 10
+              },
+              "5": {
+                "n": 10,
+                "correct": 10
+              },
+              "6": {
+                "n": 10,
+                "correct": 10
+              },
+              "7": {
+                "n": 10,
+                "correct": 10
+              }
+            },
+            "gate_passed": true
+          }
+        },
+        {
+          "seed": 8501,
+          "order": "231",
+          "threshold": 0.5,
+          "readouts": [
+            {
+              "kind": "rbf",
+              "gamma": 0.1,
+              "penalty": 0.1
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.1
+            },
+            {
+              "kind": "linear",
+              "penalty": 1000.0
+            },
+            {
+              "kind": "linear",
+              "penalty": 1000.0
+            }
+          ],
+          "selection_stats": {
+            "n": 80,
+            "correct": 80,
+            "mean_checks": 1.5625,
+            "families": {
+              "0": {
+                "n": 10,
+                "correct": 10
+              },
+              "1": {
+                "n": 10,
+                "correct": 10
+              },
+              "2": {
+                "n": 10,
+                "correct": 10
+              },
+              "3": {
+                "n": 10,
+                "correct": 10
+              },
+              "4": {
+                "n": 10,
+                "correct": 10
+              },
+              "5": {
+                "n": 10,
+                "correct": 10
+              },
+              "6": {
+                "n": 10,
+                "correct": 10
+              },
+              "7": {
+                "n": 10,
+                "correct": 10
+              }
+            },
+            "gate_passed": true
+          }
+        },
+        {
+          "seed": 8502,
+          "order": "132",
+          "threshold": 0.5,
+          "readouts": [
+            {
+              "kind": "linear",
+              "penalty": 1000.0
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.1
+            },
+            {
+              "kind": "linear",
+              "penalty": 1000.0
+            }
+          ],
+          "selection_stats": {
+            "n": 80,
+            "correct": 79,
+            "mean_checks": 1.925,
+            "families": {
+              "0": {
+                "n": 10,
+                "correct": 10
+              },
+              "1": {
+                "n": 10,
+                "correct": 10
+              },
+              "2": {
+                "n": 10,
+                "correct": 10
+              },
+              "3": {
+                "n": 10,
+                "correct": 10
+              },
+              "4": {
+                "n": 10,
+                "correct": 9
+              },
+              "5": {
+                "n": 10,
+                "correct": 10
+              },
+              "6": {
+                "n": 10,
+                "correct": 10
+              },
+              "7": {
+                "n": 10,
+                "correct": 10
+              }
+            },
+            "gate_passed": true
+          }
+        },
+        {
+          "seed": 8503,
+          "order": "213",
+          "threshold": 1.0,
+          "readouts": [
+            {
+              "kind": "linear",
+              "penalty": 100.0
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "linear",
+              "penalty": 1000.0
+            },
+            {
+              "kind": "linear",
+              "penalty": 1000.0
+            }
+          ],
+          "selection_stats": {
+            "n": 80,
+            "correct": 80,
+            "mean_checks": 2.925,
+            "families": {
+              "0": {
+                "n": 10,
+                "correct": 10
+              },
+              "1": {
+                "n": 10,
+                "correct": 10
+              },
+              "2": {
+                "n": 10,
+                "correct": 10
+              },
+              "3": {
+                "n": 10,
+                "correct": 10
+              },
+              "4": {
+                "n": 10,
+                "correct": 10
+              },
+              "5": {
+                "n": 10,
+                "correct": 10
+              },
+              "6": {
+                "n": 10,
+                "correct": 10
+              },
+              "7": {
+                "n": 10,
+                "correct": 10
+              }
+            },
+            "gate_passed": true
+          }
+        },
+        {
+          "seed": 8504,
+          "order": "213",
+          "threshold": 1.0,
+          "readouts": [
+            {
+              "kind": "linear",
+              "penalty": 100.0
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.1
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.1
+            },
+            {
+              "kind": "linear",
+              "penalty": 1000.0
+            }
+          ],
+          "selection_stats": {
+            "n": 80,
+            "correct": 80,
+            "mean_checks": 2.975,
+            "families": {
+              "0": {
+                "n": 10,
+                "correct": 10
+              },
+              "1": {
+                "n": 10,
+                "correct": 10
+              },
+              "2": {
+                "n": 10,
+                "correct": 10
+              },
+              "3": {
+                "n": 10,
+                "correct": 10
+              },
+              "4": {
+                "n": 10,
+                "correct": 10
+              },
+              "5": {
+                "n": 10,
+                "correct": 10
+              },
+              "6": {
+                "n": 10,
+                "correct": 10
+              },
+              "7": {
+                "n": 10,
+                "correct": 10
+              }
+            },
+            "gate_passed": true
+          }
+        },
+        {
+          "seed": 8505,
+          "order": "231",
+          "threshold": 0.5,
+          "readouts": [
+            {
+              "kind": "rbf",
+              "gamma": 0.1,
+              "penalty": 0.1
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.1
+            },
+            {
+              "kind": "linear",
+              "penalty": 1000.0
+            },
+            {
+              "kind": "linear",
+              "penalty": 1000.0
+            }
+          ],
+          "selection_stats": {
+            "n": 80,
+            "correct": 80,
+            "mean_checks": 1.5875,
+            "families": {
+              "0": {
+                "n": 10,
+                "correct": 10
+              },
+              "1": {
+                "n": 10,
+                "correct": 10
+              },
+              "2": {
+                "n": 10,
+                "correct": 10
+              },
+              "3": {
+                "n": 10,
+                "correct": 10
+              },
+              "4": {
+                "n": 10,
+                "correct": 10
+              },
+              "5": {
+                "n": 10,
+                "correct": 10
+              },
+              "6": {
+                "n": 10,
+                "correct": 10
+              },
+              "7": {
+                "n": 10,
+                "correct": 10
+              }
+            },
+            "gate_passed": true
+          }
+        },
+        {
+          "seed": 8506,
+          "order": "213",
+          "threshold": 1.0,
+          "readouts": [
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.1
+            },
+            {
+              "kind": "linear",
+              "penalty": 1000.0
+            },
+            {
+              "kind": "linear",
+              "penalty": 1000.0
+            }
+          ],
+          "selection_stats": {
+            "n": 80,
+            "correct": 80,
+            "mean_checks": 2.975,
+            "families": {
+              "0": {
+                "n": 10,
+                "correct": 10
+              },
+              "1": {
+                "n": 10,
+                "correct": 10
+              },
+              "2": {
+                "n": 10,
+                "correct": 10
+              },
+              "3": {
+                "n": 10,
+                "correct": 10
+              },
+              "4": {
+                "n": 10,
+                "correct": 10
+              },
+              "5": {
+                "n": 10,
+                "correct": 10
+              },
+              "6": {
+                "n": 10,
+                "correct": 10
+              },
+              "7": {
+                "n": 10,
+                "correct": 10
+              }
+            },
+            "gate_passed": true
+          }
+        },
+        {
+          "seed": 8507,
+          "order": "213",
+          "threshold": 1.0,
+          "readouts": [
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.1
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.1
+            },
+            {
+              "kind": "linear",
+              "penalty": 1000.0
+            }
+          ],
+          "selection_stats": {
+            "n": 80,
+            "correct": 80,
+            "mean_checks": 2.95,
+            "families": {
+              "0": {
+                "n": 10,
+                "correct": 10
+              },
+              "1": {
+                "n": 10,
+                "correct": 10
+              },
+              "2": {
+                "n": 10,
+                "correct": 10
+              },
+              "3": {
+                "n": 10,
+                "correct": 10
+              },
+              "4": {
+                "n": 10,
+                "correct": 10
+              },
+              "5": {
+                "n": 10,
+                "correct": 10
+              },
+              "6": {
+                "n": 10,
+                "correct": 10
+              },
+              "7": {
+                "n": 10,
+                "correct": 10
+              }
+            },
+            "gate_passed": true
+          }
+        },
+        {
+          "seed": 8508,
+          "order": "213",
+          "threshold": 1.0,
+          "readouts": [
+            {
+              "kind": "linear",
+              "penalty": 100.0
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.1
+            },
+            {
+              "kind": "linear",
+              "penalty": 1000.0
+            },
+            {
+              "kind": "linear",
+              "penalty": 1000.0
+            }
+          ],
+          "selection_stats": {
+            "n": 80,
+            "correct": 80,
+            "mean_checks": 2.975,
+            "families": {
+              "0": {
+                "n": 10,
+                "correct": 10
+              },
+              "1": {
+                "n": 10,
+                "correct": 10
+              },
+              "2": {
+                "n": 10,
+                "correct": 10
+              },
+              "3": {
+                "n": 10,
+                "correct": 10
+              },
+              "4": {
+                "n": 10,
+                "correct": 10
+              },
+              "5": {
+                "n": 10,
+                "correct": 10
+              },
+              "6": {
+                "n": 10,
+                "correct": 10
+              },
+              "7": {
+                "n": 10,
+                "correct": 10
+              }
+            },
+            "gate_passed": true
+          }
+        },
+        {
+          "seed": 8509,
+          "order": "312",
+          "threshold": 1.0,
+          "readouts": [
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "linear",
+              "penalty": 100.0
+            }
+          ],
+          "selection_stats": {
+            "n": 80,
+            "correct": 80,
+            "mean_checks": 2.9375,
+            "families": {
+              "0": {
+                "n": 10,
+                "correct": 10
+              },
+              "1": {
+                "n": 10,
+                "correct": 10
+              },
+              "2": {
+                "n": 10,
+                "correct": 10
+              },
+              "3": {
+                "n": 10,
+                "correct": 10
+              },
+              "4": {
+                "n": 10,
+                "correct": 10
+              },
+              "5": {
+                "n": 10,
+                "correct": 10
+              },
+              "6": {
+                "n": 10,
+                "correct": 10
+              },
+              "7": {
+                "n": 10,
+                "correct": 10
+              }
+            },
+            "gate_passed": true
+          }
+        }
+      ],
+      "order_counts": {
+        "123": 1,
+        "231": 2,
+        "132": 1,
+        "213": 5,
+        "312": 1
+      }
+    },
+    "raw": {
+      "transfer": {
+        "selected_out_of_fold": {
+          "stats": {
+            "n": 80,
+            "correct": 78,
+            "mean_checks": 1.6875,
+            "families": {
+              "0": {
+                "n": 10,
+                "correct": 10
+              },
+              "1": {
+                "n": 10,
+                "correct": 10
+              },
+              "2": {
+                "n": 10,
+                "correct": 9
+              },
+              "3": {
+                "n": 10,
+                "correct": 10
+              },
+              "4": {
+                "n": 10,
+                "correct": 10
+              },
+              "5": {
+                "n": 10,
+                "correct": 10
+              },
+              "6": {
+                "n": 10,
+                "correct": 10
+              },
+              "7": {
+                "n": 10,
+                "correct": 9
+              }
+            },
+            "gate_passed": true
+          },
+          "margin_quantiles": [
+            [
+              0.00014718578442722563,
+              0.010023036595227531,
+              0.01833342038069327,
+              0.000938792991177839
+            ],
+            [
+              0.0809440797306061,
+              0.14372882820758087,
+              0.6185860231150678,
+              0.48226750888619774
+            ],
+            [
+              0.18655210000253059,
+              0.3110837216866568,
+              0.8695499263456417,
+              0.7738269388365736
+            ],
+            [
+              0.3123732195888227,
+              0.5828453406533034,
+              0.9572144226794685,
+              0.8994503070696214
+            ],
+            [
+              1.0242877362101352,
+              0.9528205169123142,
+              1.0473510334128948,
+              1.0138921234541218
+            ]
+          ],
+          "above_threshold_per_prefix": [
+            11,
+            25,
+            67,
+            58
+          ]
+        },
+        "final_fit_in_sample": {
+          "stats": {
+            "n": 80,
+            "correct": 79,
+            "mean_checks": 1.5,
+            "families": {
+              "0": {
+                "n": 10,
+                "correct": 10
+              },
+              "1": {
+                "n": 10,
+                "correct": 10
+              },
+              "2": {
+                "n": 10,
+                "correct": 9
+              },
+              "3": {
+                "n": 10,
+                "correct": 10
+              },
+              "4": {
+                "n": 10,
+                "correct": 10
+              },
+              "5": {
+                "n": 10,
+                "correct": 10
+              },
+              "6": {
+                "n": 10,
+                "correct": 10
+              },
+              "7": {
+                "n": 10,
+                "correct": 10
+              }
+            },
+            "gate_passed": true
+          },
+          "margin_quantiles": [
+            [
+              0.013607688771944538,
+              0.0017074514365146623,
+              0.32499044466414656,
+              0.16086391005387501
+            ],
+            [
+              0.0761617278798817,
+              0.2017412298016808,
+              0.796943561704932,
+              0.5310688139430935
+            ],
+            [
+              0.19639021011215618,
+              0.3004307786664371,
+              0.9288628096008243,
+              0.8224678905896866
+            ],
+            [
+              0.3493037226804396,
+              0.553279110270881,
+              0.9732993801295351,
+              0.921060780328584
+            ],
+            [
+              0.9820237426727333,
+              0.9544277309002309,
+              1.0210880755389538,
+              1.050592772139294
+            ]
+          ],
+          "above_threshold_per_prefix": [
+            14,
+            24,
+            78,
+            65
+          ]
+        }
+      },
+      "selections": [
+        {
+          "seed": 8400,
+          "order": "321",
+          "threshold": 0.5,
+          "readouts": [
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.1
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 0.1,
+              "penalty": 0.01
+            }
+          ],
+          "selection_stats": {
+            "n": 80,
+            "correct": 78,
+            "mean_checks": 1.6875,
+            "families": {
+              "0": {
+                "n": 10,
+                "correct": 10
+              },
+              "1": {
+                "n": 10,
+                "correct": 10
+              },
+              "2": {
+                "n": 10,
+                "correct": 9
+              },
+              "3": {
+                "n": 10,
+                "correct": 10
+              },
+              "4": {
+                "n": 10,
+                "correct": 10
+              },
+              "5": {
+                "n": 10,
+                "correct": 10
+              },
+              "6": {
+                "n": 10,
+                "correct": 10
+              },
+              "7": {
+                "n": 10,
+                "correct": 9
+              }
+            },
+            "gate_passed": true
+          }
+        },
+        {
+          "seed": 8500,
+          "order": "321",
+          "threshold": 1.0,
+          "readouts": [
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.1
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "linear",
+              "penalty": 1.0
+            }
+          ],
+          "selection_stats": {
+            "n": 80,
+            "correct": 78,
+            "mean_checks": 2.825,
+            "families": {
+              "0": {
+                "n": 10,
+                "correct": 10
+              },
+              "1": {
+                "n": 10,
+                "correct": 10
+              },
+              "2": {
+                "n": 10,
+                "correct": 9
+              },
+              "3": {
+                "n": 10,
+                "correct": 10
+              },
+              "4": {
+                "n": 10,
+                "correct": 10
+              },
+              "5": {
+                "n": 10,
+                "correct": 9
+              },
+              "6": {
+                "n": 10,
+                "correct": 10
+              },
+              "7": {
+                "n": 10,
+                "correct": 10
+              }
+            },
+            "gate_passed": true
+          }
+        },
+        {
+          "seed": 8501,
+          "order": "231",
+          "threshold": 1.0,
+          "readouts": [
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "linear",
+              "penalty": 1.0
+            },
+            {
+              "kind": "linear",
+              "penalty": 1.0
+            }
+          ],
+          "selection_stats": {
+            "n": 80,
+            "correct": 78,
+            "mean_checks": 2.85,
+            "families": {
+              "0": {
+                "n": 10,
+                "correct": 10
+              },
+              "1": {
+                "n": 10,
+                "correct": 10
+              },
+              "2": {
+                "n": 10,
+                "correct": 10
+              },
+              "3": {
+                "n": 10,
+                "correct": 10
+              },
+              "4": {
+                "n": 10,
+                "correct": 10
+              },
+              "5": {
+                "n": 10,
+                "correct": 9
+              },
+              "6": {
+                "n": 10,
+                "correct": 10
+              },
+              "7": {
+                "n": 10,
+                "correct": 9
+              }
+            },
+            "gate_passed": true
+          }
+        },
+        {
+          "seed": 8502,
+          "order": "231",
+          "threshold": 1.0,
+          "readouts": [
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "linear",
+              "penalty": 10.0
+            }
+          ],
+          "selection_stats": {
+            "n": 80,
+            "correct": 78,
+            "mean_checks": 2.8,
+            "families": {
+              "0": {
+                "n": 10,
+                "correct": 10
+              },
+              "1": {
+                "n": 10,
+                "correct": 10
+              },
+              "2": {
+                "n": 10,
+                "correct": 10
+              },
+              "3": {
+                "n": 10,
+                "correct": 10
+              },
+              "4": {
+                "n": 10,
+                "correct": 10
+              },
+              "5": {
+                "n": 10,
+                "correct": 9
+              },
+              "6": {
+                "n": 10,
+                "correct": 10
+              },
+              "7": {
+                "n": 10,
+                "correct": 9
+              }
+            },
+            "gate_passed": true
+          }
+        },
+        {
+          "seed": 8503,
+          "order": "231",
+          "threshold": 1.0,
+          "readouts": [
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.1
+            }
+          ],
+          "selection_stats": {
+            "n": 80,
+            "correct": 79,
+            "mean_checks": 2.825,
+            "families": {
+              "0": {
+                "n": 10,
+                "correct": 10
+              },
+              "1": {
+                "n": 10,
+                "correct": 10
+              },
+              "2": {
+                "n": 10,
+                "correct": 10
+              },
+              "3": {
+                "n": 10,
+                "correct": 10
+              },
+              "4": {
+                "n": 10,
+                "correct": 10
+              },
+              "5": {
+                "n": 10,
+                "correct": 9
+              },
+              "6": {
+                "n": 10,
+                "correct": 10
+              },
+              "7": {
+                "n": 10,
+                "correct": 10
+              }
+            },
+            "gate_passed": true
+          }
+        },
+        {
+          "seed": 8504,
+          "order": "321",
+          "threshold": 0.5,
+          "readouts": [
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.1
+            },
+            {
+              "kind": "linear",
+              "penalty": 1.0
+            },
+            {
+              "kind": "linear",
+              "penalty": 10.0
+            }
+          ],
+          "selection_stats": {
+            "n": 80,
+            "correct": 77,
+            "mean_checks": 1.925,
+            "families": {
+              "0": {
+                "n": 10,
+                "correct": 10
+              },
+              "1": {
+                "n": 10,
+                "correct": 10
+              },
+              "2": {
+                "n": 10,
+                "correct": 9
+              },
+              "3": {
+                "n": 10,
+                "correct": 10
+              },
+              "4": {
+                "n": 10,
+                "correct": 9
+              },
+              "5": {
+                "n": 10,
+                "correct": 10
+              },
+              "6": {
+                "n": 10,
+                "correct": 10
+              },
+              "7": {
+                "n": 10,
+                "correct": 9
+              }
+            },
+            "gate_passed": true
+          }
+        },
+        {
+          "seed": 8505,
+          "order": "321",
+          "threshold": 0.5,
+          "readouts": [
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.1
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "linear",
+              "penalty": 10.0
+            }
+          ],
+          "selection_stats": {
+            "n": 80,
+            "correct": 78,
+            "mean_checks": 1.7375,
+            "families": {
+              "0": {
+                "n": 10,
+                "correct": 10
+              },
+              "1": {
+                "n": 10,
+                "correct": 10
+              },
+              "2": {
+                "n": 10,
+                "correct": 9
+              },
+              "3": {
+                "n": 10,
+                "correct": 10
+              },
+              "4": {
+                "n": 10,
+                "correct": 10
+              },
+              "5": {
+                "n": 10,
+                "correct": 9
+              },
+              "6": {
+                "n": 10,
+                "correct": 10
+              },
+              "7": {
+                "n": 10,
+                "correct": 10
+              }
+            },
+            "gate_passed": true
+          }
+        },
+        {
+          "seed": 8506,
+          "order": "231",
+          "threshold": 1.0,
+          "readouts": [
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            }
+          ],
+          "selection_stats": {
+            "n": 80,
+            "correct": 79,
+            "mean_checks": 2.8375,
+            "families": {
+              "0": {
+                "n": 10,
+                "correct": 10
+              },
+              "1": {
+                "n": 10,
+                "correct": 10
+              },
+              "2": {
+                "n": 10,
+                "correct": 10
+              },
+              "3": {
+                "n": 10,
+                "correct": 10
+              },
+              "4": {
+                "n": 10,
+                "correct": 10
+              },
+              "5": {
+                "n": 10,
+                "correct": 9
+              },
+              "6": {
+                "n": 10,
+                "correct": 10
+              },
+              "7": {
+                "n": 10,
+                "correct": 10
+              }
+            },
+            "gate_passed": true
+          }
+        },
+        {
+          "seed": 8507,
+          "order": "321",
+          "threshold": 0.5,
+          "readouts": [
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 0.1,
+              "penalty": 0.1
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 0.1,
+              "penalty": 0.01
+            }
+          ],
+          "selection_stats": {
+            "n": 80,
+            "correct": 78,
+            "mean_checks": 1.7375,
+            "families": {
+              "0": {
+                "n": 10,
+                "correct": 10
+              },
+              "1": {
+                "n": 10,
+                "correct": 10
+              },
+              "2": {
+                "n": 10,
+                "correct": 9
+              },
+              "3": {
+                "n": 10,
+                "correct": 10
+              },
+              "4": {
+                "n": 10,
+                "correct": 10
+              },
+              "5": {
+                "n": 10,
+                "correct": 9
+              },
+              "6": {
+                "n": 10,
+                "correct": 10
+              },
+              "7": {
+                "n": 10,
+                "correct": 10
+              }
+            },
+            "gate_passed": true
+          }
+        },
+        {
+          "seed": 8508,
+          "order": "231",
+          "threshold": 1.0,
+          "readouts": [
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.1
+            }
+          ],
+          "selection_stats": {
+            "n": 80,
+            "correct": 79,
+            "mean_checks": 2.825,
+            "families": {
+              "0": {
+                "n": 10,
+                "correct": 10
+              },
+              "1": {
+                "n": 10,
+                "correct": 10
+              },
+              "2": {
+                "n": 10,
+                "correct": 10
+              },
+              "3": {
+                "n": 10,
+                "correct": 10
+              },
+              "4": {
+                "n": 10,
+                "correct": 10
+              },
+              "5": {
+                "n": 10,
+                "correct": 9
+              },
+              "6": {
+                "n": 10,
+                "correct": 10
+              },
+              "7": {
+                "n": 10,
+                "correct": 10
+              }
+            },
+            "gate_passed": true
+          }
+        },
+        {
+          "seed": 8509,
+          "order": "321",
+          "threshold": 1.0,
+          "readouts": [
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.01
+            },
+            {
+              "kind": "rbf",
+              "gamma": 1.0,
+              "penalty": 0.1
+            }
+          ],
+          "selection_stats": {
+            "n": 80,
+            "correct": 78,
+            "mean_checks": 2.85,
+            "families": {
+              "0": {
+                "n": 10,
+                "correct": 10
+              },
+              "1": {
+                "n": 10,
+                "correct": 10
+              },
+              "2": {
+                "n": 10,
+                "correct": 9
+              },
+              "3": {
+                "n": 10,
+                "correct": 10
+              },
+              "4": {
+                "n": 10,
+                "correct": 10
+              },
+              "5": {
+                "n": 10,
+                "correct": 9
+              },
+              "6": {
+                "n": 10,
+                "correct": 10
+              },
+              "7": {
+                "n": 10,
+                "correct": 10
+              }
+            },
+            "gate_passed": true
+          }
+        }
+      ],
+      "order_counts": {
+        "321": 5,
+        "231": 5
+      }
+    }
+  }
+}

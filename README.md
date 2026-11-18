@@ -1,5 +1,7 @@
 # Systems World Model
 
+Latest: [training status and inspection-policy audit](reports/LAB_ORDER_STABILITY_RESULTS.md) (2026-11-18). Core training is complete; known-fault diagnosis works, but a world-model investigation-efficiency advantage remains unproven.
+
 [One-page research proposal](output/pdf/systems-world-model-proposal.pdf)
 
 A standalone DreamerV3 experiment for system triage. The current POC learns a recurrent representation from measured checkout/payment/ledger/PostgreSQL trajectories and serves a frozen diagnostic classifier over that state. It runs on **AMD Halo, CPU only**, in its own Kubernetes namespace: `systems-world-model-lab`.
