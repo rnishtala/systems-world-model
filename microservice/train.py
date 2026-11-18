@@ -5,7 +5,7 @@ from experiment.run import configuration
 from microservice.environment import EmpiricalEnv,Coverage
 import elements,embodied
 from dreamerv3 import main as upstream
-p=argparse.ArgumentParser();p.add_argument('--data',required=True);p.add_argument('--out',required=True);p.add_argument('--seed',type=int,default=0);p.add_argument('--steps',type=int,default=100000);p.add_argument('--compositional',action='store_true');p.add_argument('--mechanism-supervision',action='store_true');p.add_argument('--resume',action='store_true');p.add_argument('--observation-view',choices=['physical-v2','trace-temporal-v1'],default='physical-v2');a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--data',required=True);p.add_argument('--out',required=True);p.add_argument('--seed',type=int,default=0);p.add_argument('--steps',type=int,default=100000);p.add_argument('--compositional',action='store_true');p.add_argument('--mechanism-supervision',action='store_true');p.add_argument('--resume',action='store_true');p.add_argument('--observation-view',choices=['physical-v2','trace-temporal-v1','trace-log-v1'],default='physical-v2');a=p.parse_args()
 if a.mechanism_supervision and not a.compositional:p.error('--mechanism-supervision requires --compositional')
 from microservice.supervision import SupervisedEnv,make_agent
 env_class=SupervisedEnv if a.mechanism_supervision else EmpiricalEnv
@@ -14,6 +14,11 @@ if a.observation_view=='trace-temporal-v1':
  if not a.mechanism_supervision:p.error('Temporal view requires mechanism supervision')
  from microservice.temporal import TemporalEnv,TemporalCoverage
  env_class=TemporalEnv;Coverage=TemporalCoverage
+if a.observation_view=='trace-log-v1':
+ if not a.mechanism_supervision:p.error('Log view requires mechanism supervision')
+ from microservice.regime import LogEnv
+ from microservice.temporal import TemporalCoverage
+ env_class=LogEnv;Coverage=TemporalCoverage
 out=Path(a.out);log=out/f'train-{a.seed}'
 if log.exists() and not a.resume:raise SystemExit('Choose fresh output or explicitly --resume')
 if a.resume and not (log/'config.yaml').exists():raise SystemExit('Resume requires existing configuration')

@@ -19,6 +19,7 @@ class TemporalIncident(Incident):
 
 
 class TemporalEnv(EmpiricalEnv):
+    incident_type = TemporalIncident
     def __init__(self,path,seed=0,compositional=True):
         super().__init__(path,seed,compositional)
         import elements
@@ -28,7 +29,7 @@ class TemporalEnv(EmpiricalEnv):
         new = bool(action['reset']) or self.sim is None or self.sim.done
         obs = super().step(action)
         if new:
-            self.sim=TemporalIncident(self.sim.frames,self.sim.fault,compositional=True)
+            self.sim=self.incident_type(self.sim.frames,self.sim.fault,compositional=True)
             obs['vector']=self.sim.observe()
         mask=FAULT_MASK[self.sim.fault]
         obs['mechanism_target']=np.array([(mask>>i)&1 for i in range(3)],np.float32)
@@ -53,17 +54,20 @@ class TemporalCoverage:
         return carry,{**acts,'action':actions},outs
 
 
-def extract(model,rows):
+def extract(model,rows,view=vector):
     import jax
     from microservice.order_features import force_action
     history=[];latent=[];aux=[]
     for i,row in enumerate(rows):
         carry=model.policy.init_policy(1);sequence=[]
         for t in range(4):
-            v=vector(row,t);sequence.append(v)
+            v=view(row,t);sequence.append(v)
             obs=dict(vector=v[None],reward=np.array([0. if t==0 else -.05],np.float32),
                      is_first=np.array([t==0]),is_last=np.array([False]),is_terminal=np.array([False]),
                      mechanism_target=np.zeros((1,3),np.float32))
+            if t:
+                with jax.transfer_guard('allow'):
+                    assert all(np.all(np.asarray(a)==0) for a in carry[-1]['action'])
             carry,_,_=model.policy.policy(carry,obs,mode='eval')
             with jax.transfer_guard('allow'):
                 carry=force_action(carry,0,jax.device_put)
@@ -74,5 +78,6 @@ def extract(model,rows):
         history.append(np.asarray(sequence).reshape(-1));latent.append(state)
         aux.append(int(np.sum((probs>.5)*np.array([1,2,4]))))
         if i%20==0:print('TEMPORAL_EXTRACT',i,flush=True)
+    print('WAIT_ACTIONS_VERIFIED',len(rows)*3,flush=True)
     history=np.asarray(history)
     return dict(history=history,latest=history[:,-14:],latent=np.asarray(latent)),np.asarray(aux)
