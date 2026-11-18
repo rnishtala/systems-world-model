@@ -71,6 +71,15 @@ ridge classifier. Prespecified added-value signal: **not met**. This is one
 model and known regimes, not production reliability. Serving remains unchanged.
 [Fresh lab results](reports/LAB_FRESH_SPLIT_RESULTS.md).
 
+A **fresh diagnostic efficiency experiment** reused seed 51, calibrated stopping on
+80 new incidents, then evaluated on 80 later incidents. Dreamer and telemetry both
+scored **79/80**, but Dreamer used **3.00 checks** versus telemetry's **2.75**.
+No check-saving advantage was demonstrated. With only two fixed-order checks,
+Dreamer scored 58/80 and telemetry 59/80. Next: improve partial-observation diagnosis
+and confidence on development data before another confirmation run. Serving is
+unchanged and the lab is restored.
+[Efficiency results](reports/LAB_EFFICIENCY_RESULTS.md) · [Protocol](reports/LAB_EFFICIENCY_PROTOCOL.md).
+
 ## Current deployment — validated live triage API
 
 The frozen Dreamer-state classifier is **deployed as the isolated lab default** (model 23, `inspect-latent`, source v20). HTTP replay matched **80/80** saved diagnoses; fresh live API validation scored **80/80**, with **10/10 in every known fault family**. Seven tests, evidence verification, rollback restoration and the post-promotion healthy check passed. This is a diagnosis-only POC for eight known regimes; broader generalization, learned investigation and LLM-driven remediation remain future work.

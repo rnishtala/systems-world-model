@@ -1,0 +1,217 @@
+Observations
+  vector           Space(float32, shape=(14,), low=-inf, high=inf)
+  reward           Space(float32, shape=(), low=-inf, high=inf)
+  is_first         Space(bool, shape=(), low=False, high=True)
+  is_last          Space(bool, shape=(), low=False, high=True)
+  is_terminal      Space(bool, shape=(), low=False, high=True)
+  mechanism_target Space(float32, shape=(3,), low=0, high=1)
+Actions
+  action           Space(int32, shape=(), low=0, high=13)
+Extras
+  consec           Space(int32, shape=(), low=-2147483648, high=2147483647)
+  stepid           Space(uint8, shape=(20,), low=0, high=255)
+  dyn/deter        Space(float32, shape=(512,), low=-inf, high=inf)
+  dyn/stoch        Space(float32, shape=(32, 4), low=-inf, high=inf)
+JAX devices (1): [TFRT_CPU_0]
+Policy devices: TFRT_CPU_0
+Train devices:  TFRT_CPU_0
+Initializing parameters...
+Optimizer opt has 642,013 params:
+       364,864 dyn
+        66,111 val
+        57,663 rew
+        50,446 dec
+        50,381 pol
+        41,153 con
+         9,472 enc
+         1,923 mechanisms
+Done initializing!
+Compiling 1 checkpoint groups...
+Largest checkpoint group: 0 GB
+Compiling train and report...
+Train cost analysis:
+  FLOPS:            2.2e+09
+  Memory (temp):    3.3e+07
+  Memory (inputs):  8.4e+06
+  Memory (outputs): 8.3e+06
+  Memory (code):    1.2e+06
+
+Report cost analysis:
+No available
+Done compiling!
+Loading checkpoint: /results/lab-fresh-v1/models/final-51/20261118T035149F579129
+Loaded checkpoint.
+PREFIX_EXTRACT 0
+PREFIX_EXTRACT 20
+PREFIX_EXTRACT 40
+PREFIX_EXTRACT 60
+COLLECT 8201 1
+COLLECT 8201 2
+COLLECT 8201 3
+COLLECT 8201 4
+COLLECT 8201 5
+COLLECT 8201 6
+COLLECT 8201 7
+COLLECT 8201 8
+COLLECT 8201 9
+COLLECT 8201 10
+COLLECT 8201 11
+COLLECT 8201 12
+COLLECT 8201 13
+COLLECT 8201 14
+COLLECT 8201 15
+COLLECT 8201 16
+COLLECT 8201 17
+COLLECT 8201 18
+COLLECT 8201 19
+COLLECT 8201 20
+COLLECT 8201 21
+COLLECT 8201 22
+COLLECT 8201 23
+COLLECT 8201 24
+COLLECT 8201 25
+COLLECT 8201 26
+COLLECT 8201 27
+COLLECT 8201 28
+COLLECT 8201 29
+COLLECT 8201 30
+COLLECT 8201 31
+COLLECT 8201 32
+COLLECT 8201 33
+COLLECT 8201 34
+COLLECT 8201 35
+COLLECT 8201 36
+COLLECT 8201 37
+COLLECT 8201 38
+COLLECT 8201 39
+COLLECT 8201 40
+COLLECT 8201 41
+COLLECT 8201 42
+COLLECT 8201 43
+COLLECT 8201 44
+COLLECT 8201 45
+COLLECT 8201 46
+COLLECT 8201 47
+COLLECT 8201 48
+COLLECT 8201 49
+COLLECT 8201 50
+COLLECT 8201 51
+COLLECT 8201 52
+COLLECT 8201 53
+COLLECT 8201 54
+COLLECT 8201 55
+COLLECT 8201 56
+COLLECT 8201 57
+COLLECT 8201 58
+COLLECT 8201 59
+COLLECT 8201 60
+COLLECT 8201 61
+COLLECT 8201 62
+COLLECT 8201 63
+COLLECT 8201 64
+COLLECT 8201 65
+COLLECT 8201 66
+COLLECT 8201 67
+COLLECT 8201 68
+COLLECT 8201 69
+COLLECT 8201 70
+COLLECT 8201 71
+COLLECT 8201 72
+COLLECT 8201 73
+COLLECT 8201 74
+COLLECT 8201 75
+COLLECT 8201 76
+COLLECT 8201 77
+COLLECT 8201 78
+COLLECT 8201 79
+COLLECT 8201 80
+PREFIX_EXTRACT 0
+PREFIX_EXTRACT 20
+PREFIX_EXTRACT 40
+PREFIX_EXTRACT 60
+STOPPING_FROZEN {"raw": {"threshold": 1.0, "development_calibration_passed": true, "candidates": [{"threshold": 0.0, "correct": 20, "n": 80, "mean_checks": 0.0, "families": {"0": 10, "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, "7": 10}, "gate_passed": false, "eligible": false}, {"threshold": 0.25, "correct": 34, "n": 80, "mean_checks": 0.6, "families": {"0": 10, "1": 2, "2": 2, "3": 4, "4": 2, "5": 1, "6": 4, "7": 9}, "gate_passed": false, "eligible": false}, {"threshold": 0.5, "correct": 76, "n": 80, "mean_checks": 2.025, "families": {"0": 10, "1": 9, "2": 10, "3": 10, "4": 10, "5": 10, "6": 10, "7": 7}, "gate_passed": false, "eligible": false}, {"threshold": 1.0, "correct": 80, "n": 80, "mean_checks": 2.7625, "families": {"0": 10, "1": 10, "2": 10, "3": 10, "4": 10, "5": 10, "6": 10, "7": 10}, "gate_passed": true, "eligible": true}, {"threshold": 2.0, "correct": 80, "n": 80, "mean_checks": 3.0, "families": {"0": 10, "1": 10, "2": 10, "3": 10, "4": 10, "5": 10, "6": 10, "7": 10}, "gate_passed": true, "eligible": true}, {"threshold": 4.0, "correct": 80, "n": 80, "mean_checks": 3.0, "families": {"0": 10, "1": 10, "2": 10, "3": 10, "4": 10, "5": 10, "6": 10, "7": 10}, "gate_passed": true, "eligible": true}, {"threshold": null, "correct": 80, "n": 80, "mean_checks": 3.0, "families": {"0": 10, "1": 10, "2": 10, "3": 10, "4": 10, "5": 10, "6": 10, "7": 10}, "gate_passed": true, "eligible": true}]}, "latent": {"threshold": null, "development_calibration_passed": true, "candidates": [{"threshold": 0.0, "correct": 13, "n": 80, "mean_checks": 0.0, "families": {"0": 3, "1": 2, "2": 1, "3": 0, "4": 1, "5": 3, "6": 1, "7": 2}, "gate_passed": false, "eligible": false}, {"threshold": 0.25, "correct": 25, "n": 80, "mean_checks": 0.4, "families": {"0": 4, "1": 3, "2": 4, "3": 4, "4": 2, "5": 4, "6": 2, "7": 2}, "gate_passed": false, "eligible": false}, {"threshold": 0.5, "correct": 35, "n": 80, "mean_checks": 0.8625, "families": {"0": 6, "1": 3, "2": 6, "3": 6, "4": 2, "5": 4, "6": 2, "7": 6}, "gate_passed": false, "eligible": false}, {"threshold": 1.0, "correct": 67, "n": 80, "mean_checks": 2.3875, "families": {"0": 8, "1": 8, "2": 8, "3": 10, "4": 9, "5": 7, "6": 9, "7": 8}, "gate_passed": false, "eligible": false}, {"threshold": 2.0, "correct": 78, "n": 80, "mean_checks": 2.85, "families": {"0": 10, "1": 9, "2": 10, "3": 10, "4": 10, "5": 10, "6": 9, "7": 10}, "gate_passed": true, "eligible": false}, {"threshold": 4.0, "correct": 80, "n": 80, "mean_checks": 3.0, "families": {"0": 10, "1": 10, "2": 10, "3": 10, "4": 10, "5": 10, "6": 10, "7": 10}, "gate_passed": true, "eligible": true}, {"threshold": null, "correct": 80, "n": 80, "mean_checks": 3.0, "families": {"0": 10, "1": 10, "2": 10, "3": 10, "4": 10, "5": 10, "6": 10, "7": 10}, "gate_passed": true, "eligible": true}]}}
+COLLECT 8202 1
+COLLECT 8202 2
+COLLECT 8202 3
+COLLECT 8202 4
+COLLECT 8202 5
+COLLECT 8202 6
+COLLECT 8202 7
+COLLECT 8202 8
+COLLECT 8202 9
+COLLECT 8202 10
+COLLECT 8202 11
+COLLECT 8202 12
+COLLECT 8202 13
+COLLECT 8202 14
+COLLECT 8202 15
+COLLECT 8202 16
+COLLECT 8202 17
+COLLECT 8202 18
+COLLECT 8202 19
+COLLECT 8202 20
+COLLECT 8202 21
+COLLECT 8202 22
+COLLECT 8202 23
+COLLECT 8202 24
+COLLECT 8202 25
+COLLECT 8202 26
+COLLECT 8202 27
+COLLECT 8202 28
+COLLECT 8202 29
+COLLECT 8202 30
+COLLECT 8202 31
+COLLECT 8202 32
+COLLECT 8202 33
+COLLECT 8202 34
+COLLECT 8202 35
+COLLECT 8202 36
+COLLECT 8202 37
+COLLECT 8202 38
+COLLECT 8202 39
+COLLECT 8202 40
+COLLECT 8202 41
+COLLECT 8202 42
+COLLECT 8202 43
+COLLECT 8202 44
+COLLECT 8202 45
+COLLECT 8202 46
+COLLECT 8202 47
+COLLECT 8202 48
+COLLECT 8202 49
+COLLECT 8202 50
+COLLECT 8202 51
+COLLECT 8202 52
+COLLECT 8202 53
+COLLECT 8202 54
+COLLECT 8202 55
+COLLECT 8202 56
+COLLECT 8202 57
+COLLECT 8202 58
+COLLECT 8202 59
+COLLECT 8202 60
+COLLECT 8202 61
+COLLECT 8202 62
+COLLECT 8202 63
+COLLECT 8202 64
+COLLECT 8202 65
+COLLECT 8202 66
+COLLECT 8202 67
+COLLECT 8202 68
+COLLECT 8202 69
+COLLECT 8202 70
+COLLECT 8202 71
+COLLECT 8202 72
+COLLECT 8202 73
+COLLECT 8202 74
+COLLECT 8202 75
+COLLECT 8202 76
+COLLECT 8202 77
+COLLECT 8202 78
+COLLECT 8202 79
+COLLECT 8202 80
+PREFIX_EXTRACT 0
+PREFIX_EXTRACT 20
+PREFIX_EXTRACT 40
+PREFIX_EXTRACT 60
+EFFICIENCY_COMPLETE {"raw": {"correct": 79, "n": 80, "mean_checks": 2.75, "families": {"0": 10, "1": 10, "2": 10, "3": 10, "4": 10, "5": 9, "6": 10, "7": 10}, "gate_passed": true, "fixed_budgets": {"0": {"correct": 20, "n": 80, "mean_checks": 0.0, "families": {"0": 10, "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, "7": 10}, "gate_passed": false}, "1": {"correct": 31, "n": 80, "mean_checks": 1.0, "families": {"0": 10, "1": 7, "2": 1, "3": 0, "4": 2, "5": 0, "6": 10, "7": 1}, "gate_passed": false}, "2": {"correct": 59, "n": 80, "mean_checks": 2.0, "families": {"0": 10, "1": 2, "2": 10, "3": 10, "4": 7, "5": 9, "6": 10, "7": 1}, "gate_passed": false}, "3": {"correct": 79, "n": 80, "mean_checks": 3.0, "families": {"0": 10, "1": 10, "2": 10, "3": 10, "4": 10, "5": 9, "6": 10, "7": 10}, "gate_passed": true}}}, "latent": {"correct": 79, "n": 80, "mean_checks": 3.0, "families": {"0": 10, "1": 10, "2": 10, "3": 10, "4": 10, "5": 9, "6": 10, "7": 10}, "gate_passed": true, "fixed_budgets": {"0": {"correct": 13, "n": 80, "mean_checks": 0.0, "families": {"0": 2, "1": 2, "2": 0, "3": 3, "4": 0, "5": 5, "6": 1, "7": 0}, "gate_passed": false}, "1": {"correct": 27, "n": 80, "mean_checks": 1.0, "families": {"0": 7, "1": 0, "2": 8, "3": 1, "4": 2, "5": 3, "6": 3, "7": 3}, "gate_passed": false}, "2": {"correct": 58, "n": 80, "mean_checks": 2.0, "families": {"0": 10, "1": 2, "2": 10, "3": 10, "4": 9, "5": 4, "6": 9, "7": 4}, "gate_passed": false}, "3": {"correct": 79, "n": 80, "mean_checks": 3.0, "families": {"0": 10, "1": 10, "2": 10, "3": 10, "4": 10, "5": 9, "6": 10, "7": 10}, "gate_passed": true}}}, "success": false, "paired_latent_only_correct": 0, "paired_raw_only_correct": 0, "checkpoint_and_probes_unchanged": true}
