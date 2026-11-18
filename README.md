@@ -1,6 +1,8 @@
 # Systems World Model
 
-Latest: [fresh confirmation with frozen readouts](reports/FROZEN_CONFIRMATION_RESULTS.md) (2026-11-18). On 64 unseen incidents, the primary Dreamer readout scored 53/64 versus load response 58/64. The forecast-feature control scored 59/64 but missed per-family reliability. Forecast error was 63% below persistence; the combined diagnostic gate failed. No retraining or promotion; lab restored.
+Latest development: [mechanism-specific readout experiment](reports/MECHANISM_READOUT_RESULTS.md) (2026-11-18). Separate readouts per mechanism scored 112/128 versus the existing latent readout 119/128 on training-data folds; the gate failed. Fresh-error analysis narrows the ambiguity to pool contention versus delay. No retraining or cluster changes.
+
+Latest independent test: [fresh confirmation with frozen readouts](reports/FROZEN_CONFIRMATION_RESULTS.md) (2026-11-18). On 64 unseen incidents, the primary Dreamer readout scored 53/64 versus load response 58/64. The forecast-feature control scored 59/64 but missed per-family reliability. Forecast error was 63% below persistence; the combined diagnostic gate failed. No retraining or promotion; lab restored.
 
 Follow-up: [trace ambiguity and load-response analysis](reports/LAB_REGIME_DIAGNOSTICS.md). A load-response baseline reached 59/64 on reused development data; combined CPU-and-delay remains unreliable. No new independent test or training run.
 

@@ -1,0 +1,191 @@
+{
+  "methods": {
+    "mechanism_world": {
+      "n": 128,
+      "correct": 112,
+      "families": {
+        "0": {
+          "n": 16,
+          "correct": 16
+        },
+        "1": {
+          "n": 16,
+          "correct": 16
+        },
+        "2": {
+          "n": 16,
+          "correct": 10
+        },
+        "3": {
+          "n": 16,
+          "correct": 15
+        },
+        "4": {
+          "n": 16,
+          "correct": 11
+        },
+        "5": {
+          "n": 16,
+          "correct": 13
+        },
+        "6": {
+          "n": 16,
+          "correct": 16
+        },
+        "7": {
+          "n": 16,
+          "correct": 15
+        }
+      },
+      "gate_passed": false,
+      "observation_windows": 4.0,
+      "bit_errors": [
+        1,
+        8,
+        10
+      ],
+      "combined_correct": 55
+    },
+    "mechanism_telemetry": {
+      "n": 128,
+      "correct": 104,
+      "families": {
+        "0": {
+          "n": 16,
+          "correct": 16
+        },
+        "1": {
+          "n": 16,
+          "correct": 15
+        },
+        "2": {
+          "n": 16,
+          "correct": 11
+        },
+        "3": {
+          "n": 16,
+          "correct": 16
+        },
+        "4": {
+          "n": 16,
+          "correct": 5
+        },
+        "5": {
+          "n": 16,
+          "correct": 9
+        },
+        "6": {
+          "n": 16,
+          "correct": 16
+        },
+        "7": {
+          "n": 16,
+          "correct": 16
+        }
+      },
+      "gate_passed": false,
+      "observation_windows": 4.0,
+      "bit_errors": [
+        1,
+        16,
+        13
+      ],
+      "combined_correct": 46
+    },
+    "latent": {
+      "n": 128,
+      "correct": 119,
+      "families": {
+        "0": {
+          "n": 16,
+          "correct": 16
+        },
+        "1": {
+          "n": 16,
+          "correct": 16
+        },
+        "2": {
+          "n": 16,
+          "correct": 13
+        },
+        "3": {
+          "n": 16,
+          "correct": 15
+        },
+        "4": {
+          "n": 16,
+          "correct": 12
+        },
+        "5": {
+          "n": 16,
+          "correct": 16
+        },
+        "6": {
+          "n": 16,
+          "correct": 16
+        },
+        "7": {
+          "n": 16,
+          "correct": 15
+        }
+      },
+      "gate_passed": false,
+      "observation_windows": 4.0,
+      "bit_errors": [
+        0,
+        8,
+        4
+      ],
+      "combined_correct": 59
+    },
+    "response": {
+      "n": 128,
+      "correct": 104,
+      "families": {
+        "0": {
+          "n": 16,
+          "correct": 16
+        },
+        "1": {
+          "n": 16,
+          "correct": 15
+        },
+        "2": {
+          "n": 16,
+          "correct": 10
+        },
+        "3": {
+          "n": 16,
+          "correct": 16
+        },
+        "4": {
+          "n": 16,
+          "correct": 6
+        },
+        "5": {
+          "n": 16,
+          "correct": 9
+        },
+        "6": {
+          "n": 16,
+          "correct": 16
+        },
+        "7": {
+          "n": 16,
+          "correct": 16
+        }
+      },
+      "gate_passed": false,
+      "observation_windows": 4.0,
+      "bit_errors": [
+        1,
+        18,
+        12
+      ],
+      "combined_correct": 47
+    }
+  },
+  "development_gate": false,
+  "model_retrained": false,
+  "scope": "Readout development only. Model 81 trained on these rows; no independent world-model generalization claim."
+}
