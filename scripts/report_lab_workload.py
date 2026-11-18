@@ -22,6 +22,22 @@ def main():
         for key,a in s['test']['methods'].items():lines.append(f"| {NAMES[key]} | {a['correct']}/{a['n']} |")
         lines+=['',f"Final diagnostic added-value gate: **{'passed' if s['added_value_gate'] else 'failed'}**."]
     else:lines+=['','## Final test skipped','','The preregistered screening gate failed. No 80-incident final test was collected.']
+    lines+=['','## Interpretation and next step','',
+            'Dreamer scored 56/64 (87.5%) on fresh validation used for readout selection, behind the '
+            'load-response baseline at 60/64 (93.8%). It satisfies the family minimum of six out of '
+            'eight and healthy eight out of eight, but misses the overall 58/64 requirement and '
+            'trails the strongest baseline by four rather than at most two.', '',
+            'Forecast MSE is approximately 2.52 times persistence on validation and 5.71 times '
+            'persistence on the training trajectories. This fails the prediction criterion even '
+            'on familiar trajectories. A diagnostic representation is being learned, but useful '
+            'workload prediction has not been demonstrated.', '',
+            'Before another long run, audit the forecasting path: compare posterior reconstruction '
+            'with one-step prior forecasts on saved training trajectories, verify decoder units and '
+            'time alignment, and inspect channel-wise error. If that path is correct, investigate '
+            'the predictive objective and replay coverage. Do not assume a larger model or more '
+            'steps will fix the failure.', '',
+            'The earlier 50/64 result used a different validation batch and different training '
+            'contract. It is not a controlled before/after comparison.']
     lines+=['','## Verification and limitations','',
             'The first attempt stopped at upstream scalar-action dtype preflight before training or live collection. The corrected run uses a one-element float32 action array. Actual upstream normalization, rejection of unmeasured transitions, a separate 256-step smoke checkpoint, label isolation, and evaluation action carry alignment were checked. Independent local verification reproduced feature construction, readout selection, predictions, forecast targets/errors, split timing and artifact hashes. Latent features and forecasts were not regenerated locally.', '',
             'Architecture size and full-run step budget stayed fixed, but action contract, replay policy, next-workload observation, rewards and episode termination changed together. This is not a single-variable causal ablation. Training sees only measured trajectories, not arbitrary intervention outcomes. It does not establish counterfactual planning, autonomous remediation, unseen-fault diagnosis or unique value over other recurrent models.', '',

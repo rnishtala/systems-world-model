@@ -1,0 +1,107 @@
+{
+  "utc": 1795038030.6635356,
+  "checkpoint_sha256": "88474bdbdc8c9792da81ea1dce5e8a6b4982cc9295202f4c0cd6a3c432941946",
+  "data_sha256": "e83466b6e689e0e81d7575dc4b4b4e824eec4360daa3f250e81e332f9d51b7eb",
+  "validation_sha256": "49c3912f443d0e84e4d0d181d903925d3de83135e3757cfaf6d5ff747e781354",
+  "selection": {
+    "history": {
+      "candidate_correct": [
+        33,
+        35,
+        39,
+        41,
+        45,
+        37,
+        48,
+        48
+      ],
+      "selected": {
+        "kind": "rbf",
+        "gamma": 1.0,
+        "penalty": 0.01
+      }
+    },
+    "latest": {
+      "candidate_correct": [
+        31,
+        31,
+        35,
+        38,
+        41,
+        36,
+        47,
+        42
+      ],
+      "selected": {
+        "kind": "rbf",
+        "gamma": 1.0,
+        "penalty": 0.01
+      }
+    },
+    "response": {
+      "candidate_correct": [
+        45,
+        50,
+        53,
+        57,
+        59,
+        54,
+        60,
+        58
+      ],
+      "selected": {
+        "kind": "rbf",
+        "gamma": 1.0,
+        "penalty": 0.01
+      }
+    },
+    "latent": {
+      "candidate_correct": [
+        54,
+        55,
+        54,
+        46,
+        53,
+        54,
+        56,
+        55
+      ],
+      "selected": {
+        "kind": "rbf",
+        "gamma": 1.0,
+        "penalty": 0.01
+      }
+    }
+  },
+  "configs": {
+    "history": {
+      "kind": "rbf",
+      "gamma": 1.0,
+      "penalty": 0.01
+    },
+    "latest": {
+      "kind": "rbf",
+      "gamma": 1.0,
+      "penalty": 0.01
+    },
+    "response": {
+      "kind": "rbf",
+      "gamma": 1.0,
+      "penalty": 0.01
+    },
+    "latent": {
+      "kind": "rbf",
+      "gamma": 1.0,
+      "penalty": 0.01
+    },
+    "shuffled_latent": {
+      "kind": "rbf",
+      "gamma": 1.0,
+      "penalty": 0.01
+    }
+  },
+  "readouts_sha256": "e92725d1a22937f1909fafdb4c96a9192e0a24c82a61dedbf0666545bdfd62be",
+  "validation_gate": false,
+  "refit_after_validation": false,
+  "forecast_gate": false
+}

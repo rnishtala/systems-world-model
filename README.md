@@ -1,6 +1,6 @@
 # Systems World Model
 
-Latest: [uncapped trace training with separate workload-regime validation](reports/LAB_REGIME_RESULTS.md) (2026-11-18). Dreamer scored 50/64 versus full-history telemetry 49/64 on validation used for readout selection. The screening gate failed, so no final test was run. The previous serving model is restored.
+Latest: [workload-conditioned Dreamer training and fresh validation](reports/LAB_WORKLOAD_RESULTS.md) (2026-11-18). Dreamer scored 56/64 versus the load-response baseline at 60/64. Forecast error was 2.52× persistence. Screening failed; no final test or model promotion. The previous serving model is restored.
 
 Follow-up: [trace ambiguity and load-response analysis](reports/LAB_REGIME_DIAGNOSTICS.md). A load-response baseline reached 59/64 on reused development data; combined CPU-and-delay remains unreliable. No new independent test or training run.
 
