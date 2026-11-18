@@ -1,0 +1,250 @@
+{
+  "scope": "Readout development only; the frozen world model trained on all 128 incidents.",
+  "methods": {
+    "response": {
+      "n": 128,
+      "correct": 104,
+      "families": {
+        "0": {
+          "n": 16,
+          "correct": 16
+        },
+        "1": {
+          "n": 16,
+          "correct": 15
+        },
+        "2": {
+          "n": 16,
+          "correct": 10
+        },
+        "3": {
+          "n": 16,
+          "correct": 16
+        },
+        "4": {
+          "n": 16,
+          "correct": 6
+        },
+        "5": {
+          "n": 16,
+          "correct": 9
+        },
+        "6": {
+          "n": 16,
+          "correct": 16
+        },
+        "7": {
+          "n": 16,
+          "correct": 16
+        }
+      },
+      "gate_passed": false,
+      "observation_windows": 4.0
+    },
+    "history": {
+      "n": 128,
+      "correct": 102,
+      "families": {
+        "0": {
+          "n": 16,
+          "correct": 16
+        },
+        "1": {
+          "n": 16,
+          "correct": 15
+        },
+        "2": {
+          "n": 16,
+          "correct": 9
+        },
+        "3": {
+          "n": 16,
+          "correct": 13
+        },
+        "4": {
+          "n": 16,
+          "correct": 13
+        },
+        "5": {
+          "n": 16,
+          "correct": 10
+        },
+        "6": {
+          "n": 16,
+          "correct": 15
+        },
+        "7": {
+          "n": 16,
+          "correct": 11
+        }
+      },
+      "gate_passed": false,
+      "observation_windows": 4.0
+    },
+    "latent": {
+      "n": 128,
+      "correct": 119,
+      "families": {
+        "0": {
+          "n": 16,
+          "correct": 16
+        },
+        "1": {
+          "n": 16,
+          "correct": 16
+        },
+        "2": {
+          "n": 16,
+          "correct": 13
+        },
+        "3": {
+          "n": 16,
+          "correct": 15
+        },
+        "4": {
+          "n": 16,
+          "correct": 12
+        },
+        "5": {
+          "n": 16,
+          "correct": 16
+        },
+        "6": {
+          "n": 16,
+          "correct": 16
+        },
+        "7": {
+          "n": 16,
+          "correct": 15
+        }
+      },
+      "gate_passed": false,
+      "observation_windows": 4.0
+    },
+    "response_history": {
+      "n": 128,
+      "correct": 104,
+      "families": {
+        "0": {
+          "n": 16,
+          "correct": 16
+        },
+        "1": {
+          "n": 16,
+          "correct": 15
+        },
+        "2": {
+          "n": 16,
+          "correct": 11
+        },
+        "3": {
+          "n": 16,
+          "correct": 16
+        },
+        "4": {
+          "n": 16,
+          "correct": 5
+        },
+        "5": {
+          "n": 16,
+          "correct": 10
+        },
+        "6": {
+          "n": 16,
+          "correct": 16
+        },
+        "7": {
+          "n": 16,
+          "correct": 15
+        }
+      },
+      "gate_passed": false,
+      "observation_windows": 4.0
+    },
+    "response_latent": {
+      "n": 128,
+      "correct": 119,
+      "families": {
+        "0": {
+          "n": 16,
+          "correct": 16
+        },
+        "1": {
+          "n": 16,
+          "correct": 16
+        },
+        "2": {
+          "n": 16,
+          "correct": 13
+        },
+        "3": {
+          "n": 16,
+          "correct": 15
+        },
+        "4": {
+          "n": 16,
+          "correct": 12
+        },
+        "5": {
+          "n": 16,
+          "correct": 16
+        },
+        "6": {
+          "n": 16,
+          "correct": 16
+        },
+        "7": {
+          "n": 16,
+          "correct": 15
+        }
+      },
+      "gate_passed": false,
+      "observation_windows": 4.0
+    },
+    "response_forecast": {
+      "n": 128,
+      "correct": 104,
+      "families": {
+        "0": {
+          "n": 16,
+          "correct": 16
+        },
+        "1": {
+          "n": 16,
+          "correct": 15
+        },
+        "2": {
+          "n": 16,
+          "correct": 9
+        },
+        "3": {
+          "n": 16,
+          "correct": 16
+        },
+        "4": {
+          "n": 16,
+          "correct": 11
+        },
+        "5": {
+          "n": 16,
+          "correct": 10
+        },
+        "6": {
+          "n": 16,
+          "correct": 16
+        },
+        "7": {
+          "n": 16,
+          "correct": 11
+        }
+      },
+      "gate_passed": false,
+      "observation_windows": 4.0
+    }
+  },
+  "development_gate": false,
+  "paired": {
+    "forecast_only_correct": 8,
+    "response_only_correct": 8
+  }
+}

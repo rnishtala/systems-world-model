@@ -1,6 +1,6 @@
 # Systems World Model
 
-Latest: [frozen-checkpoint forecast audit](reports/WORKLOAD_FORECAST_AUDIT.md) (2026-11-18). Fixed a decoder-unit bug: corrected validation forecast error is 67% below persistence without retraining. Diagnosis remains 56/64 versus the load-response baseline at 60/64, so the overall screening gate still fails. No model promotion; lab restored.
+Latest: [forecast-informed diagnosis development](reports/FORECAST_READOUT_RESULTS.md) (2026-11-18). Adding forecast changes and residuals scored 104/128, equal to load response, in training-only nested workload-regime CV. The development gate failed; no new live run was launched. [The decoder correction](reports/WORKLOAD_FORECAST_AUDIT.md) still shows useful forecasts, but no diagnostic gain from this readout.
 
 Follow-up: [trace ambiguity and load-response analysis](reports/LAB_REGIME_DIAGNOSTICS.md). A load-response baseline reached 59/64 on reused development data; combined CPU-and-delay remains unreliable. No new independent test or training run.
 

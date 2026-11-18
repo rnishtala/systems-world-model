@@ -1,0 +1,432 @@
+{
+  "response": [
+    {
+      "regime": 0,
+      "config": {
+        "kind": "linear",
+        "penalty": 10.0
+      },
+      "inner_correct": [
+        67,
+        70,
+        77,
+        77,
+        74,
+        76,
+        75,
+        77
+      ]
+    },
+    {
+      "regime": 1,
+      "config": {
+        "kind": "linear",
+        "penalty": 1.0
+      },
+      "inner_correct": [
+        57,
+        64,
+        68,
+        70,
+        61,
+        63,
+        60,
+        65
+      ]
+    },
+    {
+      "regime": 2,
+      "config": {
+        "kind": "rbf",
+        "gamma": 0.1,
+        "penalty": 0.1
+      },
+      "inner_correct": [
+        66,
+        77,
+        78,
+        82,
+        80,
+        84,
+        74,
+        75
+      ]
+    },
+    {
+      "regime": 3,
+      "config": {
+        "kind": "linear",
+        "penalty": 1.0
+      },
+      "inner_correct": [
+        70,
+        74,
+        80,
+        84,
+        84,
+        81,
+        75,
+        80
+      ]
+    }
+  ],
+  "history": [
+    {
+      "regime": 0,
+      "config": {
+        "kind": "rbf",
+        "gamma": 1.0,
+        "penalty": 0.01
+      },
+      "inner_correct": [
+        52,
+        50,
+        56,
+        55,
+        59,
+        51,
+        68,
+        63
+      ]
+    },
+    {
+      "regime": 1,
+      "config": {
+        "kind": "rbf",
+        "gamma": 1.0,
+        "penalty": 0.01
+      },
+      "inner_correct": [
+        47,
+        46,
+        54,
+        56,
+        57,
+        51,
+        63,
+        60
+      ]
+    },
+    {
+      "regime": 2,
+      "config": {
+        "kind": "rbf",
+        "gamma": 1.0,
+        "penalty": 0.01
+      },
+      "inner_correct": [
+        46,
+        49,
+        59,
+        63,
+        62,
+        60,
+        67,
+        60
+      ]
+    },
+    {
+      "regime": 3,
+      "config": {
+        "kind": "rbf",
+        "gamma": 1.0,
+        "penalty": 0.01
+      },
+      "inner_correct": [
+        46,
+        50,
+        54,
+        61,
+        64,
+        51,
+        70,
+        63
+      ]
+    }
+  ],
+  "latent": [
+    {
+      "regime": 0,
+      "config": {
+        "kind": "linear",
+        "penalty": 1000.0
+      },
+      "inner_correct": [
+        90,
+        88,
+        81,
+        76,
+        88,
+        89,
+        86,
+        89
+      ]
+    },
+    {
+      "regime": 1,
+      "config": {
+        "kind": "linear",
+        "penalty": 1000.0
+      },
+      "inner_correct": [
+        86,
+        83,
+        74,
+        67,
+        82,
+        85,
+        84,
+        85
+      ]
+    },
+    {
+      "regime": 2,
+      "config": {
+        "kind": "linear",
+        "penalty": 1000.0
+      },
+      "inner_correct": [
+        86,
+        83,
+        79,
+        76,
+        83,
+        85,
+        85,
+        85
+      ]
+    },
+    {
+      "regime": 3,
+      "config": {
+        "kind": "linear",
+        "penalty": 1000.0
+      },
+      "inner_correct": [
+        91,
+        90,
+        86,
+        86,
+        89,
+        91,
+        88,
+        88
+      ]
+    }
+  ],
+  "response_history": [
+    {
+      "regime": 0,
+      "config": {
+        "kind": "linear",
+        "penalty": 10.0
+      },
+      "inner_correct": [
+        62,
+        70,
+        77,
+        72,
+        75,
+        73,
+        77,
+        76
+      ]
+    },
+    {
+      "regime": 1,
+      "config": {
+        "kind": "linear",
+        "penalty": 10.0
+      },
+      "inner_correct": [
+        49,
+        63,
+        69,
+        67,
+        64,
+        65,
+        68,
+        67
+      ]
+    },
+    {
+      "regime": 2,
+      "config": {
+        "kind": "linear",
+        "penalty": 1.0
+      },
+      "inner_correct": [
+        52,
+        72,
+        80,
+        83,
+        79,
+        76,
+        79,
+        79
+      ]
+    },
+    {
+      "regime": 3,
+      "config": {
+        "kind": "rbf",
+        "gamma": 0.1,
+        "penalty": 0.01
+      },
+      "inner_correct": [
+        60,
+        77,
+        79,
+        79,
+        82,
+        82,
+        73,
+        79
+      ]
+    }
+  ],
+  "response_latent": [
+    {
+      "regime": 0,
+      "config": {
+        "kind": "linear",
+        "penalty": 1000.0
+      },
+      "inner_correct": [
+        89,
+        88,
+        80,
+        75,
+        88,
+        89,
+        87,
+        89
+      ]
+    },
+    {
+      "regime": 1,
+      "config": {
+        "kind": "linear",
+        "penalty": 1000.0
+      },
+      "inner_correct": [
+        86,
+        82,
+        74,
+        67,
+        80,
+        85,
+        83,
+        85
+      ]
+    },
+    {
+      "regime": 2,
+      "config": {
+        "kind": "rbf",
+        "gamma": 0.1,
+        "penalty": 0.1
+      },
+      "inner_correct": [
+        86,
+        83,
+        80,
+        77,
+        83,
+        87,
+        85,
+        85
+      ]
+    },
+    {
+      "regime": 3,
+      "config": {
+        "kind": "rbf",
+        "gamma": 0.1,
+        "penalty": 0.1
+      },
+      "inner_correct": [
+        90,
+        90,
+        86,
+        82,
+        87,
+        91,
+        87,
+        89
+      ]
+    }
+  ],
+  "response_forecast": [
+    {
+      "regime": 0,
+      "config": {
+        "kind": "rbf",
+        "gamma": 0.1,
+        "penalty": 0.1
+      },
+      "inner_correct": [
+        58,
+        68,
+        69,
+        70,
+        72,
+        76,
+        63,
+        67
+      ]
+    },
+    {
+      "regime": 1,
+      "config": {
+        "kind": "linear",
+        "penalty": 10.0
+      },
+      "inner_correct": [
+        55,
+        63,
+        66,
+        59,
+        61,
+        66,
+        51,
+        56
+      ]
+    },
+    {
+      "regime": 2,
+      "config": {
+        "kind": "linear",
+        "penalty": 10.0
+      },
+      "inner_correct": [
+        60,
+        76,
+        82,
+        77,
+        73,
+        79,
+        74,
+        76
+      ]
+    },
+    {
+      "regime": 3,
+      "config": {
+        "kind": "rbf",
+        "gamma": 0.1,
+        "penalty": 0.1
+      },
+      "inner_correct": [
+        66,
+        78,
+        77,
+        71,
+        73,
+        79,
+        74,
+        76
+      ]
+    }
+  ]
+}
