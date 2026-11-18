@@ -1,0 +1,81 @@
+{
+  "utc": 1795028920.9508007,
+  "checkpoint_sha256": "74a4456c7e739a1a8b817895af56c010cae6e361e059fb3722e065a73dfd148a",
+  "data_sha256": "e83466b6e689e0e81d7575dc4b4b4e824eec4360daa3f250e81e332f9d51b7eb",
+  "validation_sha256": "e8ed3421302d3ac68384130ec867ba13145db925a6eff3e2f3378751165a0e79",
+  "selection": {
+    "history": {
+      "candidate_correct": [
+        32,
+        34,
+        38,
+        36,
+        38,
+        37,
+        43,
+        49
+      ],
+      "selected": {
+        "kind": "rbf",
+        "gamma": 1.0,
+        "penalty": 0.1
+      }
+    },
+    "latest": {
+      "candidate_correct": [
+        32,
+        32,
+        34,
+        36,
+        39,
+        36,
+        47,
+        43
+      ],
+      "selected": {
+        "kind": "rbf",
+        "gamma": 1.0,
+        "penalty": 0.01
+      }
+    },
+    "latent": {
+      "candidate_correct": [
+        48,
+        50,
+        49,
+        40,
+        49,
+        49,
+        49,
+        49
+      ],
+      "selected": {
+        "kind": "linear",
+        "penalty": 100.0
+      }
+    }
+  },
+  "configs": {
+    "history": {
+      "kind": "rbf",
+      "gamma": 1.0,
+      "penalty": 0.1
+    },
+    "latest": {
+      "kind": "rbf",
+      "gamma": 1.0,
+      "penalty": 0.01
+    },
+    "latent": {
+      "kind": "linear",
+      "penalty": 100.0
+    },
+    "shuffled_latent": {
+      "kind": "linear",
+      "penalty": 100.0
+    }
+  },
+  "readouts_sha256": "a778cf1503b3f6e628e60669bb0c2f4723dd0d0fdc19dab8c3a6ed1c36800a83",
+  "validation_gate": false,
+  "refit_after_validation": false
+}

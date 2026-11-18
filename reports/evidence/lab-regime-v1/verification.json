@@ -1,0 +1,30 @@
+{
+  "verified": true,
+  "final_test_collected": false,
+  "verified_wait_actions": 576,
+  "accuracy_intervals_95": {
+    "validation": {
+      "history": [
+        0.6486650974929234,
+        0.8525023278036498
+      ],
+      "latest": [
+        0.615168937427648,
+        0.8270376143046224
+      ],
+      "latent": [
+        0.665669836692222,
+        0.8649780253865025
+      ],
+      "shuffled_latent": [
+        0.08714748876961673,
+        0.26428290202305327
+      ],
+      "auxiliary": [
+        0.5499887622745426,
+        0.7742960423291224
+      ]
+    }
+  },
+  "scope": "Independent refit from training only, validation selection reproduction, observation and split checks, checkpoint/label audits recorded by job; latent/auxiliary features not recomputed locally; validation intervals are descriptive after selection."
+}

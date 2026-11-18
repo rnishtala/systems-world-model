@@ -1,0 +1,233 @@
+[
+  {
+    "step": 2780,
+    "train/mechanism_exact": 0.12275451811251308,
+    "train/mechanism_loss": 0.7018410505494811,
+    "train/loss/vector": 4.727292425002008,
+    "fps/policy": 90.6229243000438
+  },
+  {
+    "step": 5770,
+    "train/mechanism_exact": 0.12079227444800464,
+    "train/mechanism_loss": 0.6991304799834674,
+    "train/loss/vector": 0.6777717600213015,
+    "fps/policy": 99.52463169307484
+  },
+  {
+    "step": 8790,
+    "train/mechanism_exact": 0.14986132115955694,
+    "train/mechanism_loss": 0.6909925487060445,
+    "train/loss/vector": 0.40189777239564245,
+    "fps/policy": 100.50431388339545
+  },
+  {
+    "step": 11780,
+    "train/mechanism_exact": 0.24491139003299775,
+    "train/mechanism_loss": 0.6364429849673082,
+    "train/loss/vector": 0.28286639318109197,
+    "fps/policy": 99.66478076105919
+  },
+  {
+    "step": 14790,
+    "train/mechanism_exact": 0.3095103286285984,
+    "train/mechanism_loss": 0.510541355990349,
+    "train/loss/vector": 0.19911740593453672,
+    "fps/policy": 100.3269092726071
+  },
+  {
+    "step": 17790,
+    "train/mechanism_exact": 0.40701522795359296,
+    "train/mechanism_loss": 0.463841672261556,
+    "train/loss/vector": 0.17401316080490747,
+    "fps/policy": 99.99138747328571
+  },
+  {
+    "step": 20800,
+    "train/mechanism_exact": 0.5025049541096156,
+    "train/mechanism_loss": 0.4186874477869636,
+    "train/loss/vector": 0.13782963389901332,
+    "fps/policy": 99.9775369870452
+  },
+  {
+    "step": 23780,
+    "train/mechanism_exact": 0.5517622902989388,
+    "train/mechanism_loss": 0.3525835693843903,
+    "train/loss/vector": 0.10521063505000966,
+    "fps/policy": 99.30059223992943
+  },
+  {
+    "step": 26790,
+    "train/mechanism_exact": 0.5592798504265065,
+    "train/mechanism_loss": 0.3142798391190615,
+    "train/loss/vector": 0.09416148869043335,
+    "fps/policy": 100.06471062970577
+  },
+  {
+    "step": 29770,
+    "train/mechanism_exact": 0.5357556530441739,
+    "train/mechanism_loss": 0.3054198569570725,
+    "train/loss/vector": 0.08607929982944085,
+    "fps/policy": 99.32181608980046
+  },
+  {
+    "step": 32780,
+    "train/mechanism_exact": 0.5294990600978441,
+    "train/mechanism_loss": 0.2966358085816845,
+    "train/loss/vector": 0.08086310454862232,
+    "fps/policy": 100.26440037876473
+  },
+  {
+    "step": 35780,
+    "train/mechanism_exact": 0.5302065354983012,
+    "train/mechanism_loss": 0.28980819618701936,
+    "train/loss/vector": 0.0774579938252767,
+    "fps/policy": 99.7436879235272
+  },
+  {
+    "step": 38770,
+    "train/mechanism_exact": 0.5596760269154839,
+    "train/mechanism_loss": 0.2810070999564334,
+    "train/loss/vector": 0.0768857013215037,
+    "fps/policy": 99.49002971142505
+  },
+  {
+    "step": 41760,
+    "train/mechanism_exact": 0.5758361626755107,
+    "train/mechanism_loss": 0.27240194089431813,
+    "train/loss/vector": 0.07463280583687007,
+    "fps/policy": 99.48512303435183
+  },
+  {
+    "step": 44770,
+    "train/mechanism_exact": 0.572124829634707,
+    "train/mechanism_loss": 0.26985280810201423,
+    "train/loss/vector": 0.07293326657344686,
+    "fps/policy": 100.02389857845274
+  },
+  {
+    "step": 47790,
+    "train/mechanism_exact": 0.5873874434583699,
+    "train/mechanism_loss": 0.2653602666816914,
+    "train/loss/vector": 0.07067156833070343,
+    "fps/policy": 100.49340278497863
+  },
+  {
+    "step": 50770,
+    "train/mechanism_exact": 0.6133199753614277,
+    "train/mechanism_loss": 0.2533727724095132,
+    "train/loss/vector": 0.07058459273651842,
+    "fps/policy": 99.18143247448242
+  },
+  {
+    "step": 53780,
+    "train/mechanism_exact": 0.6296715244967886,
+    "train/mechanism_loss": 0.24902854423890722,
+    "train/loss/vector": 0.0686302903068668,
+    "fps/policy": 100.14480224184786
+  },
+  {
+    "step": 56780,
+    "train/mechanism_exact": 0.6300062050819397,
+    "train/mechanism_loss": 0.251517174800237,
+    "train/loss/vector": 0.06809166222810745,
+    "fps/policy": 99.85317282997353
+  },
+  {
+    "step": 59780,
+    "train/mechanism_exact": 0.6513400838772456,
+    "train/mechanism_loss": 0.23907118527094523,
+    "train/loss/vector": 0.06750185170769692,
+    "fps/policy": 99.93274287968072
+  },
+  {
+    "step": 62770,
+    "train/mechanism_exact": 0.6646939765482662,
+    "train/mechanism_loss": 0.23706739156800796,
+    "train/loss/vector": 0.06802106277150585,
+    "fps/policy": 99.5980169295605
+  },
+  {
+    "step": 65770,
+    "train/mechanism_exact": 0.6901886178652445,
+    "train/mechanism_loss": 0.2282466905117035,
+    "train/loss/vector": 0.06802317907412847,
+    "fps/policy": 99.77942352465084
+  },
+  {
+    "step": 68780,
+    "train/mechanism_exact": 0.6974482814523768,
+    "train/mechanism_loss": 0.22467069799437167,
+    "train/loss/vector": 0.0660518050055079,
+    "fps/policy": 100.0803159901231
+  },
+  {
+    "step": 71770,
+    "train/mechanism_exact": 0.7039643656761251,
+    "train/mechanism_loss": 0.22636426965342485,
+    "train/loss/vector": 0.06392806581156776,
+    "fps/policy": 99.61017670155171
+  },
+  {
+    "step": 74760,
+    "train/mechanism_exact": 0.7119030000213633,
+    "train/mechanism_loss": 0.21383803174457447,
+    "train/loss/vector": 0.06365999820477822,
+    "fps/policy": 99.63069548212883
+  },
+  {
+    "step": 77760,
+    "train/mechanism_exact": 0.7126987435817719,
+    "train/mechanism_loss": 0.21160397134224573,
+    "train/loss/vector": 0.06267737225691478,
+    "fps/policy": 99.95690296570702
+  },
+  {
+    "step": 80750,
+    "train/mechanism_exact": 0.746963413487171,
+    "train/mechanism_loss": 0.1946437848836743,
+    "train/loss/vector": 0.061299124637733515,
+    "fps/policy": 99.62375444181167
+  },
+  {
+    "step": 83740,
+    "train/mechanism_exact": 0.7612447976906669,
+    "train/mechanism_loss": 0.1898027292607143,
+    "train/loss/vector": 0.06130493401405327,
+    "fps/policy": 99.60611414833338
+  },
+  {
+    "step": 86730,
+    "train/mechanism_exact": 0.7645885481394549,
+    "train/mechanism_loss": 0.19191395437574005,
+    "train/loss/vector": 0.05921492626004041,
+    "fps/policy": 99.4186555632906
+  },
+  {
+    "step": 89750,
+    "train/mechanism_exact": 0.7701032592541975,
+    "train/mechanism_loss": 0.19000465413975462,
+    "train/loss/vector": 0.05711288949776075,
+    "fps/policy": 100.4032632508124
+  },
+  {
+    "step": 92730,
+    "train/mechanism_exact": 0.7763016714487255,
+    "train/mechanism_loss": 0.18981427222929756,
+    "train/loss/vector": 0.055478748723105514,
+    "fps/policy": 99.04613923958048
+  },
+  {
+    "step": 95750,
+    "train/mechanism_exact": 0.763960934523246,
+    "train/mechanism_loss": 0.18951505426544726,
+    "train/loss/vector": 0.056057503382707465,
+    "fps/policy": 100.62132238177986
+  },
+  {
+    "step": 98750,
+    "train/mechanism_exact": 0.763554423014323,
+    "train/mechanism_loss": 0.18628632893164954,
+    "train/loss/vector": 0.05619713603456815,
+    "fps/policy": 99.91345987120484
+  }
+]

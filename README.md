@@ -1,6 +1,6 @@
 # Systems World Model
 
-Latest: [trace-only training and held-out workload evaluation](reports/LAB_TEMPORAL_RESULTS.md) (2026-11-18). Dreamer scored 54/80 versus full-history telemetry 49/80; reliability and added-value gates failed. The previous serving model is restored.
+Latest: [uncapped trace training with separate workload-regime validation](reports/LAB_REGIME_RESULTS.md) (2026-11-18). Dreamer scored 50/64 versus full-history telemetry 49/64 on validation used for readout selection. The screening gate failed, so no final test was run. The previous serving model is restored.
 
 [One-page research proposal](output/pdf/systems-world-model-proposal.pdf)
 

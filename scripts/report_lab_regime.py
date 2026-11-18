@@ -35,6 +35,21 @@ def main():
         lines+=['',f"Final added-value gate: **{'passed' if s['added_value_gate'] else 'failed'}**."]
         for name,p in s['test']['paired'].items():lines.append(f"Against {name}: Dreamer-only wins {p['latent_only_correct']}, baseline-only wins {p['baseline_only_correct']}, nominal paired exact p={p['two_sided_exact_p']:.4g}.")
     else:lines+=['','## Final test deferred','','The screening gate failed. No final-test incidents were collected, saving 80 live fault injections. No final-test accuracy or generalization advantage is claimed.']
+    lines+=['','## Interpretation and next experiment','',
+            'Dreamer diagnosed 50/64 validation incidents (78.1%), only one more than full-history '
+            'telemetry (49/64, 76.6%). Healthy and CPU-only cases were all correct, but pool-only '
+            '(5/8), delay-only (4/8), and CPU-plus-delay (4/8) missed the per-family threshold. '
+            'This does not establish added value from the world model.', '',
+            'The previous experiment used different incidents, workloads and selection rules. Its '
+            '54/80 score cannot serve as a controlled before/after comparison. Uncapped scaling '
+            'and broader coverage were changed together, so their individual effects are unknown.', '',
+            'Before another training run, use the existing training data and these now-development '
+            'validation cases to examine confusion and overlapping traces across load regimes. '
+            'Check whether pool contention and injected delay are distinguishable from the available '
+            'observations. Then preregister one targeted change and collect fresh validation data. '
+            'Do not increase architecture size or reuse these scores as independent confirmation.', '',
+            'All requests in this experiment completed successfully: it evaluates performance-fault '
+            'triage, not outage or failed-request diagnosis.']
     lines+=['','## Verification and limits','',
             'Independent verification reproduced training-only readouts, validation selection and saved '
             'predictions; checked measured observations, workload balancing, split timing, hashes and '
