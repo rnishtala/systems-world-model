@@ -19,6 +19,8 @@ def main():
     before=json.loads((R/'evaluation/before-validation.json').read_text())
     metadata=json.loads((R/'models/training-81.json').read_text())
     assert metadata['observation_version']=='trace-workload-v1' and metadata['steps']==100000 and not metadata['resumed']
+    assert metadata['action_contract']=='workload-continuous-v1'
+    assert metadata['calibration_sha256']=='e83466b6e689e0e81d7575dc4b4b4e824eec4360daa3f250e81e332f9d51b7eb'
     assert frozen['refit_after_validation'] is False and before['checkpoint_sha256']==frozen['checkpoint_sha256']
     params=np.load(R/'evaluation/readouts.npz')
     assert hashlib.sha256((R/'evaluation/readouts.npz').read_bytes()).hexdigest()==frozen['readouts_sha256']
@@ -44,6 +46,7 @@ def main():
         actual=np.array([vector(r,t)[[0,3,4,5]] for r in rows[split] for t in range(1,4)])
         persistence=np.array([vector(r,t)[[0,3,4,5]] for r in rows[split] for t in range(3)])
         np.testing.assert_array_equal(f['actual'],actual);np.testing.assert_array_equal(f['persistence'],persistence)
+        assert f['predicted'].shape==actual.shape and np.isfinite(f['predicted']).all()
         for key in ('predicted','persistence'):
             assert float(np.mean((f[key]-f['actual'])**2))==summary['forecast_mse'][split][key]
         np.testing.assert_array_equal(features[split]['labels'],labels(rows[split]))
