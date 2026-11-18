@@ -1,0 +1,312 @@
+{
+  "methods": {
+    "response": {
+      "n": 64,
+      "correct": 58,
+      "families": {
+        "0": {
+          "n": 8,
+          "correct": 8
+        },
+        "1": {
+          "n": 8,
+          "correct": 7
+        },
+        "2": {
+          "n": 8,
+          "correct": 8
+        },
+        "3": {
+          "n": 8,
+          "correct": 8
+        },
+        "4": {
+          "n": 8,
+          "correct": 4
+        },
+        "5": {
+          "n": 8,
+          "correct": 7
+        },
+        "6": {
+          "n": 8,
+          "correct": 8
+        },
+        "7": {
+          "n": 8,
+          "correct": 8
+        }
+      },
+      "gate_passed": false,
+      "observation_windows": 4.0
+    },
+    "history": {
+      "n": 64,
+      "correct": 46,
+      "families": {
+        "0": {
+          "n": 8,
+          "correct": 8
+        },
+        "1": {
+          "n": 8,
+          "correct": 2
+        },
+        "2": {
+          "n": 8,
+          "correct": 8
+        },
+        "3": {
+          "n": 8,
+          "correct": 6
+        },
+        "4": {
+          "n": 8,
+          "correct": 3
+        },
+        "5": {
+          "n": 8,
+          "correct": 8
+        },
+        "6": {
+          "n": 8,
+          "correct": 4
+        },
+        "7": {
+          "n": 8,
+          "correct": 7
+        }
+      },
+      "gate_passed": false,
+      "observation_windows": 4.0
+    },
+    "latent": {
+      "n": 64,
+      "correct": 53,
+      "families": {
+        "0": {
+          "n": 8,
+          "correct": 8
+        },
+        "1": {
+          "n": 8,
+          "correct": 8
+        },
+        "2": {
+          "n": 8,
+          "correct": 5
+        },
+        "3": {
+          "n": 8,
+          "correct": 8
+        },
+        "4": {
+          "n": 8,
+          "correct": 4
+        },
+        "5": {
+          "n": 8,
+          "correct": 5
+        },
+        "6": {
+          "n": 8,
+          "correct": 8
+        },
+        "7": {
+          "n": 8,
+          "correct": 7
+        }
+      },
+      "gate_passed": false,
+      "observation_windows": 4.0
+    },
+    "response_history": {
+      "n": 64,
+      "correct": 57,
+      "families": {
+        "0": {
+          "n": 8,
+          "correct": 8
+        },
+        "1": {
+          "n": 8,
+          "correct": 6
+        },
+        "2": {
+          "n": 8,
+          "correct": 8
+        },
+        "3": {
+          "n": 8,
+          "correct": 8
+        },
+        "4": {
+          "n": 8,
+          "correct": 4
+        },
+        "5": {
+          "n": 8,
+          "correct": 7
+        },
+        "6": {
+          "n": 8,
+          "correct": 8
+        },
+        "7": {
+          "n": 8,
+          "correct": 8
+        }
+      },
+      "gate_passed": false,
+      "observation_windows": 4.0
+    },
+    "response_latent": {
+      "n": 64,
+      "correct": 53,
+      "families": {
+        "0": {
+          "n": 8,
+          "correct": 8
+        },
+        "1": {
+          "n": 8,
+          "correct": 8
+        },
+        "2": {
+          "n": 8,
+          "correct": 5
+        },
+        "3": {
+          "n": 8,
+          "correct": 8
+        },
+        "4": {
+          "n": 8,
+          "correct": 4
+        },
+        "5": {
+          "n": 8,
+          "correct": 5
+        },
+        "6": {
+          "n": 8,
+          "correct": 8
+        },
+        "7": {
+          "n": 8,
+          "correct": 7
+        }
+      },
+      "gate_passed": false,
+      "observation_windows": 4.0
+    },
+    "response_forecast": {
+      "n": 64,
+      "correct": 59,
+      "families": {
+        "0": {
+          "n": 8,
+          "correct": 8
+        },
+        "1": {
+          "n": 8,
+          "correct": 8
+        },
+        "2": {
+          "n": 8,
+          "correct": 8
+        },
+        "3": {
+          "n": 8,
+          "correct": 8
+        },
+        "4": {
+          "n": 8,
+          "correct": 6
+        },
+        "5": {
+          "n": 8,
+          "correct": 5
+        },
+        "6": {
+          "n": 8,
+          "correct": 8
+        },
+        "7": {
+          "n": 8,
+          "correct": 8
+        }
+      },
+      "gate_passed": false,
+      "observation_windows": 4.0
+    },
+    "auxiliary": {
+      "n": 64,
+      "correct": 53,
+      "families": {
+        "0": {
+          "n": 8,
+          "correct": 8
+        },
+        "1": {
+          "n": 8,
+          "correct": 8
+        },
+        "2": {
+          "n": 8,
+          "correct": 5
+        },
+        "3": {
+          "n": 8,
+          "correct": 8
+        },
+        "4": {
+          "n": 8,
+          "correct": 3
+        },
+        "5": {
+          "n": 8,
+          "correct": 5
+        },
+        "6": {
+          "n": 8,
+          "correct": 8
+        },
+        "7": {
+          "n": 8,
+          "correct": 8
+        }
+      },
+      "gate_passed": false,
+      "observation_windows": 4.0
+    }
+  },
+  "forecast_mse": {
+    "predicted": 0.029793212190270424,
+    "persistence": 0.07948988676071167
+  },
+  "primary_reliable": false,
+  "added_value": false,
+  "forecast_gate": true,
+  "combined_gate": false,
+  "paired": {
+    "response": {
+      "latent_only_correct": 3,
+      "baseline_only_correct": 8,
+      "two_sided_exact_p": 0.2265625
+    },
+    "history": {
+      "latent_only_correct": 14,
+      "baseline_only_correct": 7,
+      "two_sided_exact_p": 0.18924713134765625
+    },
+    "response_history": {
+      "latent_only_correct": 4,
+      "baseline_only_correct": 8,
+      "two_sided_exact_p": 0.3876953125
+    }
+  },
+  "checkpoint_unchanged": true,
+  "readouts_unchanged": true,
+  "refit_after_collection": false
+}

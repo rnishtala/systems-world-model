@@ -1,6 +1,6 @@
 # Systems World Model
 
-Latest: [forecast-informed diagnosis development](reports/FORECAST_READOUT_RESULTS.md) (2026-11-18). Adding forecast changes and residuals scored 104/128, equal to load response, in training-only nested workload-regime CV. The development gate failed; no new live run was launched. [The decoder correction](reports/WORKLOAD_FORECAST_AUDIT.md) still shows useful forecasts, but no diagnostic gain from this readout.
+Latest: [fresh confirmation with frozen readouts](reports/FROZEN_CONFIRMATION_RESULTS.md) (2026-11-18). On 64 unseen incidents, the primary Dreamer readout scored 53/64 versus load response 58/64. The forecast-feature control scored 59/64 but missed per-family reliability. Forecast error was 63% below persistence; the combined diagnostic gate failed. No retraining or promotion; lab restored.
 
 Follow-up: [trace ambiguity and load-response analysis](reports/LAB_REGIME_DIAGNOSTICS.md). A load-response baseline reached 59/64 on reused development data; combined CPU-and-delay remains unreliable. No new independent test or training run.
 

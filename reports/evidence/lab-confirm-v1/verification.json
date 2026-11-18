@@ -1,0 +1,10 @@
+{
+  "verified": true,
+  "training_only_fits_reproduced": true,
+  "freeze_precedes_collection": true,
+  "confirmation_incidents": 64,
+  "seed": 9002,
+  "all_predictions_and_metrics_reproduced": true,
+  "combined_gate": false,
+  "scope": "Latent states and forecasts exported by the job are not regenerated locally; parameter fits, observations, timing, predictions, metrics and hashes are independently verified."
+}

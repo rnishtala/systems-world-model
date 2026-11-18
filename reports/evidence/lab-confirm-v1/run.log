@@ -1,0 +1,113 @@
+Observations
+  vector           Space(float32, shape=(14,), low=-inf, high=inf)
+  reward           Space(float32, shape=(), low=-inf, high=inf)
+  is_first         Space(bool, shape=(), low=False, high=True)
+  is_last          Space(bool, shape=(), low=False, high=True)
+  is_terminal      Space(bool, shape=(), low=False, high=True)
+  mechanism_target Space(float32, shape=(3,), low=0, high=1)
+Actions
+  action           Space(float32, shape=(1,), low=-1, high=1)
+Extras
+  consec           Space(int32, shape=(), low=-2147483648, high=2147483647)
+  stepid           Space(uint8, shape=(20,), low=0, high=255)
+  dyn/deter        Space(float32, shape=(512,), low=-inf, high=inf)
+  dyn/stoch        Space(float32, shape=(32, 4), low=-inf, high=inf)
+JAX devices (1): [TFRT_CPU_0]
+Policy devices: TFRT_CPU_0
+Train devices:  TFRT_CPU_0
+Initializing parameters...
+Optimizer opt has 640,530 params:
+       364,096 dyn
+        66,111 val
+        57,663 rew
+        50,446 dec
+        49,666 pol
+        41,153 con
+         9,472 enc
+         1,923 mechanisms
+Done initializing!
+Compiling 1 checkpoint groups...
+Largest checkpoint group: 0 GB
+Compiling train and report...
+Train cost analysis:
+  FLOPS:            2.2e+09
+  Memory (temp):    3.3e+07
+  Memory (inputs):  8.3e+06
+  Memory (outputs): 8.3e+06
+  Memory (code):    1.2e+06
+
+Report cost analysis:
+No available
+Done compiling!
+Loading checkpoint: /results/lab-workload-v2/models/final-81/20261118T213652F216339
+Loaded checkpoint.
+REGIME_COLLECT validation 1 64
+REGIME_COLLECT validation 2 64
+REGIME_COLLECT validation 3 64
+REGIME_COLLECT validation 4 64
+REGIME_COLLECT validation 5 64
+REGIME_COLLECT validation 6 64
+REGIME_COLLECT validation 7 64
+REGIME_COLLECT validation 8 64
+REGIME_COLLECT validation 9 64
+REGIME_COLLECT validation 10 64
+REGIME_COLLECT validation 11 64
+REGIME_COLLECT validation 12 64
+REGIME_COLLECT validation 13 64
+REGIME_COLLECT validation 14 64
+REGIME_COLLECT validation 15 64
+REGIME_COLLECT validation 16 64
+REGIME_COLLECT validation 17 64
+REGIME_COLLECT validation 18 64
+REGIME_COLLECT validation 19 64
+REGIME_COLLECT validation 20 64
+REGIME_COLLECT validation 21 64
+REGIME_COLLECT validation 22 64
+REGIME_COLLECT validation 23 64
+REGIME_COLLECT validation 24 64
+REGIME_COLLECT validation 25 64
+REGIME_COLLECT validation 26 64
+REGIME_COLLECT validation 27 64
+REGIME_COLLECT validation 28 64
+REGIME_COLLECT validation 29 64
+REGIME_COLLECT validation 30 64
+REGIME_COLLECT validation 31 64
+REGIME_COLLECT validation 32 64
+REGIME_COLLECT validation 33 64
+REGIME_COLLECT validation 34 64
+REGIME_COLLECT validation 35 64
+REGIME_COLLECT validation 36 64
+REGIME_COLLECT validation 37 64
+REGIME_COLLECT validation 38 64
+REGIME_COLLECT validation 39 64
+REGIME_COLLECT validation 40 64
+REGIME_COLLECT validation 41 64
+REGIME_COLLECT validation 42 64
+REGIME_COLLECT validation 43 64
+REGIME_COLLECT validation 44 64
+REGIME_COLLECT validation 45 64
+REGIME_COLLECT validation 46 64
+REGIME_COLLECT validation 47 64
+REGIME_COLLECT validation 48 64
+REGIME_COLLECT validation 49 64
+REGIME_COLLECT validation 50 64
+REGIME_COLLECT validation 51 64
+REGIME_COLLECT validation 52 64
+REGIME_COLLECT validation 53 64
+REGIME_COLLECT validation 54 64
+REGIME_COLLECT validation 55 64
+REGIME_COLLECT validation 56 64
+REGIME_COLLECT validation 57 64
+REGIME_COLLECT validation 58 64
+REGIME_COLLECT validation 59 64
+REGIME_COLLECT validation 60 64
+REGIME_COLLECT validation 61 64
+REGIME_COLLECT validation 62 64
+REGIME_COLLECT validation 63 64
+REGIME_COLLECT validation 64 64
+WORKLOAD_EXTRACT 0
+WORKLOAD_EXTRACT 20
+WORKLOAD_EXTRACT 40
+WORKLOAD_EXTRACT 60
+WORKLOAD_ACTIONS_VERIFIED 192
+FROZEN_CONFIRMATION_COMPLETE {"methods": {"response": {"n": 64, "correct": 58, "families": {"0": {"n": 8, "correct": 8}, "1": {"n": 8, "correct": 7}, "2": {"n": 8, "correct": 8}, "3": {"n": 8, "correct": 8}, "4": {"n": 8, "correct": 4}, "5": {"n": 8, "correct": 7}, "6": {"n": 8, "correct": 8}, "7": {"n": 8, "correct": 8}}, "gate_passed": false, "observation_windows": 4.0}, "history": {"n": 64, "correct": 46, "families": {"0": {"n": 8, "correct": 8}, "1": {"n": 8, "correct": 2}, "2": {"n": 8, "correct": 8}, "3": {"n": 8, "correct": 6}, "4": {"n": 8, "correct": 3}, "5": {"n": 8, "correct": 8}, "6": {"n": 8, "correct": 4}, "7": {"n": 8, "correct": 7}}, "gate_passed": false, "observation_windows": 4.0}, "latent": {"n": 64, "correct": 53, "families": {"0": {"n": 8, "correct": 8}, "1": {"n": 8, "correct": 8}, "2": {"n": 8, "correct": 5}, "3": {"n": 8, "correct": 8}, "4": {"n": 8, "correct": 4}, "5": {"n": 8, "correct": 5}, "6": {"n": 8, "correct": 8}, "7": {"n": 8, "correct": 7}}, "gate_passed": false, "observation_windows": 4.0}, "response_history": {"n": 64, "correct": 57, "families": {"0": {"n": 8, "correct": 8}, "1": {"n": 8, "correct": 6}, "2": {"n": 8, "correct": 8}, "3": {"n": 8, "correct": 8}, "4": {"n": 8, "correct": 4}, "5": {"n": 8, "correct": 7}, "6": {"n": 8, "correct": 8}, "7": {"n": 8, "correct": 8}}, "gate_passed": false, "observation_windows": 4.0}, "response_latent": {"n": 64, "correct": 53, "families": {"0": {"n": 8, "correct": 8}, "1": {"n": 8, "correct": 8}, "2": {"n": 8, "correct": 5}, "3": {"n": 8, "correct": 8}, "4": {"n": 8, "correct": 4}, "5": {"n": 8, "correct": 5}, "6": {"n": 8, "correct": 8}, "7": {"n": 8, "correct": 7}}, "gate_passed": false, "observation_windows": 4.0}, "response_forecast": {"n": 64, "correct": 59, "families": {"0": {"n": 8, "correct": 8}, "1": {"n": 8, "correct": 8}, "2": {"n": 8, "correct": 8}, "3": {"n": 8, "correct": 8}, "4": {"n": 8, "correct": 6}, "5": {"n": 8, "correct": 5}, "6": {"n": 8, "correct": 8}, "7": {"n": 8, "correct": 8}}, "gate_passed": false, "observation_windows": 4.0}, "auxiliary": {"n": 64, "correct": 53, "families": {"0": {"n": 8, "correct": 8}, "1": {"n": 8, "correct": 8}, "2": {"n": 8, "correct": 5}, "3": {"n": 8, "correct": 8}, "4": {"n": 8, "correct": 3}, "5": {"n": 8, "correct": 5}, "6": {"n": 8, "correct": 8}, "7": {"n": 8, "correct": 8}}, "gate_passed": false, "observation_windows": 4.0}}, "forecast_mse": {"predicted": 0.029793212190270424, "persistence": 0.07948988676071167}, "primary_reliable": false, "added_value": false, "forecast_gate": true, "combined_gate": false, "paired": {"response": {"latent_only_correct": 3, "baseline_only_correct": 8, "two_sided_exact_p": 0.2265625}, "history": {"latent_only_correct": 14, "baseline_only_correct": 7, "two_sided_exact_p": 0.18924713134765625}, "response_history": {"latent_only_correct": 4, "baseline_only_correct": 8, "two_sided_exact_p": 0.3876953125}}, "checkpoint_unchanged": true, "readouts_unchanged": true, "refit_after_collection": false}
