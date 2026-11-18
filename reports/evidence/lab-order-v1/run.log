@@ -1,0 +1,52 @@
+Observations
+  vector           Space(float32, shape=(14,), low=-inf, high=inf)
+  reward           Space(float32, shape=(), low=-inf, high=inf)
+  is_first         Space(bool, shape=(), low=False, high=True)
+  is_last          Space(bool, shape=(), low=False, high=True)
+  is_terminal      Space(bool, shape=(), low=False, high=True)
+  mechanism_target Space(float32, shape=(3,), low=0, high=1)
+Actions
+  action           Space(int32, shape=(), low=0, high=13)
+Extras
+  consec           Space(int32, shape=(), low=-2147483648, high=2147483647)
+  stepid           Space(uint8, shape=(20,), low=0, high=255)
+  dyn/deter        Space(float32, shape=(512,), low=-inf, high=inf)
+  dyn/stoch        Space(float32, shape=(32, 4), low=-inf, high=inf)
+JAX devices (1): [TFRT_CPU_0]
+Policy devices: TFRT_CPU_0
+Train devices:  TFRT_CPU_0
+Initializing parameters...
+Optimizer opt has 642,013 params:
+       364,864 dyn
+        66,111 val
+        57,663 rew
+        50,446 dec
+        50,381 pol
+        41,153 con
+         9,472 enc
+         1,923 mechanisms
+Done initializing!
+Compiling 1 checkpoint groups...
+Largest checkpoint group: 0 GB
+Compiling train and report...
+Train cost analysis:
+  FLOPS:            2.2e+09
+  Memory (temp):    3.3e+07
+  Memory (inputs):  8.4e+06
+  Memory (outputs): 8.3e+06
+  Memory (code):    1.2e+06
+
+Report cost analysis:
+No available
+Done compiling!
+Loading checkpoint: /results/lab-fresh-v1/models/final-51/20261118T035149F579129
+Loaded checkpoint.
+ORDER_EXTRACT 1
+ORDER_EXTRACT 11
+ORDER_EXTRACT 21
+ORDER_EXTRACT 31
+ORDER_EXTRACT 41
+ORDER_EXTRACT 51
+ORDER_EXTRACT 61
+ORDER_EXTRACT 71
+ORDER_EXTRACTION_COMPLETE {"n": 80, "scenario_seed": 8201, "source_sha256": "a39a291fb9869b3cbd86327bf9db8907dd6e38c980f580c26bd2d0fb40b0486c", "checkpoint_sha256": "2f98d72b8834e6b8135f6370da9ac4b002c4d817a9e566e8ac2bc25bfc1a49e0", "source_unchanged": true, "checkpoint_unchanged": true, "orders": [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]], "prefix_nodes_per_incident": 16, "verified_previous_actions": 1200, "shared_prefixes_reused": true, "label_audit": {"checkpoint_loaded": true, "encoder_excludes_labels": true, "decoder_excludes_labels": true, "policy_identical_for_opposite_labels": true, "auxiliary_head_optimized": true}, "features_sha256": "f963bb972c8be359e97ef83a9125f2925c21818f8512cd7de3c72feedb03cf87"}

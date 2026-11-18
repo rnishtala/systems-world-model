@@ -1,0 +1,13 @@
+{
+  "utc": 1795020084.0146096,
+  "policy_sha256": "11a7d7bb945362dc2f446d68996e7cae43d37b5bfa084eccfa9129d639c79dd9",
+  "readouts_sha256": "ec3087ef94061a29746db184d3f236dcd7fda32f2631db2bc573088c8364cff3",
+  "checkpoint_sha256": "2f98d72b8834e6b8135f6370da9ac4b002c4d817a9e566e8ac2bc25bfc1a49e0",
+  "label_audit": {
+    "checkpoint_loaded": true,
+    "encoder_excludes_labels": true,
+    "decoder_excludes_labels": true,
+    "policy_identical_for_opposite_labels": true,
+    "auxiliary_head_optimized": true
+  }
+}

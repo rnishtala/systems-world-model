@@ -1,0 +1,11 @@
+{
+  "verified": true,
+  "only_development_incidents": true,
+  "shared_prefixes_identical": true,
+  "raw_observation_boundaries_verified": true,
+  "actual_action_audit_passed": true,
+  "checkpoint_unchanged": true,
+  "all_nested_predictions_reproduced": true,
+  "development_gate_passed": true,
+  "restored": true
+}

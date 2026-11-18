@@ -88,6 +88,14 @@ inspection comes last. Next: compare check orders on development data against a
 matched telemetry policy. No cluster changes or model promotion.
 [Partial-readout results](reports/LAB_PARTIAL_READOUT_RESULTS.md).
 
+A **check-order comparison and fresh confirmation** found promising development
+savings, but they did not hold in confirmation. On 80 new incidents, Dreamer
+scored **80/80 at 2.9625 checks**, while the frozen trace-first telemetry policy
+scored **79/80 at 1.5375 checks**. Both passed reliability; the world-model
+efficiency gate failed. No promotion. Inference is restored and temporary
+resources are removed. Next: audit selection stability on development data.
+[Confirmation results](reports/LAB_ORDER_CONFIRM_RESULTS.md) · [Development results](reports/LAB_CHECK_ORDER_RESULTS.md).
+
 ## Current deployment — validated live triage API
 
 The frozen Dreamer-state classifier is **deployed as the isolated lab default** (model 23, `inspect-latent`, source v20). HTTP replay matched **80/80** saved diagnoses; fresh live API validation scored **80/80**, with **10/10 in every known fault family**. Seven tests, evidence verification, rollback restoration and the post-promotion healthy check passed. This is a diagnosis-only POC for eight known regimes; broader generalization, learned investigation and LLM-driven remediation remain future work.
