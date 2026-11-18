@@ -14,15 +14,15 @@ def main():
     with tempfile.TemporaryDirectory() as d:
         path=Path(d)/'rows.jsonl';path.write_text(json.dumps(row)+'\n')
         raw=WorkloadEnv(path);env=upstream.wrap_env(raw,None)
-        obs=env.step(dict(reset=True,action=np.float32(-1)))
+        obs=env.step(dict(reset=True,action=np.array([-1],np.float32)))
         np.testing.assert_array_equal(obs['vector'],vector(row,0))
         for t in range(1,5):
-            action=np.float32(2*next_load(row,t-1)-1)
+            action=np.array([2*next_load(row,t-1)-1],np.float32)
             obs=env.step(dict(reset=False,action=action))
             np.testing.assert_array_equal(obs['vector'],vector(row,t))
             assert obs['is_last']==(t==4)
-        env.step(dict(reset=True,action=np.float32(-1)))
-        try:env.step(dict(reset=False,action=np.float32(-1)))
+        env.step(dict(reset=True,action=np.array([-1],np.float32)))
+        try:env.step(dict(reset=False,action=np.array([-1],np.float32)))
         except ValueError as e:assert 'counterfactual' in str(e)
         else:raise AssertionError('Unmeasured transition accepted')
         changed=copy.deepcopy(row);changed['frames'][1]['metrics']['ledger']['latency_p95']=100

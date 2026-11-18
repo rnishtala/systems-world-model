@@ -21,14 +21,14 @@ class WorkloadEnv:
         if not self.rows or any(len(r['frames'])!=4 or any(f['requests']!=f['successes'] for f in r['frames']) for r in self.rows):raise ValueError('Invalid measured trajectories')
         self.rng=np.random.default_rng(seed);self.row=None;self.t=0;self.done=True
         self.obs_space=dict(vector=elements.Space(np.float32,(14,)),mechanism_target=elements.Space(np.float32,(3,),0,1),reward=elements.Space(np.float32),is_first=elements.Space(bool),is_last=elements.Space(bool),is_terminal=elements.Space(bool))
-        self.act_space=dict(reset=elements.Space(bool),action=elements.Space(np.float32,(),0,1))
+        self.act_space=dict(reset=elements.Space(bool),action=elements.Space(np.float32,(1,),0,1))
     def step(self,action):
         first=bool(action['reset']) or self.done
         if first:
             self.row=self.rows[int(self.rng.integers(len(self.rows)))];self.t=0;self.done=False
         else:
             expected=next_load(self.row,self.t)
-            if not np.isclose(float(action['action']),expected,atol=1e-6):raise ValueError('Action differs from measured workload; counterfactual replay forbidden')
+            if not np.isclose(np.asarray(action['action']).item(),expected,atol=1e-6):raise ValueError('Action differs from measured workload; counterfactual replay forbidden')
             self.t+=1;self.done=self.t==4
         mask=FAULT_MASK[self.row['fault']]
         return dict(vector=vector(self.row,self.t),mechanism_target=np.array([(mask>>i)&1 for i in range(3)],np.float32),reward=np.float32(0),is_first=first,is_last=self.done,is_terminal=self.done)
@@ -40,9 +40,9 @@ class WorkloadCoverage:
         carry,acts,outs=self.policy(carry,obs,mode=mode)
         if mode!='train':return carry,acts,outs
         import jax
-        actions=2*np.asarray(obs['vector'][:,6],np.float32)-1
+        actions=(2*np.asarray(obs['vector'][:,6],np.float32)-1)[:,None]
         self.stats['scheduled']+=len(actions)
-        carry=(*carry[:-1],{**carry[-1],'action':[jax.device_put(np.float32(a),ref.sharding) for a,ref in zip(actions,carry[-1]['action'])]})
+        carry=(*carry[:-1],{**carry[-1],'action':[jax.device_put(np.asarray(a,np.float32),ref.sharding) for a,ref in zip(actions,carry[-1]['action'])]})
         return carry,{**acts,'action':actions},outs
 
 def extract(model,rows):
@@ -54,12 +54,12 @@ def extract(model,rows):
         for t in range(4):
             v=vector(row,t);sequence.append(v)
             with jax.transfer_guard('allow'):
-                if t:assert all(np.isclose(float(np.asarray(a)),2*row['frames'][t]['requests']/12-1) for a in carry[-1]['action'])
+                if t:assert all(np.isclose(np.asarray(a).item(),2*row['frames'][t]['requests']/12-1) for a in carry[-1]['action'])
             obs=dict(vector=v[None],reward=np.zeros(1,np.float32),is_first=np.array([t==0]),is_last=np.array([False]),is_terminal=np.array([False]),mechanism_target=np.zeros((1,3),np.float32))
             carry,_,_=model.policy.policy(carry,obs,mode='eval')
             with jax.transfer_guard('allow'):
                 action=2*next_load(row,t)-1
-                carry=(*carry[:-1],{**carry[-1],'action':[jax.device_put(np.float32(action),ref.sharding) for ref in carry[-1]['action']]})
+                carry=(*carry[:-1],{**carry[-1],'action':[jax.device_put(np.array([action],np.float32),ref.sharding) for ref in carry[-1]['action']]})
                 dyn=model.agent._stack(carry)[1]
                 if t<3:
                     prediction=np.asarray(model.forecast(model.agent.params,dyn,np.float32(action),jax.random.PRNGKey(8804+i*4+t)))

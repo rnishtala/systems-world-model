@@ -33,3 +33,7 @@ If screening passes, freeze readouts and collect 80 fresh final incidents, seed 
 ## Isolation and recovery
 
 Only systems-world-model-lab is modified. Retain established security and 2-CPU/4-GiB job limits, pause inference within quota, restore its exact template and replica count, and export evidence read-only with hashes. Do not modify other namespaces or AutoSRE. Preserve failed-run evidence; do not silently retry training or discard incidents.
+
+## Preflight correction before training
+
+The v1 attempt stopped at action-wrapper preflight: scalar clipping promoted float32 to float64. No training or live collection ran. Corrected v2 uses a one-element float32 action array, preserving identical normalization and workload semantics. Evidence from v1 is retained; v2 uses a new output directory and the same prespecified seeds, budget and gates.

@@ -1,7 +1,7 @@
 import base64,json,subprocess,time,sys
 from decimal import Decimal
 from pathlib import Path
-R=Path("/Users/rnishtala/src/systems-world-model");O=R/"reports/evidence/lab-workload-v1";O.mkdir(parents=True,exist_ok=False)
+R=Path("/Users/rnishtala/src/systems-world-model");O=R/"reports/evidence/lab-workload-v2";O.mkdir(parents=True,exist_ok=False)
 SSH=['ssh','-o','BatchMode=yes','-o','ConnectTimeout=10','rajnishtala@amd-halo'];K='kubectl --kubeconfig=$HOME/.kube/graphrobin.yaml -n systems-world-model-lab '
 def run(cmd,timeout=65):
  attempts=5 if cmd.startswith(('get ','logs ','rollout ','scale ','delete ')) else 1
@@ -15,14 +15,14 @@ def run(cmd,timeout=65):
    error=exc
    if attempt+1<attempts:time.sleep(2)
  raise error
-subprocess.run(['scp',*SSH[1:-1],str(R/'deploy/lab-workload-v1.json'),SSH[-1]+':/tmp/lab-workload-v1.json'],check=True,timeout=30)
+subprocess.run(['scp',*SSH[1:-1],str(R/'deploy/lab-workload-v2.json'),SSH[-1]+':/tmp/lab-workload-v2.json'],check=True,timeout=30)
 subprocess.run(['scp',*SSH[1:-1],str(R/'deploy/rcaeval-stage-v1.json'),SSH[-1]+':/tmp/rcaeval-stage-v1.json'],check=True,timeout=30)
 # Scope all Kubernetes operations to the isolated lab namespace.
 active=[j['metadata']['name'] for j in json.loads(run('get jobs -o json'))['items'] if j.get('status',{}).get('active',0)];assert not active,active
 print(run('create -f /tmp/rcaeval-stage-v1.json'),flush=True);print(run('wait pod/swm-rcaeval-stage-v1 --for=condition=Ready --timeout=55s'),flush=True)
 try:
- print(run('exec swm-rcaeval-stage-v1 -- mkdir /results/lab-workload-v1'))
- with open('/tmp/lab-workload-v1.tar.gz','rb') as f:subprocess.run(SSH+[K+'exec -i swm-rcaeval-stage-v1 -- tar xzf - -C /results/lab-workload-v1'],stdin=f,check=True,timeout=90)
+ print(run('exec swm-rcaeval-stage-v1 -- mkdir /results/lab-workload-v2'))
+ with open('/tmp/lab-workload-v2.tar.gz','rb') as f:subprocess.run(SSH+[K+'exec -i swm-rcaeval-stage-v1 -- tar xzf - -C /results/lab-workload-v2'],stdin=f,check=True,timeout=90)
 finally:print(run('delete pod swm-rcaeval-stage-v1 --grace-period=1 --wait=true --timeout=55s --ignore-not-found=true'),flush=True)
 before=json.loads(run('get deployment swm-inference -o json'));(O/'before.json').write_text(json.dumps(before['spec'],indent=2));paused=False;created=False;failed=False
 try:
@@ -35,18 +35,18 @@ try:
   if used <= 2:break
   time.sleep(2)
  else:raise RuntimeError('Quota not released')
- print(run('create -f /tmp/lab-workload-v1.json'),flush=True);created=True
+ print(run('create -f /tmp/lab-workload-v2.json'),flush=True);created=True
  for _ in range(400):
-  status=json.loads(run('get job swm-lab-workload-v1 -o json'))['status']
+  status=json.loads(run('get job swm-lab-workload-v2 -o json'))['status']
   if status.get('failed') or status.get('succeeded'):
-   (O/'job.json').write_text(json.dumps(status,indent=2));(O/'run.log').write_text(run('logs job/swm-lab-workload-v1'))
+   (O/'job.json').write_text(json.dumps(status,indent=2));(O/'run.log').write_text(run('logs job/swm-lab-workload-v2'))
    failed=bool(status.get('failed'))
    break
   print('READOUT_ACTIVE',flush=True);time.sleep(20)
  else:raise TimeoutError('Readout deadline')
 finally:
  try:
-  if created:print(run('delete job swm-lab-workload-v1 --wait=true --timeout=55s --ignore-not-found=true'),flush=True)
+  if created:print(run('delete job swm-lab-workload-v2 --wait=true --timeout=55s --ignore-not-found=true'),flush=True)
  finally:
   if paused:
    print(run('scale deployment swm-inference --replicas='+str(before['spec']['replicas'])),flush=True);print(run('rollout status deployment/swm-inference --timeout=55s'),flush=True)

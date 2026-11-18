@@ -12,7 +12,7 @@ class ShapeEnv:
     def __init__(self,count=9,supervised=False,workload=False):
         self.obs_space=dict(vector=elements.Space(np.float32,(14,)),reward=elements.Space(np.float32),is_first=elements.Space(bool),is_last=elements.Space(bool),is_terminal=elements.Space(bool))
         if supervised:self.obs_space['mechanism_target']=elements.Space(np.float32,(3,),0,1)
-        self.act_space=dict(reset=elements.Space(bool),action=elements.Space(np.float32,(),0,1) if workload else elements.Space(np.int32,(),0,count))
+        self.act_space=dict(reset=elements.Space(bool),action=elements.Space(np.float32,(1,),0,1) if workload else elements.Space(np.int32,(),0,count))
     def close(self):pass
 
 class Model:
@@ -40,7 +40,7 @@ class Model:
         model=self.agent.model
         @nj.pure
         def forecast(dyn,action):
-            _,(feat,_)=model.dyn.imagine(dyn,{'action':jnp.full((16,),action,dtype=jnp.float32 if self.contract=='workload-continuous-v1' else jnp.int32)},1,False,single=True)
+            _,(feat,_)=model.dyn.imagine(dyn,{'action':jnp.full((16,1) if self.contract=='workload-continuous-v1' else (16,),action,dtype=jnp.float32 if self.contract=='workload-continuous-v1' else jnp.int32)},1,False,single=True)
             _,_,pred=model.dec(model.dec.initial(16),feat,jnp.zeros(16,bool),training=False,single=True)
             return pred['vector'].pred().mean(0)
         @nj.pure

@@ -2,10 +2,10 @@
 import base64,hashlib,json,shlex,subprocess,time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
-R=Path(__file__).resolve().parents[1];OUT=R/'reports/evidence/lab-workload-v1'
+R=Path(__file__).resolve().parents[1];OUT=R/'reports/evidence/lab-workload-v2'
 SSH=['ssh','-o','BatchMode=yes','-o','ConnectTimeout=10','rajnishtala@amd-halo']
 K='kubectl --kubeconfig=$HOME/.kube/graphrobin.yaml -n systems-world-model-lab '
-POD='swm-workload-export-v1';REMOTE='/results/lab-workload-v1'
+POD='swm-workload-export-v2';REMOTE='/results/lab-workload-v2'
 def run(cmd,input=None,retries=4):
     for attempt in range(retries):
         try:
