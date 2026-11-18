@@ -19,16 +19,9 @@ def force_action(carry,action,put=None):
         put=jax.device_put
     return (*carry[:-1],{**carry[-1],'action':[put(np.int32(action),ref.sharding) for ref in carry[-1]['action']]})
 
-def main():
-    p=argparse.ArgumentParser();p.add_argument('--root',required=True);p.add_argument('--source',required=True);p.add_argument('--out',required=True);a=p.parse_args()
-    out=Path(a.out);out.mkdir(parents=True,exist_ok=False);source=Path(a.source)
-    rows=[json.loads(line) for line in source.read_text().splitlines()]
-    assert len(rows)==80 and all(r['seed']==8201 for r in rows)
-    sh=hashlib.sha256(source.read_bytes()).hexdigest();checkpoint=Path(a.root)/'final-51';ch=digest(checkpoint)
-    from microservice.agent import Model
-    from microservice.auxiliary_audit import audit
+def extract(model,rows):
     import jax
-    model=Model(a.root,51,'inspect-mechanisms');audited=audit(model);result={};verified_actions=0
+    result={};verified_actions=0
     for order in ORDERS:
         key=''.join(map(str,order))
         for name in ('raw','latent'):
@@ -55,6 +48,19 @@ def main():
                 _,raw,latent=cache[order[:t]]
                 result[f'raw_{key}_{t}'].append(raw);result[f'latent_{key}_{t}'].append(latent)
         if i%10==0:print('ORDER_EXTRACT',i+1,flush=True)
+    return {k:np.array(v) for k,v in result.items()},verified_actions
+
+def main():
+    p=argparse.ArgumentParser();p.add_argument('--root',required=True);p.add_argument('--source',required=True);p.add_argument('--out',required=True);a=p.parse_args()
+    out=Path(a.out);out.mkdir(parents=True,exist_ok=False);source=Path(a.source)
+    rows=[json.loads(line) for line in source.read_text().splitlines()]
+    assert len(rows)==80 and all(r['seed']==8201 for r in rows)
+    sh=hashlib.sha256(source.read_bytes()).hexdigest();checkpoint=Path(a.root)/'final-51';ch=digest(checkpoint)
+    from microservice.agent import Model
+    from microservice.auxiliary_audit import audit
+    import jax
+    model=Model(a.root,51,'inspect-mechanisms');audited=audit(model)
+    result,verified_actions=extract(model,rows)
     np.savez_compressed(out/'features.npz',**{k:np.array(v) for k,v in result.items()})
     assert digest(checkpoint)==ch and hashlib.sha256(source.read_bytes()).hexdigest()==sh
     assert verified_actions==80*15
