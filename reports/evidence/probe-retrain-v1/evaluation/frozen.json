@@ -1,0 +1,74 @@
+{
+  "utc": 1795114822.4560442,
+  "configs": {
+    "latent6": {
+      "config": {
+        "kind": "linear",
+        "penalty": 1000.0
+      },
+      "cv_correct": [
+        116,
+        112,
+        108,
+        107,
+        113,
+        116,
+        114,
+        114
+      ]
+    },
+    "latent8": {
+      "config": {
+        "kind": "linear",
+        "penalty": 1000.0
+      },
+      "cv_correct": [
+        125,
+        125,
+        125,
+        125,
+        125,
+        125,
+        125,
+        125
+      ]
+    },
+    "history6": {
+      "config": {
+        "kind": "rbf",
+        "gamma": 1.0,
+        "penalty": 0.01
+      },
+      "cv_correct": [
+        65,
+        67,
+        61,
+        50,
+        72,
+        67,
+        79,
+        78
+      ]
+    },
+    "history8": {
+      "config": {
+        "kind": "rbf",
+        "gamma": 1.0,
+        "penalty": 0.01
+      },
+      "cv_correct": [
+        66,
+        67,
+        64,
+        43,
+        63,
+        67,
+        71,
+        68
+      ]
+    }
+  },
+  "checkpoint_sha256": "6199b661053287b51724925c0fe795d36a66403b1b243959e3ee9c41fc6a7ffb",
+  "readouts_sha256": "6e4a16f99f51e6623d67377954c9cbd3a1ec97bb6fa1cdd14f1c8b2d9b8ad01b",
+  "train_sha256": "10e6cd7a2d6ae5c3e19373114ea763fc759e4a89a9bde7711a2396d0b857e316"
+}

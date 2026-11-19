@@ -1,0 +1,78 @@
+{
+  "utc": 1795110975.6274445,
+  "configs": {
+    "latent6": {
+      "config": {
+        "kind": "rbf",
+        "gamma": 0.1,
+        "penalty": 0.01
+      },
+      "cv_correct": [
+        112,
+        117,
+        113,
+        104,
+        118,
+        111,
+        111,
+        110
+      ]
+    },
+    "latent8": {
+      "config": {
+        "kind": "linear",
+        "penalty": 10.0
+      },
+      "cv_correct": [
+        116,
+        115,
+        117,
+        106,
+        116,
+        116,
+        117,
+        116
+      ]
+    },
+    "history6": {
+      "config": {
+        "kind": "rbf",
+        "gamma": 1.0,
+        "penalty": 0.01
+      },
+      "cv_correct": [
+        65,
+        67,
+        61,
+        50,
+        72,
+        67,
+        79,
+        78
+      ]
+    },
+    "history8": {
+      "config": {
+        "kind": "rbf",
+        "gamma": 1.0,
+        "penalty": 0.01
+      },
+      "cv_correct": [
+        66,
+        67,
+        64,
+        43,
+        63,
+        67,
+        71,
+        68
+      ]
+    }
+  },
+  "checkpoint_sha256": "d4d5224f0603e9810333fcbb9ce26b9308340e6e6ad63d363853582df1eb5f07",
+  "readouts_sha256": "ffcbdfd06a99f16e4546644f80c884957562ef35b3195ba29c54952487b1a91c",
+  "train_hashes": {
+    "collection/train.jsonl": "2e5158ce9577d2dc5340200a0b346b7ca61a4c3f146db4d6bdcd8479b3ccad35",
+    "collection/new-train.jsonl": "b81d65d6e38d0bbafc709b7de3154b77a309b0751a8b7274a184a3c71dda6251"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "seed": 101,
+  "steps": 100000,
+  "compositional": true,
+  "mechanism_supervision": true,
+  "calibration_sha256": "10e6cd7a2d6ae5c3e19373114ea763fc759e4a89a9bde7711a2396d0b857e316",
+  "observation_view": "trace-probe-target-v1"
+}

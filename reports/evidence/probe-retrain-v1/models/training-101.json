@@ -1,0 +1,16 @@
+{
+  "resumed": false,
+  "timing_scope": "Complete training process",
+  "mechanism_supervision": true,
+  "auxiliary_loss_weight": 1.0,
+  "action_contract": "probe-target-v1",
+  "observation_version": "trace-probe-target-v1",
+  "seed": 101,
+  "steps": 100000,
+  "seconds": 1051.1633739471436,
+  "calibration_sha256": "10e6cd7a2d6ae5c3e19373114ea763fc759e4a89a9bde7711a2396d0b857e316",
+  "coverage": {
+    "scheduled": 100000
+  },
+  "scope": "Empirical surrogate training; no live test episodes used."
+}

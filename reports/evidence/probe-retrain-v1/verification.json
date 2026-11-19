@@ -1,0 +1,10 @@
+{
+  "source_and_export_hashes_verified": true,
+  "designated_training_bytes_reused": true,
+  "training_and_test_seeds_disjoint": true,
+  "readouts_frozen_before_test": true,
+  "training_fits_reproduced": true,
+  "prefix_telemetry_reproduced": true,
+  "predictions_and_gates_reproduced": true,
+  "world_model_retrained": true
+}
