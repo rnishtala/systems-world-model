@@ -1,0 +1,15 @@
+# Actual fixed-budget comparison with distribution shifts
+
+Registered before collection. Freeze model91 and all readouts from probe-six-v1 byte-for-byte; no new fit, tuning, prefix selection, or model training.
+
+Collect64 matched scenario pairs (128 actual incidents): eight fault families, four repeats, two regimes. Regime0 retains loads3/9 and original severities. Regime1 uses loads4/10, paymentCPU .055-.075s, ledgerdelay .26-.34s, and original DBhold .03-.05s. Scenario seed9401 determines case shuffle and paired fault controls; each pair replays exactly the same fault/control seed in separate six/eight-window runs. Alternate arm order across shuffled pairs (32 each) to balance drift. Four repeats balance probe order and load order within each family/regime.
+
+Each arm resets, configures bounded faults, warms both targets with two nine-request batches, and actually measures only its assigned six or eight windows. No seventh/eighth measurements exist in the six-window arm. Planned eight-window schedule remains metadata, available equally to all methods; absent observations are never fabricated. Diagnose each arm with frozen latent/history/summary_history readouts at its actual budget. No response8 required: the paired full-budget telemetry controls use the full histories.
+
+Timing: record measured acquisition time, warmup-inclusive incident time, and frozen Dreamer extraction/readout compute time. Initialize and prime the inference graph before fault collection. Report acquisition and warmup-inclusive acquisition savings separately; report model-inclusive times as experimental timings (no production latency claim). All measured request counts must succeed. Each fault arm <=35seconds, existing45-second leases, reset after each arm and finally. No rerolls. A failed collection is retained and no pass is declared.
+
+Primary gate: six-window Dreamer >=58/64 exact, all eight healthy correct, >=6/8 each fault family; within two diagnoses of eight-window Dreamer and strongest eight-window telemetry. Each regime separately >=29/32, all healthy correct, >=3/4 per family. Mean measured requests at least20% lower and mean warmup-inclusive acquisition latency lower for six. Report paired differences and two-sided discordance p-values; this engineering gate is not statistical noninferiority. Same-budget controls are required to interpret model-specific benefit. Report failures by regime without tuning on them.
+
+Scope: systems-world-model-lab only. One job bounded3600seconds, original resources; temporarily pause inference then restore exact spec/replicas, export hash-verified evidence, delete temporary resources. No AutoSRE/other namespace changes or serving promotion.
+
+Frozen summary_history contains load-specific summary bins for loads3/9. Under shifted loads4/10 those bins remain empty, while its history still contains actual load/latency values. Preserve this limitation rather than changing a control after seeing results; the plain-history control remains essential. Timing includes lab HTTP/metrics reset overhead; paired scenarios share controls but not identical stochastic observations.
