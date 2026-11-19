@@ -1,0 +1,10 @@
+{
+  "frozen/config.json": "df5d4b99cb45dadbd0ba6782640d9045eb721f8a116d74573c3c6d750fee1bfd",
+  "frozen/readouts.npz": "746f58a163c77e8aee6eea19f456a35062cf4c5ee33da1c1b40c3ff0f097ef35",
+  "collection/train.jsonl": "2e5158ce9577d2dc5340200a0b346b7ca61a4c3f146db4d6bdcd8479b3ccad35",
+  "collection/source-hashes.json": "9c0771d0ebb56e69bf8d4d90f1fceb85206fa5a063cfe32d2003715cd621b065",
+  "evaluation/audit.json": "4f8c82b9b1b4615055a34720cbef0181c2c6c1ac5b8397f1bbf33643ec91f3f8",
+  "evaluation/incidents.jsonl": "0927f878f1f70a18832c69020c69f4a116bc05b3c0202219bb6f26430174e9af",
+  "evaluation/summary.json": "e76dcd67bcc52cc606580250b6ba63e8f6b7bd8d47f07200c52f06f1df2171ce",
+  "evaluation/features.npz": "84d46207a0b5eaf258b9045dde33de8cca3571a855f67641efd9dbe9e85af71d"
+}

@@ -1,0 +1,4 @@
+{
+  "command": "pytest -q -p no:cacheprovider tests/test_probe_live_budget.py tests/test_probe_six.py tests/test_probe_target.py",
+  "passed": 5
+}

@@ -1,0 +1,41 @@
+{
+  "six_window_errors": [
+    {
+      "pair": 5,
+      "regime": 1,
+      "fault": 4,
+      "repeat": 0,
+      "truth": 5,
+      "predicted": 7,
+      "wrong_bits": 2
+    },
+    {
+      "pair": 26,
+      "regime": 1,
+      "fault": 4,
+      "repeat": 2,
+      "truth": 5,
+      "predicted": 7,
+      "wrong_bits": 2
+    },
+    {
+      "pair": 30,
+      "regime": 1,
+      "fault": 3,
+      "repeat": 2,
+      "truth": 4,
+      "predicted": 6,
+      "wrong_bits": 2
+    },
+    {
+      "pair": 63,
+      "regime": 1,
+      "fault": 4,
+      "repeat": 1,
+      "truth": 5,
+      "predicted": 7,
+      "wrong_bits": 2
+    }
+  ],
+  "all_false_pool": true
+}
