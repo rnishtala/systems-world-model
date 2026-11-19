@@ -11,13 +11,13 @@ def stop(signum,frame):
 
 def main():
     global child
-    p=argparse.ArgumentParser();p.add_argument('--run',required=True);p.add_argument('--dataset',required=True);p.add_argument('--seed',type=int,required=True);p.add_argument('--steps',type=int,required=True);p.add_argument('--test-seed',type=int,required=True);a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--run',required=True);p.add_argument('--dataset',required=True);p.add_argument('--seed',type=int,required=True);p.add_argument('--steps',type=int,required=True);p.add_argument('--test-seed',type=int,required=True);p.add_argument('--dataset-sha256');a=p.parse_args()
     if os.environ.get('POD_NAMESPACE')!=NAMESPACE:raise RuntimeError('Wrong namespace')
     import re
     if not re.fullmatch('[a-f0-9]{12}',a.run):raise ValueError('Invalid run ID')
     root=Path('/results/experiments/runs')/a.run;root.mkdir(parents=True,exist_ok=True)
     if (root/'models').exists():raise RuntimeError('Refusing to overwrite an existing training attempt')
-    data=dataset_check(a.dataset)
+    data=dataset_check(a.dataset,a.dataset_sha256)
     signal.signal(signal.SIGTERM,stop);signal.signal(signal.SIGINT,stop)
     def phase(name,args):
         global child

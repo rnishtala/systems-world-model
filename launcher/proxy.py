@@ -18,8 +18,8 @@ async def main():
         path=request.path
         if path in ('/experiments','/experiments/'):
             response=web.Response(body=(static/'index.html').read_bytes(),content_type='text/html')
-        elif path in ('/experiments/main.js','/experiments/style.css'):
-            response=web.Response(body=(static/path.rsplit('/',1)[1]).read_bytes(),content_type='text/javascript' if path.endswith('.js') else 'text/css')
+        elif path in ('/experiments/main.js','/experiments/style.css','/experiments/dataset-format.md'):
+            response=web.Response(body=(static/path.rsplit('/',1)[1]).read_bytes(),content_type='text/javascript' if path.endswith('.js') else 'text/css' if path.endswith('.css') else 'text/plain')
         else:
             experiments=path.startswith('/experiments/api/')
             upstream=os.environ.get('EXPERIMENTS_API','http://swm-experiments:8090') if experiments else 'http://127.0.0.1:4466'
@@ -57,7 +57,7 @@ async def main():
         if path.startswith('/experiments'):
             response.headers['Content-Security-Policy']="default-src 'self'; script-src 'self'; style-src 'self'; frame-ancestors 'self'; base-uri 'none'; form-action 'self'"
         return response
-    app=web.Application(client_max_size=2*1024*1024);app.router.add_route('*','/{path:.*}',handler)
+    app=web.Application(client_max_size=4*1024*1024);app.router.add_route('*','/{path:.*}',handler)
     runner=web.AppRunner(app);await runner.setup();await web.TCPSite(runner,'127.0.0.1',4467).start()
     try:await asyncio.Event().wait()
     finally:await runner.cleanup();await session.close()

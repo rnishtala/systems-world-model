@@ -5,11 +5,12 @@ from aiohttp import web
 from launcher.auth import verify
 from launcher.common import ADMIN,ORIGIN,DATASETS,STEPS,identity
 from launcher.store import Store
+from launcher.datasets import Catalog
 
-PUBLIC=('id','name','owner','created','status','phase','dataset','seed','test_seed','steps','started','finished','error','version','restored')
+PUBLIC=('id','name','owner','created','status','phase','dataset','seed','test_seed','steps','started','finished','error','version','restored','dataset_name','dataset_sha256','training_seeds')
 
 def create_app(store,root,key,origin=ORIGIN):
-    root=Path(root)
+    root=Path(root);catalog=Catalog(root)
     @web.middleware
     async def auth(request,handler):
         if request.path=='/healthz':return web.json_response({'ok':True})
@@ -21,8 +22,8 @@ def create_app(store,root,key,origin=ORIGIN):
             response=await handler(request)
             response.headers['Cache-Control']='no-store';return response
         except PermissionError as e:raise web.HTTPForbidden(text=str(e))
-        except (ValueError,KeyError,json.JSONDecodeError) as e:raise web.HTTPBadRequest(text=str(e))
-    app=web.Application(middlewares=[auth],client_max_size=8192)
+        except (ValueError,KeyError,RecursionError,json.JSONDecodeError) as e:raise web.HTTPBadRequest(text=str(e))
+    app=web.Application(middlewares=[auth],client_max_size=4*1024*1024)
     def authorized(request):
         uid=request.match_info['uid']
         if not re.fullmatch('[a-f0-9]{12}',uid):raise web.HTTPNotFound()
@@ -48,10 +49,20 @@ def create_app(store,root,key,origin=ORIGIN):
             try:result['summary']=json.loads(summary.read_text())
             except ValueError:pass
         return result
-    async def config(request):return web.json_response(dict(email=request['email'],admin=request['email']==ADMIN,version=os.environ.get('CODE_VERSION','development'),datasets=[dict(id=k,name=d['name'],incidents=d['incidents']) for k,d in DATASETS.items()],steps=list(STEPS)))
+    async def config(request):return web.json_response(dict(email=request['email'],admin=request['email']==ADMIN,version=os.environ.get('CODE_VERSION','development'),datasets=catalog.visible(request['email']),steps=list(STEPS)))
     async def listing(request):return web.json_response([public(r) for r in reversed(store.all()) if request['email'] in (r['owner'],ADMIN)])
     async def create(request):
-        run=store.create(request['email'],await request.json(),os.environ['RUNNER_IMAGE'],os.environ['CODE_VERSION']);return web.json_response(public(run),status=201)
+        body=await request.json()
+        if not isinstance(body,dict):raise ValueError('Expected an experiment object')
+        dataset=catalog.get(body.get('dataset'),request['email'])
+        run=store.create(request['email'],body,os.environ['RUNNER_IMAGE'],os.environ['CODE_VERSION'],dataset);return web.json_response(public(run),status=201)
+    async def upload(request):
+        result=catalog.upload(request['email'],await request.json())
+        return web.json_response(result,status=201)
+    async def download_dataset(request):
+        d=catalog.get(request.match_info['dataset_id'],request['email'])
+        path=catalog.verify(d['id'],d['sha256'])
+        return web.Response(body=path.read_bytes(),content_type='application/x-ndjson',headers={'Content-Disposition':f'attachment; filename="{d["id"]}.jsonl"'})
     async def detail(request):return web.json_response(public(authorized(request)))
     async def cancel(request):
         run=authorized(request)
@@ -66,7 +77,7 @@ def create_app(store,root,key,origin=ORIGIN):
     async def report(request):
         run=authorized(request);data=public(run)
         return web.Response(text=json.dumps(data,indent=2),content_type='application/json',headers={'Content-Disposition':f'attachment; filename="experiment-{run["id"]}.json"'})
-    app.router.add_get('/api/config',config);app.router.add_get('/api/runs',listing);app.router.add_post('/api/runs',create)
+    app.router.add_post('/api/datasets',upload);app.router.add_get('/api/datasets/{dataset_id}/download',download_dataset);app.router.add_get('/api/config',config);app.router.add_get('/api/runs',listing);app.router.add_post('/api/runs',create)
     app.router.add_get('/api/runs/{uid}',detail);app.router.add_post('/api/runs/{uid}/cancel',cancel);app.router.add_get('/api/runs/{uid}/logs',logs);app.router.add_get('/api/runs/{uid}/report',report)
     return app
 

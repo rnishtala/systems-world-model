@@ -26,7 +26,7 @@ class Controller:
         if run['status']=='queued':
             if any(not j.get('status',{}).get('succeeded') and not j.get('status',{}).get('failed') for j in jobs):
                 run['phase']='Waiting for the lab to be free';self.store.save(run);return
-            try:dataset_check(run['dataset'])
+            try:dataset_check(run['dataset'],run.get('dataset_sha256'))
             except Exception as e:
                 run.update(status='failed',phase='Preflight failed',error=str(e));self.store.save(run);return
             if shutil.disk_usage(self.root).free<1024**3:raise RuntimeError('Less than 1 GiB of free results storage')

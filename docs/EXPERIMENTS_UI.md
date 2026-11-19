@@ -78,3 +78,24 @@ rejected; public Headlamp Job creation and controller writes outside the lab wer
 This 1,000-step smoke run verifies operation, not diagnostic quality.
 Cancellation/restart recovery passed automated tests; a second live cancellation
 run was not submitted because automatic approval review rejected the extra run.
+
+## Upload a training dataset
+
+Expand **Upload training dataset**, enter a name, choose a UTF-8 `.jsonl` file,
+confirm it contains training incidents only, then click **Validate and upload**.
+An accepted dataset is selected automatically; queueing training is a separate action.
+Errors identify the invalid row or missing fault-family coverage. Uploads are visible
+to their uploader and the administrator, immutable, and pinned by SHA-256 in each run.
+
+The current protocol accepts 64–256 incidents (2 MiB maximum) with the same eight
+measurement windows and fault labels used by the lab. See the [format guide](../launcher/static/dataset-format.md).
+Use **Download selected dataset** to inspect its exact contents. The historical
+built-in corpus retains some old split annotations; uploads marked `test` or
+`validation` are rejected even if the old corpus was explicitly assigned to training.
+New `microservice.collect --split train` output follows the supported format.
+
+The API checks ownership again when a dataset is selected or downloaded. It rejects
+known held-out seeds, copied trajectories from retained launcher test runs, duplicate
+incidents, nonfinite telemetry, unsupported schemas, and insufficient group coverage.
+Fresh evaluation remains separate. These checks cannot independently establish the
+provenance or correct fault labels of arbitrary external data.
