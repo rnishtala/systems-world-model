@@ -67,3 +67,14 @@ credentials. The ingress phase saves its original deployment/config in
 `/tmp/swm-launcher-rollback.json` and restores them if rollout fails. Keep that
 local backup until verification is complete. The viewer phase restricts the public
 Headlamp service account; it does not alter personal administrator bindings.
+
+## Launcher verification — 2026-11-19
+
+Thirty automated checks passed. UI-submitted smoke run `edadb698d417` completed
+training, frozen readouts and 64 fresh validation incidents in 15m47s, including
+its first image download. The controller deleted its worker and restored the
+**exact original inference deployment spec**. Forged unsigned email headers were
+rejected; public Headlamp Job creation and controller writes outside the lab were denied.
+This 1,000-step smoke run verifies operation, not diagnostic quality.
+Cancellation/restart recovery passed automated tests; a second live cancellation
+run was not submitted because automatic approval review rejected the extra run.
