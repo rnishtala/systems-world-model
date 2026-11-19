@@ -1,0 +1,40 @@
+name: Experiment images
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        id: control
+        with:
+          context: .
+          target: control
+          push: true
+          tags: ghcr.io/rnishtala/systems-world-model-control:${{ github.sha }}
+      - uses: docker/build-push-action@v6
+        id: runner
+        with:
+          context: .
+          target: runner
+          push: true
+          tags: ghcr.io/rnishtala/systems-world-model-runner:${{ github.sha }}
+      - name: Record immutable image references
+        env:
+          CONTROL: ghcr.io/rnishtala/systems-world-model-control@${{ steps.control.outputs.digest }}
+          RUNNER: ghcr.io/rnishtala/systems-world-model-runner@${{ steps.runner.outputs.digest }}
+        run: python -c 'import os,json; json.dump({"control":os.environ["CONTROL"],"runner":os.environ["RUNNER"],"version":os.environ["GITHUB_SHA"]},open("images.json","w"))'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: experiment-images
+          path: images.json

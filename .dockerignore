@@ -1,0 +1,10 @@
+**
+!Dockerfile
+!requirements-cpu.txt
+!microservice/
+!microservice/*.py
+!launcher/
+!launcher/*.py
+!launcher/*.txt
+!launcher/static/
+!launcher/static/*

@@ -1,0 +1,22 @@
+"""Durable FIFO queue. One active experiment across launcher restarts."""
+import json,secrets,sqlite3,time,uuid
+from launcher.common import ACTIVE,TERMINAL,validate_request
+
+class Store:
+    def __init__(self,path):
+        self.db=sqlite3.connect(path);self.db.execute('PRAGMA journal_mode=WAL')
+        self.db.execute('CREATE TABLE IF NOT EXISTS runs (id TEXT PRIMARY KEY, created REAL NOT NULL, body TEXT NOT NULL)');self.db.commit()
+    def all(self):return [json.loads(x[0]) for x in self.db.execute('SELECT body FROM runs ORDER BY created')]
+    def get(self,uid):
+        row=self.db.execute('SELECT body FROM runs WHERE id=?',(uid,)).fetchone()
+        if row is None:raise KeyError(uid)
+        return json.loads(row[0])
+    def save(self,run):
+        self.db.execute('INSERT OR REPLACE INTO runs VALUES (?,?,?)',(run['id'],run['created'],json.dumps(run)));self.db.commit()
+    def create(self,owner,body,image,version):
+        args=validate_request(body);existing=self.all();pending=[r for r in existing if r['status'] not in TERMINAL]
+        if len(pending)>=20 or sum(r['owner']==owner for r in pending)>=3:raise ValueError('Queue limit reached; wait for an existing run')
+        used={r['test_seed'] for r in existing};seed=1000000000+secrets.randbelow(1000000000)
+        while seed in used:seed=1000000000+secrets.randbelow(1000000000)
+        run=dict(**args,id=uuid.uuid4().hex[:12],owner=owner,created=time.time(),status='queued',phase='queued',test_seed=seed,image=image,version=version,cancel=False,error=None)
+        self.save(run);return run
