@@ -1,5 +1,5 @@
 """Deploy the isolated lab launcher; preserve ingress rollback state outside Git."""
-import subprocess,json,secrets,base64,sys,time,shlex
+import subprocess,json,secrets,base64,sys,time,shlex,hashlib
 from pathlib import Path
 from launcher.manifests import resources
 N='systems-world-model-lab'
@@ -34,6 +34,9 @@ elif sys.argv[1]=='ingress':
  backup=Path('/tmp/swm-launcher-rollback.json')
  if not backup.exists():backup.write_text(json.dumps({'deployment':dep,'configmap':cm}))
  spec=dep['spec']['template']['spec']
+ metadata=dep['spec']['template'].get('metadata',{})
+ plugin=next(i for i in resources(images)['items'] if i['kind']=='ConfigMap')
+ metadata.setdefault('annotations',{})['swm-experiments/plugin-sha256']=hashlib.sha256(json.dumps(plugin['data'],sort_keys=True).encode()).hexdigest()
  sc=dict(allowPrivilegeEscalation=False,readOnlyRootFilesystem=True,capabilities=dict(drop=['ALL']))
  proxy=dict(name='experiment-proxy',image=images['control'],command=['python','-m','launcher.proxy'],resources=dict(requests=dict(cpu='5m',memory='32Mi'),limits=dict(cpu='20m',memory='64Mi')),securityContext=sc,volumeMounts=[dict(name='experiment-auth',mountPath='/auth',readOnly=True)],readinessProbe=dict(exec=dict(command=['python','-c','import urllib.request; urllib.request.urlopen("http://127.0.0.1:4467/healthz",timeout=2)']),initialDelaySeconds=3,timeoutSeconds=3))
  spec['containers']=[c for c in spec['containers'] if c['name']!='experiment-proxy']+[proxy]
@@ -44,7 +47,7 @@ elif sys.argv[1]=='ingress':
  config=json.loads(cm['data']['ngrok.yml']);config['endpoints'][0]['upstream']['url']='http://127.0.0.1:4467'
  apply(dict(apiVersion='v1',kind='ConfigMap',metadata=dict(name='swm-ngrok-agent',namespace=N),data={'ngrok.yml':json.dumps(config)}))
  try:
-  print(call('patch deployment swm-headlamp-public --type=merge --patch-file=/dev/stdin',{'spec':{'template':{'spec':spec}}}))
+  print(call('patch deployment swm-headlamp-public --type=merge --patch-file=/dev/stdin',{'spec':{'template':{'spec':spec,'metadata':metadata}}}))
   print(call('rollout status deployment/swm-headlamp-public --timeout=150s'))
  except Exception:
   old=json.loads(backup.read_text());apply(dict(apiVersion='v1',kind='ConfigMap',metadata=dict(name='swm-ngrok-agent',namespace=N),data=old['configmap']['data']))
