@@ -1,0 +1,15 @@
+{
+  "frozen/config.json": "df5d4b99cb45dadbd0ba6782640d9045eb721f8a116d74573c3c6d750fee1bfd",
+  "frozen/readouts.npz": "746f58a163c77e8aee6eea19f456a35062cf4c5ee33da1c1b40c3ff0f097ef35",
+  "collection/train.jsonl": "2e5158ce9577d2dc5340200a0b346b7ca61a4c3f146db4d6bdcd8479b3ccad35",
+  "collection/source-hashes.json": "a823ab3348dc74da23876b4f2aa4f562b3d9990af9e66e1657af2ef7e5cd4768",
+  "collection/new-train.jsonl": "b81d65d6e38d0bbafc709b7de3154b77a309b0751a8b7274a184a3c71dda6251",
+  "evaluation/audit.json": "4f8c82b9b1b4615055a34720cbef0181c2c6c1ac5b8397f1bbf33643ec91f3f8",
+  "evaluation/frozen.json": "4bd02b603e2dfec891c2b0a6d0f0b2437b7d617bb30d36f5a8df7b61b7007f70",
+  "evaluation/test.jsonl": "acee4682f69ebb0344168c1d3bcd34c2e2b3850f651b97954abbebb09386b04b",
+  "evaluation/summary.json": "8f2f15756a21b494517630b2c48765820020db4909e3f7714e5e2fab3a2cd767",
+  "evaluation/predictions.json": "700058447bd2c2e497f738df4b9cd86798eaad8288cbbbc6b49df7531b2c4403",
+  "evaluation/train-features.npz": "8f99f30da0bcc4d1660fccf495dd3e7e995e74a44494c52ee565c88dc0d3c181",
+  "evaluation/readouts.npz": "ffcbdfd06a99f16e4546644f80c884957562ef35b3195ba29c54952487b1a91c",
+  "evaluation/test-features.npz": "ddbd24cad9fb3693c82b39ed4aebef782a8665f5ce7cce040721710d474c2f53"
+}
