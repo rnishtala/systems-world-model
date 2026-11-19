@@ -1,0 +1,201 @@
+{
+  "methods": {
+    "base": {
+      "pool_delay_correct": 29,
+      "exact_correct": 29,
+      "bit_errors": [
+        0,
+        3,
+        1
+      ],
+      "families": {
+        "0": {
+          "n": 4,
+          "pool_delay_correct": 4,
+          "exact_correct": 4
+        },
+        "1": {
+          "n": 4,
+          "pool_delay_correct": 4,
+          "exact_correct": 4
+        },
+        "2": {
+          "n": 4,
+          "pool_delay_correct": 4,
+          "exact_correct": 4
+        },
+        "3": {
+          "n": 4,
+          "pool_delay_correct": 4,
+          "exact_correct": 4
+        },
+        "4": {
+          "n": 4,
+          "pool_delay_correct": 3,
+          "exact_correct": 3
+        },
+        "5": {
+          "n": 4,
+          "pool_delay_correct": 2,
+          "exact_correct": 2
+        },
+        "6": {
+          "n": 4,
+          "pool_delay_correct": 4,
+          "exact_correct": 4
+        },
+        "7": {
+          "n": 4,
+          "pool_delay_correct": 4,
+          "exact_correct": 4
+        }
+      },
+      "order": {
+        "checkout": {
+          "n": 16,
+          "pool_delay_correct": 14
+        },
+        "ledger": {
+          "n": 16,
+          "pool_delay_correct": 15
+        }
+      }
+    },
+    "checkout": {
+      "pool_delay_correct": 28,
+      "exact_correct": 28,
+      "bit_errors": [
+        0,
+        4,
+        0
+      ],
+      "families": {
+        "0": {
+          "n": 4,
+          "pool_delay_correct": 4,
+          "exact_correct": 4
+        },
+        "1": {
+          "n": 4,
+          "pool_delay_correct": 4,
+          "exact_correct": 4
+        },
+        "2": {
+          "n": 4,
+          "pool_delay_correct": 4,
+          "exact_correct": 4
+        },
+        "3": {
+          "n": 4,
+          "pool_delay_correct": 4,
+          "exact_correct": 4
+        },
+        "4": {
+          "n": 4,
+          "pool_delay_correct": 3,
+          "exact_correct": 3
+        },
+        "5": {
+          "n": 4,
+          "pool_delay_correct": 2,
+          "exact_correct": 2
+        },
+        "6": {
+          "n": 4,
+          "pool_delay_correct": 4,
+          "exact_correct": 4
+        },
+        "7": {
+          "n": 4,
+          "pool_delay_correct": 3,
+          "exact_correct": 3
+        }
+      },
+      "order": {
+        "checkout": {
+          "n": 16,
+          "pool_delay_correct": 13
+        },
+        "ledger": {
+          "n": 16,
+          "pool_delay_correct": 15
+        }
+      }
+    },
+    "ledger": {
+      "pool_delay_correct": 32,
+      "exact_correct": 32,
+      "bit_errors": [
+        0,
+        0,
+        0
+      ],
+      "families": {
+        "0": {
+          "n": 4,
+          "pool_delay_correct": 4,
+          "exact_correct": 4
+        },
+        "1": {
+          "n": 4,
+          "pool_delay_correct": 4,
+          "exact_correct": 4
+        },
+        "2": {
+          "n": 4,
+          "pool_delay_correct": 4,
+          "exact_correct": 4
+        },
+        "3": {
+          "n": 4,
+          "pool_delay_correct": 4,
+          "exact_correct": 4
+        },
+        "4": {
+          "n": 4,
+          "pool_delay_correct": 4,
+          "exact_correct": 4
+        },
+        "5": {
+          "n": 4,
+          "pool_delay_correct": 4,
+          "exact_correct": 4
+        },
+        "6": {
+          "n": 4,
+          "pool_delay_correct": 4,
+          "exact_correct": 4
+        },
+        "7": {
+          "n": 4,
+          "pool_delay_correct": 4,
+          "exact_correct": 4
+        }
+      },
+      "order": {
+        "checkout": {
+          "n": 16,
+          "pool_delay_correct": 16
+        },
+        "ledger": {
+          "n": 16,
+          "pool_delay_correct": 16
+        }
+      }
+    }
+  },
+  "screening_gate": true,
+  "paired": {
+    "ledger_only_correct": 4,
+    "checkout_only_correct": 0,
+    "exact_mcnemar_p": 0.125
+  },
+  "mean_incident_seconds": 8.801623335874865,
+  "max_incident_seconds": 11.633660060004331,
+  "extra_probe_seconds": {
+    "checkout": 1.3083773834687236,
+    "ledger": 0.9856282322853076
+  },
+  "model_trained": false,
+  "scope": "Acquisition pilot; no Dreamer performance claim."
+}

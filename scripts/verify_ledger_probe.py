@@ -11,7 +11,16 @@ def main():
     frozen=json.loads((O/'frozen.json').read_text());arrays=np.load(O/'readouts.npz')
     for p,h in frozen['hashes'].items():assert hashlib.sha256((R/p).read_bytes()).hexdigest()==h
     for n,h in json.loads((O/'collector-hashes.json').read_text()).items():assert hashlib.sha256((R/'microservice'/n).read_bytes()).hexdigest()==h
-    for split,seed in [('development',9101),('test',9102)]:
+    recovery=json.loads((O/'recovery.json').read_text()) if (O/'recovery.json').exists() else None
+    if recovery:
+        assert recovery['replacement_seed']==9103 and recovery['original_seed']==9102
+        original=(R/'microservice/ledger_probe.py').read_text()
+        replacement=(O/'recovery-collector.py').read_text()
+        assert replacement==original.replace('else 9102;', 'else 9103;')
+        assert hashlib.sha256(replacement.encode()).hexdigest()==recovery['collector_hashes']['ledger_probe.py']
+        assert hashlib.sha256((O/'readouts.npz').read_bytes()).hexdigest()==recovery['readouts_sha256']
+        assert hashlib.sha256((R/'reports/LEDGER_PROBE_RECOVERY.md').read_bytes()).hexdigest()==recovery['protocol_amendment_sha256']
+    for split,seed in [('development',9101),('test',9103 if recovery else 9102)]:
         rs=rows(split);assert len(rs)==32
         assert Counter((r['fault'],r['repeat']) for r in rs)==Counter((f,j) for f in range(8) for j in range(4))
         for row in rs:

@@ -1,5 +1,7 @@
 # Systems World Model
 
+Latest acquisition experiment: [direct-ledger probe pilot](reports/LEDGER_PROBE_RESULTS.md) (2026-11-18). On 32 fresh test incidents, a frozen classifier with the direct probe scored 32/32 versus 28/32 for an equal-request-budget checkout repeat and 29/32 for base observations alone. The prespecified screening gate passed, but the paired difference is not statistically conclusive (p=0.125). This is evidence for a diagnostic probe, not improved Dreamer weights. The interrupted first test and operational replacement are documented; the lab is restored.
+
 Latest development: [mechanism-specific readout experiment](reports/MECHANISM_READOUT_RESULTS.md) (2026-11-18). Separate readouts per mechanism scored 112/128 versus the existing latent readout 119/128 on training-data folds; the gate failed. Fresh-error analysis narrows the ambiguity to pool contention versus delay. No retraining or cluster changes.
 
 Latest independent test: [fresh confirmation with frozen readouts](reports/FROZEN_CONFIRMATION_RESULTS.md) (2026-11-18). On 64 unseen incidents, the primary Dreamer readout scored 53/64 versus load response 58/64. The forecast-feature control scored 59/64 but missed per-family reliability. Forecast error was 63% below persistence; the combined diagnostic gate failed. No retraining or promotion; lab restored.

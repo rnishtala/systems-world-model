@@ -39,11 +39,18 @@ def main():
         for split in ('development','test'):
             manifest['spec']['template']['spec']['containers'][0]['command'][-1]=split
             print(run('create -f -',json.dumps(manifest)),flush=True)
-            for _ in range(80):
-                status=json.loads(run('get job '+NAME+' -o json'))['status']
-                if status.get('failed') or status.get('succeeded'):break
+            deadline=time.monotonic()+1500
+            while time.monotonic()<deadline:
+                try:
+                    status=json.loads(run('get job '+NAME+' -o json'))['status']
+                    partial=run('logs job/'+NAME);(O/f'{split}-partial.log').write_text(partial)
+                    if status.get('failed') or status.get('succeeded'):break
+                except (RuntimeError,subprocess.TimeoutExpired) as exc:
+                    with (O/'monitor-errors.jsonl').open('a') as f:
+                        f.write(json.dumps(dict(split=split,utc=time.time(),error=str(exc)[-2000:]))+'\n')
+                    print('MONITOR_RETRY_JOB_NOT_RESTARTED',flush=True)
                 print('COLLECTING',split,flush=True);time.sleep(15)
-            else:raise RuntimeError('Collection deadline exceeded')
+            else:raise RuntimeError('Collection deadline exceeded; partial logs preserved')
             log=run('logs job/'+NAME);(O/f'{split}.log').write_text(log)
             (O/f'{split}-job.json').write_text(json.dumps(status,indent=2))
             lines=[line[4:] for line in log.splitlines() if line.startswith('ROW ')]

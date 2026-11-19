@@ -38,3 +38,33 @@ def test_measurement_contract(monkeypatch):
     assert len(resets)==2
     monkeypatch.setattr(probe,'batch',lambda target,n:0)
     with pytest.raises(RuntimeError):probe.frame('ledger',3)
+
+
+def test_monitor_timeout_does_not_delete_or_restart_job(monkeypatch,tmp_path):
+    import json
+    from scripts import run_ledger_probe as runner
+    out=tmp_path/'evidence';monkeypatch.setattr(runner,'O',out)
+    monkeypatch.setattr(runner.time,'sleep',lambda _:None)
+    monkeypatch.setattr(runner.subprocess,'run',lambda *a,**kw:None)
+    events=[];state={'failed_once':False,'split':'development'}
+    def run(cmd,body=None):
+        events.append(cmd)
+        if cmd=='get jobs -o json':return json.dumps({'items':[]})
+        if cmd=='get deployment swm-inference -o json':return json.dumps({'spec':{'replicas':1,'template':{}}})
+        if cmd=='get resourcequota lab-budget -o json':return json.dumps({'status':{'used':{'limits.cpu':'1'}}})
+        if cmd=='create -f -':
+            item=json.loads(body)
+            if item['kind']=='Job':state['split']=item['spec']['template']['spec']['containers'][0]['command'][-1]
+        if cmd.startswith('get job '):
+            if not state['failed_once']:
+                state['failed_once']=True;events.append('TIMEOUT');raise RuntimeError('SSH timeout')
+            events.append('TERMINAL_SUCCESS');return json.dumps({'status':{'succeeded':1}})
+        if cmd.startswith('logs '):
+            return '\n'.join(['ROW {}']*32+['RESET_COMPLETE','COMPLETE '+state['split']])
+        return ''
+    monkeypatch.setattr(runner,'run',run);runner.main()
+    between=events[events.index('TIMEOUT')+1:events.index('TERMINAL_SUCCESS')]
+    assert not any(x.startswith(('delete','create','scale')) for x in between)
+    assert (out/'monitor-errors.jsonl').exists()
+    assert len((out/'test.jsonl').read_text().splitlines())==32
+    assert json.loads((out/'restored.json').read_text())['replicas']==1

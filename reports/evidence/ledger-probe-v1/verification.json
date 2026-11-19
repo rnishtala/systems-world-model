@@ -1,0 +1,9 @@
+{
+  "source_hashes": true,
+  "balanced_valid_incidents": true,
+  "equal_request_budget": true,
+  "label_isolation": true,
+  "training_selection_reproduced": true,
+  "readouts_immutable": true,
+  "predictions_metrics_reproduced": true
+}

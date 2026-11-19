@@ -1,0 +1,9 @@
+{
+  "seed": 9102,
+  "utc_recorded": 1795054296.231644,
+  "reason": "Five consecutive SSH monitoring failures caused original runner cleanup before test log export.",
+  "test_rows_exported": 0,
+  "test_scored": false,
+  "development_and_readouts_preserved": true,
+  "inference_restored": true
+}
