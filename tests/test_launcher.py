@@ -85,3 +85,32 @@ def test_controller_restore_and_recover(tmp_path,outcome):
         assert s.get(r['id'])['status']==('completed' if outcome=='restart' else outcome)
         assert k.scales==[0,1];assert k.dep['spec']['template']=={'unchanged':True}
     asyncio.run(check())
+
+
+def test_manifest_resources_stay_in_namespace():
+    from launcher.manifests import resources
+    images=dict(control=IMAGE.replace('-runner@','-control@'),runner=IMAGE,version='test')
+    items=resources(images)['items']
+    assert all(i['metadata']['namespace']=='systems-world-model-lab' for i in items)
+    assert not any(i['kind'].startswith('Cluster') for i in items)
+    role=next(i for i in items if i['kind']=='Role')
+    assert all('secrets' not in r['resources'] for r in role['rules'])
+    scale=next(r for r in role['rules'] if r['resources']==['deployments/scale'])
+    assert scale['resourceNames']==['swm-inference']
+
+def test_controller_preserves_unrelated_inference_edits(tmp_path):
+    async def check():
+        s=Store(tmp_path/'queue');r=s.create('a@example.com',ARGS,IMAGE,'test');k=FakeKube();c=Controller(s,k,tmp_path)
+        with patch('launcher.controller.dataset_check'):await c.tick()
+        k.dep['spec']['template']['changed']=True;k.job['status']={'succeeded':1}
+        await c.tick()
+        assert s.get(r['id'])['status']=='restoring'
+        assert 'refusing to overwrite' in s.get(r['id'])['error']
+        assert k.scales==[0]
+    asyncio.run(check())
+
+
+def test_proxy_preserves_compression_headers():
+    from launcher.proxy import HOP
+    assert 'content-encoding' not in HOP
+    assert 'transfer-encoding' in HOP

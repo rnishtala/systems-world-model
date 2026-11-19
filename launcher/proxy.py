@@ -6,11 +6,11 @@ from aiohttp import web,WSMsgType
 from launcher.auth import signature
 from launcher.common import identity
 
-HOP={'connection','keep-alive','proxy-authenticate','proxy-authorization','te','trailer','transfer-encoding','upgrade','content-length','content-encoding'}
+HOP={'connection','keep-alive','proxy-authenticate','proxy-authorization','te','trailer','transfer-encoding','upgrade','content-length'}
 
 async def main():
     key=Path('/auth/key').read_bytes();static=Path(__file__).parent/'static'
-    session=aiohttp.ClientSession(auto_decompress=True,timeout=aiohttp.ClientTimeout(total=None,sock_connect=10))
+    session=aiohttp.ClientSession(auto_decompress=False,timeout=aiohttp.ClientTimeout(total=None,sock_connect=10))
     async def handler(request):
         if request.path=='/healthz':return web.Response(text='ok')
         try:email=identity(request.headers)

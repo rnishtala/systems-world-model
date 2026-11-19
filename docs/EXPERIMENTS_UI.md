@@ -51,3 +51,17 @@ The proxy listens on loopback port 4467 and forwards Headlamp traffic to 4466.
 All Jobs use fixed images/commands and the `results` PVC; users cannot supply images,
 commands, paths or Kubernetes manifests. No model checkpoints or run outputs are
 stored in Git. Everything stays within `systems-world-model-lab` and its existing quota.
+
+With existing `gh` read-package credentials and SSH access to `amd-halo`, run:
+
+```sh
+python -m launcher.deploy backend /path/to/images.json
+python -m launcher.deploy ingress /path/to/images.json
+python -m launcher.deploy viewer /path/to/images.json
+```
+
+The backend phase creates image-pull and internal-signing Secrets without printing
+credentials. The ingress phase saves its original deployment/config in
+`/tmp/swm-launcher-rollback.json` and restores them if rollout fails. Keep that
+local backup until verification is complete. The viewer phase restricts the public
+Headlamp service account; it does not alter personal administrator bindings.

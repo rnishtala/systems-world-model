@@ -22,3 +22,5 @@ Latest completed experiment: 128 training incidents, 100,000 Dreamer steps, 64 f
 Historical code and evidence remain in Git at `763e555`. See [artifact recovery](docs/TRAINING.md#artifact-recovery). Cleanup changes source only; it does not delete deployed services, datasets or PVC checkpoints.
 
 [Upstream provenance](UPSTREAM.md)
+
+Run shared experiments through the [authenticated launcher](docs/EXPERIMENTS_UI.md).
