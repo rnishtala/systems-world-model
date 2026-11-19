@@ -18,9 +18,3 @@ def audit(model):
         results=[run(model.agent.params,{**base,TARGET:np.full((1,3),v,np.float32)},seed=jax.random.PRNGKey(777),create=False,modify=False)[1] for v in (0,1)]
         for a,b in zip(jax.tree.leaves(results[0]),jax.tree.leaves(results[1])):np.testing.assert_array_equal(np.asarray(a),np.asarray(b))
     return dict(checkpoint_loaded=True,encoder_excludes_labels=True,decoder_excludes_labels=True,policy_identical_for_opposite_labels=True,auxiliary_head_optimized=True)
-
-if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--root',required=True);p.add_argument('--out',required=True);a=p.parse_args()
-    from microservice.agent import Model
-    result=audit(Model(a.root,21,'inspect-mechanisms'))
-    Path(a.out).write_text(json.dumps(result,indent=2));print('AUDIT_PASSED',result,flush=True)

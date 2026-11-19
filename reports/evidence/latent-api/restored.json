@@ -1,9 +1,0 @@
-{
-  "original_service_sources": {
-    "swm-checkout": "microservice-source-v1",
-    "swm-payment": "microservice-source-v1",
-    "swm-ledger": "microservice-source-v1"
-  },
-  "inference_template_restored": true,
-  "all_deployments_ready": true
-}

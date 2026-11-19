@@ -1,7 +1,0 @@
-{
-  "seed": 23,
-  "steps": 100000,
-  "compositional": true,
-  "mechanism_supervision": true,
-  "calibration_sha256": "e6d217c0fcdddc2b50df296c09c95540eb3223ff5d7fcf6f0c9f179b6d903473"
-}

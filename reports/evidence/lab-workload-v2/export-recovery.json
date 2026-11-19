@@ -1,7 +1,0 @@
-{
-  "read_only_pvc": true,
-  "chunk_bytes": 32768,
-  "parallel_readers": 3,
-  "files": 14,
-  "all_hashes_verified": true
-}

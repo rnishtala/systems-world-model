@@ -1,9 +1,0 @@
-{
-  "verified": true,
-  "only_development_inputs": true,
-  "input_hashes_unchanged": true,
-  "outer_predictions_once_per_incident": true,
-  "nested_splits_disjoint": true,
-  "all_predictions_and_thresholds_reproduced": true,
-  "development_gate_passed": false
-}

@@ -1,15 +1,19 @@
+# Generated artifacts stay outside source control.
 .venv/
 __pycache__/
 *.py[cod]
+.pytest_cache/
 .env
 .env.*
-!.env.example
+.DS_Store
+upstream/
+runs/
 data/
 artifacts/
 checkpoints/
-*.pt
+*.npz
+*.npy
 *.ckpt
-.DS_Store
-.pytest_cache/
-upstream/
-tmp/
+*.pt
+*.pkl
+*.pdf

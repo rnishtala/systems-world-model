@@ -1,9 +1,0 @@
-{
-  "source": "microservice-source-v19",
-  "source_sha256": "e6a27c2ffda41ae56ffa905a037f1e644e8c14c6700518e6dd4540f39bd450eb",
-  "protocol_sha256": "e7db9b2d183157afe85f11c6e3e7d720890b40cac82b2abea70707decfe7e757",
-  "recorded_utc": "2026-11-10T22:00:22Z",
-  "primary": "latent",
-  "model_seed": 23,
-  "scenario_seed": 6801
-}

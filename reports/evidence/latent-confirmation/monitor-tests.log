@@ -1,9 +1,0 @@
-test_cluster_error_is_not_retried_as_connectivity (scripts.test_auxiliary_monitor.MonitorTests.test_cluster_error_is_not_retried_as_connectivity) ... ok
-test_command_timeout_is_retried (scripts.test_auxiliary_monitor.MonitorTests.test_command_timeout_is_retried) ... ok
-test_exhausted_timeouts_are_connectivity_errors (scripts.test_auxiliary_monitor.MonitorTests.test_exhausted_timeouts_are_connectivity_errors) ... ok
-test_ssh_failure_is_retried (scripts.test_auxiliary_monitor.MonitorTests.test_ssh_failure_is_retried) ... ok
-
-----------------------------------------------------------------------
-Ran 4 tests in 0.003s
-
-OK

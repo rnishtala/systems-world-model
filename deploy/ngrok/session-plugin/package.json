@@ -1,9 +1,0 @@
-{
-  "name": "swm-session",
-  "version": "0.1.6",
-  "description": "Connect Headlamp logout to the lab ngrok OAuth session",
-  "main": "main.js",
-  "devDependencies": {
-    "@kinvolk/headlamp-plugin": "0.13.1"
-  }
-}

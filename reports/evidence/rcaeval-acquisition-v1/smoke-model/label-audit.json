@@ -1,6 +1,0 @@
-{
-  "encoder_excludes_labels": true,
-  "decoder_excludes_labels": true,
-  "policy_identical_for_opposite_labels": true,
-  "auxiliary_head_optimized": true
-}

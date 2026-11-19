@@ -1,9 +1,0 @@
-# Complete fault-regime coverage: fixed development and confirmation protocol
-
-Original 140 calibration incidents plus 20 newly collected triples (seed 6600, alternating ordinary/increased severity) form a balanced 160-incident set. None of the previous held-out batches, including the interrupted 6500 batch, enters training. Triple faults are now a known regime: this study cannot claim unseen-combination generalization.
-
-Keep upstream DreamerV3 revision e01491f, size1m, auxiliary BCE weight 1, fixed inspections, 16 particles, and 100,000 training steps. Train seed 22 from scratch. The primary endpoint is the original imagined-reward argmax over eight fault sets; the auxiliary sigmoid head and fixed ridge telemetry probe are comparators. This choice is frozen before new data collection. No test-based threshold tuning.
-
-Development: fresh seed 6601, 80 physical incidents, ten per family, increased load/severity. Require 10/10 healthy and at least 9/10 in every other family, with all requests successful and each collected incident under 35 seconds. If the primary endpoint fails, stop before confirmation and report the failure. If it passes, independently train seed 23 on the same calibration and evaluate a new seed-6602 batch using identical gates. Confirmation does not establish production reliability or arbitrary unseen-cause handling.
-
-Retain all checkpoints and raw evidence. Labels are training loss targets only; audit encoder/decoder exclusion and policy invariance. Freeze probes before each fresh batch and verify checkpoint digests after scoring. Existing default deployment is preserved and restored; no automatic promotion. All actions stay within systems-world-model-lab and its 4 CPU / 6 Gi quota. Connectivity loss must preserve bounded jobs rather than delete them merely because monitoring failed.

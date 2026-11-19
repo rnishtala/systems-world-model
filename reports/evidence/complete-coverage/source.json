@@ -1,8 +1,0 @@
-{
-  "configmap": "microservice-source-v18",
-  "sha256": "3a7ea29eee7b6d98ec1a2335e880bab861352dca7839224db8002ac9639ed738",
-  "upstream_revision": "e01491fad6434b2245a3b8ca201dd7faedcc458c",
-  "protocol_sha256": "3c6881929fb49d8aca64d161f90ab88575ed0786a8f6b5a46fc6c0ac7dd6a11e",
-  "protocol_recorded_utc": "2026-11-10T20:26:57Z",
-  "base_commit": "3181fd7"
-}

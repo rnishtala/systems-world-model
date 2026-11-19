@@ -1,6 +1,0 @@
-{
-  "command": "OPENBLAS_NUM_THREADS=1 PYTHONPATH=. python -m pytest -q -p no:cacheprovider tests/test_probe_target.py tests/test_workload.py tests/test_decoder_units.py tests/test_ledger_probe.py",
-  "passed": 9,
-  "actual_upstream_preflight_passed": true,
-  "actual_upstream_smoke_passed": true
-}

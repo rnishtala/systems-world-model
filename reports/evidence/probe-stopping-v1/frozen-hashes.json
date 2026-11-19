@@ -1,7 +1,0 @@
-{
-  "collection/train.jsonl": "2e5158ce9577d2dc5340200a0b346b7ca61a4c3f146db4d6bdcd8479b3ccad35",
-  "collection/source-hashes.json": "e7e26095a9e27d7c404048f565fdf0efff4af12e230bf2aad8f987d765c8bcbc",
-  "evaluation/audit.json": "4f8c82b9b1b4615055a34720cbef0181c2c6c1ac5b8397f1bbf33643ec91f3f8",
-  "evaluation/extraction.json": "cb49c7c17acf0e54f3808ee7f52fad6a6fa2026aa6ef108e4b3a9370885e5d35",
-  "evaluation/prefix-features.npz": "bce1e641b7285a6f01556df963ad2b63b8f7be670aaa791c8586f1ecdcda0a87"
-}

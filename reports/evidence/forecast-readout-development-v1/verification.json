@@ -1,9 +1,0 @@
-{
-  "verified": true,
-  "outer_groups_disjoint": true,
-  "inner_groups_disjoint": true,
-  "training_only_normalization": true,
-  "all_selections_and_predictions_reproduced": true,
-  "development_gate": false,
-  "scope": "Readout-only validation; world-model training exposure remains and is not removed by these splits."
-}

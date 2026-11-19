@@ -1,7 +1,0 @@
-{
-  "source": "microservice-source-v11",
-  "source_sha256": "e3cf10b62a3fb34ca2e2934a7d5ef307ade3d9737997c7b9f2ac730164cd451a",
-  "guard_parameters_sha256": "afc387eea260a683b5b8f57d3857b5705ca9c41f8c9f64aaade53a7cff4a960f",
-  "weights": "unchanged micro-v2/confirmation seeds 10,11,12",
-  "scope": "Fresh predictive guard pilot; previous confirmation explicitly reused as calibration only."
-}

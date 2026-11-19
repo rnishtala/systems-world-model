@@ -1,7 +1,0 @@
-{
-  "source": "microservice-source-v14",
-  "source_sha256": "0d1317061c7eb3d12cd725da7ef269a2099d9d92fba93d607ba9e25110c57f3e",
-  "protocol_sha256": "6ff7fe16f63672a663e2dfd7233f4d3a005cab1a30b0cfa631e0edbad82aea95",
-  "checkpoint": "micro-mechanisms-v1/development/final-20",
-  "test_seed": 6400
-}

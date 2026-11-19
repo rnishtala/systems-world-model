@@ -12,7 +12,8 @@ reuses that code rather than claiming an official Google distribution.
 The upstream `dreamerv3/` and `embodied/` files are unmodified. Our runner supplies
 an environment factory to the upstream main module and invokes its training loop.
 The encoder, RSSM, prediction heads, replay, imagination, actor and critic remain
-upstream implementations. Numeric observations and configuration overrides tailor
+upstream implementations. Our subclass adds a supervised mechanism head and loss,
+while excluding labels from encoder, decoder and policy inputs. Numeric observations and configuration overrides tailor
 the environment and compute budget; we do not substitute a custom learned model.
 
 Our results are a small diagnostic-task experiment, not a reproduction of the

@@ -1,26 +1,12 @@
 """Training-only mechanism targets; never encoder inputs or reconstruction targets."""
 import numpy as np
-from microservice.environment import EmpiricalEnv
-from microservice.mechanisms import FAULT_MASK
 TARGET = 'mechanism_target'
 
 def telemetry(obs):
     return {k: v for k, v in obs.items() if k != TARGET}
 
-class SupervisedEnv(EmpiricalEnv):
-    def __init__(self, path, seed=0, compositional=True):
-        if not compositional: raise ValueError('Mechanism supervision requires compositional actions')
-        super().__init__(path, seed, compositional)
-        import elements
-        self.obs_space[TARGET] = elements.Space(np.float32, (3,), 0, 1)
-    def step(self, action):
-        obs = super().step(action)
-        mask = FAULT_MASK[self.sim.fault]
-        obs[TARGET] = np.array([(mask >> i) & 1 for i in range(3)], np.float32)
-        return obs
-
 def make_agent(config):
-    # Import only after experiment.run sets the pinned upstream import path.
+    # Import only after microservice.configuration sets the pinned upstream import path.
     from dreamerv3 import agent as module, main
     import embodied.jax.nets as nn
     import jax.numpy as jnp

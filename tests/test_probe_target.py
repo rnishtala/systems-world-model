@@ -4,7 +4,10 @@ import numpy as np
 import pytest
 from microservice.probe_target import frames,vector,next_action,ProbeEnv
 
-def row():return json.loads((Path(__file__).resolve().parents[1]/'reports/evidence/ledger-probe-v1/development.jsonl').read_text().splitlines()[0])
+def row():
+    from tests.fixtures import incident
+    return incident()
+
 
 def test_no_future_truth_or_counter_leakage():
     a=row();b=copy.deepcopy(a);b['fault']=999;b['seed']=0

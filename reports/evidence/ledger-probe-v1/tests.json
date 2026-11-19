@@ -1,9 +1,0 @@
-{
-  "command": "OPENBLAS_NUM_THREADS=1 PYTHONPATH=. python -m pytest -q -p no:cacheprovider tests/test_ledger_probe.py",
-  "passed": 3,
-  "scope": [
-    "Feature and label isolation",
-    "Measurement counts, privileged-counter exclusion and failure rejection",
-    "Monitoring timeout does not delete/restart collection"
-  ]
-}

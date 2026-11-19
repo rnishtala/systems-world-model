@@ -1,32 +1,18 @@
-"""Train upstream Dreamer against measured training trajectories only."""
-import argparse,hashlib,json,os,time
+"""Train upstream Dreamer on measured trajectories, excluding test data."""
+import argparse,hashlib,json,time
 from pathlib import Path
-from experiment.run import configuration
-from microservice.environment import EmpiricalEnv,Coverage
+from microservice.configuration import configuration
+from microservice.probe_target import ProbeEnv,ProbeCoverage
+from microservice.supervision import make_agent
 import elements,embodied
 from dreamerv3 import main as upstream
-p=argparse.ArgumentParser();p.add_argument('--data',required=True);p.add_argument('--out',required=True);p.add_argument('--seed',type=int,default=0);p.add_argument('--steps',type=int,default=100000);p.add_argument('--compositional',action='store_true');p.add_argument('--mechanism-supervision',action='store_true');p.add_argument('--resume',action='store_true');p.add_argument('--observation-view',choices=['physical-v2','trace-temporal-v1','trace-log-v1','trace-workload-v1','trace-probe-target-v1'],default='physical-v2');a=p.parse_args()
-if a.mechanism_supervision and not a.compositional:p.error('--mechanism-supervision requires --compositional')
-from microservice.supervision import SupervisedEnv,make_agent
-env_class=SupervisedEnv if a.mechanism_supervision else EmpiricalEnv
-agent_factory=make_agent if a.mechanism_supervision else upstream.make_agent
-if a.observation_view=='trace-temporal-v1':
- if not a.mechanism_supervision:p.error('Temporal view requires mechanism supervision')
- from microservice.temporal import TemporalEnv,TemporalCoverage
- env_class=TemporalEnv;Coverage=TemporalCoverage
-if a.observation_view=='trace-log-v1':
- if not a.mechanism_supervision:p.error('Log view requires mechanism supervision')
- from microservice.regime import LogEnv
- from microservice.temporal import TemporalCoverage
- env_class=LogEnv;Coverage=TemporalCoverage
-if a.observation_view=='trace-workload-v1':
- if not a.mechanism_supervision:p.error('Workload view requires mechanism supervision')
- from microservice.workload import WorkloadEnv,WorkloadCoverage
- env_class=WorkloadEnv;Coverage=WorkloadCoverage
-if a.observation_view=='trace-probe-target-v1':
- if not a.mechanism_supervision:p.error('Probe view requires mechanism supervision')
- from microservice.probe_target import ProbeEnv,ProbeCoverage
- env_class=ProbeEnv;Coverage=ProbeCoverage
+p=argparse.ArgumentParser(description=__doc__)
+p.add_argument('--data',required=True);p.add_argument('--out',required=True)
+p.add_argument('--seed',type=int,required=True);p.add_argument('--steps',type=int,default=100000)
+p.add_argument('--resume',action='store_true');a=p.parse_args()
+if a.steps<=0:p.error('--steps must be positive')
+a.compositional=True;a.mechanism_supervision=True;a.observation_view='trace-probe-target-v1'
+agent_factory=make_agent
 out=Path(a.out);log=out/f'train-{a.seed}'
 if log.exists() and not a.resume:raise SystemExit('Choose fresh output or explicitly --resume')
 if a.resume and not (log/'config.yaml').exists():raise SystemExit('Resume requires existing configuration')
@@ -39,10 +25,10 @@ if a.resume:
  saved=elements.Config.load(elements.Path(log/'config.yaml'))
  if saved!=c:raise SystemExit('Resume configuration mismatch')
 else:identity_path.write_text(json.dumps(identity,indent=2))
-upstream.make_env=lambda config,index,**kw:upstream.wrap_env(env_class(a.data,config.seed*1000+index,a.compositional),config)
+upstream.make_env=lambda config,index,**kw:upstream.wrap_env(ProbeEnv(a.data,config.seed*1000+index,True),config)
 captured={}
 def build():
- agent=agent_factory(c);coverage=Coverage(agent.policy,a.seed+9000,a.compositional);agent.policy=coverage;captured.update(agent=agent,coverage=coverage);return agent
+ agent=agent_factory(c);coverage=ProbeCoverage(agent.policy,a.seed+9000,True);agent.policy=coverage;captured.update(agent=agent,coverage=coverage);return agent
 args=elements.Config(**c.run,replica=0,replicas=1,logdir=c.logdir,batch_size=c.batch_size,batch_length=c.batch_length,report_length=c.report_length,consec_train=c.consec_train,consec_report=c.consec_report,replay_context=c.replay_context)
 c.save(elements.Path(c.logdir)/'config.yaml');start=time.time()
 embodied.run.train(build,lambda:upstream.make_replay(c,'replay'),lambda index:upstream.make_env(c,index),lambda replay,mode:upstream.make_stream(c,replay,mode),lambda:upstream.make_logger(c),args)

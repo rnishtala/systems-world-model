@@ -1,6 +1,0 @@
-{
-  "namespace_bound": true,
-  "agent_role": true,
-  "no_service_account": true,
-  "minimal_read_only_model_mount": true
-}
