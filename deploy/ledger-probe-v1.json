@@ -1,0 +1,92 @@
+{
+  "apiVersion": "batch/v1",
+  "kind": "Job",
+  "metadata": {
+    "name": "swm-ledger-probe-v1",
+    "namespace": "systems-world-model-lab"
+  },
+  "spec": {
+    "backoffLimit": 0,
+    "activeDeadlineSeconds": 1200,
+    "template": {
+      "metadata": {
+        "labels": {
+          "swm-role": "runner"
+        }
+      },
+      "spec": {
+        "restartPolicy": "Never",
+        "automountServiceAccountToken": false,
+        "nodeSelector": {
+          "kubernetes.io/hostname": "amd-halo"
+        },
+        "securityContext": {
+          "runAsNonRoot": true,
+          "runAsUser": 1000,
+          "runAsGroup": 1000,
+          "fsGroup": 1000,
+          "seccompProfile": {
+            "type": "RuntimeDefault"
+          }
+        },
+        "containers": [
+          {
+            "name": "experiment",
+            "image": "python:3.11-slim",
+            "securityContext": {
+              "allowPrivilegeEscalation": false,
+              "readOnlyRootFilesystem": true,
+              "capabilities": {
+                "drop": [
+                  "ALL"
+                ]
+              }
+            },
+            "resources": {
+              "requests": {
+                "cpu": "100m",
+                "memory": "64Mi"
+              },
+              "limits": {
+                "cpu": "400m",
+                "memory": "256Mi"
+              }
+            },
+            "env": [
+              {
+                "name": "PYTHONUNBUFFERED",
+                "value": "1"
+              },
+              {
+                "name": "PYTHONDONTWRITEBYTECODE",
+                "value": "1"
+              }
+            ],
+            "command": [
+              "python",
+              "/code/ledger_probe.py",
+              "development"
+            ],
+            "volumeMounts": [
+              {
+                "name": "code",
+                "mountPath": "/code",
+                "readOnly": true
+              }
+            ]
+          }
+        ],
+        "volumes": [
+          {
+            "name": "code",
+            "configMap": {
+              "name": "swm-ledger-probe-code-v1"
+            }
+          }
+        ],
+        "terminationGracePeriodSeconds": 20
+      }
+    },
+    "ttlSecondsAfterFinished": 86400
+  }
+}
