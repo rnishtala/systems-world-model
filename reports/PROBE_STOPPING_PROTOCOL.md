@@ -1,0 +1,13 @@
+# Frozen Dreamer prefix-stopping development screen
+
+Registered before extracting or scoring prefix states. Reuse frozen model91 and only its 64 training incidents (seeds9101/9103). Do not open the prior test9202 for selection. No training, live faults, or serving promotion.
+
+Question: can the frozen representation diagnose with less evidence than equally informed telemetry? Preserve the measured eight-window schedule. At each prefix, compare Dreamer state, flattened telemetry history, and compact target/load telemetry summaries plus history. No future measurements or labels may enter features. Planned schedule metadata is permitted equally for all methods. This is stopping, not alternative-action planning.
+
+Use four outer leave-repeat-out folds; choose each prefix readout from the existing eight candidates using inner leave-repeat-out folds. Calibrate a single margin threshold (0, .25, .5, 1, 2, 4, or full-only) using inner out-of-fold scores, then evaluate on the untouched outer fold. Stop at the first prefix whose minimum absolute bit score meets threshold; otherwise use all eight windows. Choose the lowest mean window cost eligible threshold, breaking ties conservatively. Eligibility requires >=90% exact diagnoses, all healthy correct, >=75% per family, and at most one fewer correct than the full-prefix rule. Margins are not probabilities.
+
+Development gate: pooled outer Dreamer stopping must meet those accuracy requirements, lose at most one diagnosis versus its full-prefix rule and either telemetry stopping control, save >=1 mean window versus eight, and save >=0.5 mean windows against both telemetry controls. Also report measured ingress requests implied by each prefix, fixed-prefix accuracy, calibration failures, all predictions and fold selections. Threshold failure falls back to eight windows and is explicitly reported.
+
+World-model weights previously saw all64 incidents, so even nested readout CV is an optimistic development screen, not independent generalization evidence. If the gate fails, stop this strategy without collecting confirmation. If it passes, a separately frozen fresh shadow confirmation is required. Saved windows/requests are retrospective estimates; warmup cost is excluded, and no actual early-stop latency claim is made.
+
+Scope: systems-world-model-lab only. One offline inference job with no service account token or network access, bounded 1800seconds, existing quota. Temporarily pause swm-inference for resources, restore exact spec and replica count, export hash-verified evidence and delete temporary resources. Preserve checkpoint digest before/after.
