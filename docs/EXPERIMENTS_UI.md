@@ -22,6 +22,8 @@ flowchart LR
 Users can view and cancel their own experiments. `099.raj@gmail.com` can manage
 all experiments. Headlamp resource views remain shared across allowed users;
 run ownership is enforced by the launcher API, not a promise of private Kubernetes logs.
+The navigation plugin initializes Headlamp’s default/allowed namespace filter to
+`systems-world-model-lab`; Kubernetes RBAC enforces the actual boundary.
 Add teammates using the existing ngrok Google email allowlist.
 
 Only one experiment runs at a time. The controller records the inference deployment

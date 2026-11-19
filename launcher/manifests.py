@@ -18,7 +18,7 @@ def resources(images):
     dns=dict(namespaceSelector=dict(matchLabels={'kubernetes.io/metadata.name':'kube-system'}),podSelector=dict(matchLabels={'k8s-app':'kube-dns'}))
     items.append(obj('networking.k8s.io/v1','NetworkPolicy','swm-experiments',spec=dict(podSelector=dict(matchLabels=label),policyTypes=['Ingress','Egress'],ingress=[{'from':[peer],'ports':[dict(port=8090,protocol='TCP')]}],egress=[{'to':[dict(ipBlock=dict(cidr=ip)) for ip in ['10.43.0.1/32','100.98.114.55/32']],'ports':[dict(port=p,protocol='TCP') for p in [443,6443]]},{'to':[dns],'ports':[dict(port=53,protocol=p) for p in ['UDP','TCP']]}])))
     items.append(obj('networking.k8s.io/v1','NetworkPolicy','swm-headlamp-experiments',spec=dict(podSelector=peer['podSelector'],policyTypes=['Egress'],egress=[{'to':[dict(podSelector=dict(matchLabels=label))],'ports':[dict(port=8090,protocol='TCP')]}])))
-    items.append(obj('v1','ConfigMap','swm-headlamp-experiments',data={'main.js':Path(__file__).with_name('headlamp-plugin.js').read_text(),'package.json':json.dumps({'name':'swm-experiments','version':'0.1.0','main':'main.js','headlamp':{'minVersion':'0.46.0'}})}))
+    items.append(obj('v1','ConfigMap','swm-headlamp-experiments',data={'main.js':Path(__file__).with_name('headlamp-plugin.js').read_text(),'package.json':json.dumps({'name':'swm-experiments','version':'0.1.0','main':'main.js','devDependencies':{'@kinvolk/headlamp-plugin':'0.13.1'}})}))
     return dict(apiVersion='v1',kind='List',items=items)
 
 if __name__=='__main__':print(json.dumps(resources(json.loads(Path(sys.argv[1]).read_text()))))
