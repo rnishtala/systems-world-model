@@ -1,5 +1,7 @@
 # Systems World Model
 
+Latest model experiment: [probe-target-aware Dreamer](reports/PROBE_TARGET_MODEL_RESULTS.md) (2026-11-18). A new model trained for 100,000 steps in 17.2 minutes and diagnosed 32/32 fresh incidents, matching all three equally informed telemetry controls. Ledger forecast MSE was 84.6% below persistence. The small-sample feasibility gate passed; diagnostic superiority is not established. Serving remains unchanged and the lab is restored.
+
 Latest acquisition experiment: [direct-ledger probe pilot](reports/LEDGER_PROBE_RESULTS.md) (2026-11-18). On 32 fresh test incidents, a frozen classifier with the direct probe scored 32/32 versus 28/32 for an equal-request-budget checkout repeat and 29/32 for base observations alone. The prespecified screening gate passed, but the paired difference is not statistically conclusive (p=0.125). This is evidence for a diagnostic probe, not improved Dreamer weights. The interrupted first test and operational replacement are documented; the lab is restored.
 
 Latest development: [mechanism-specific readout experiment](reports/MECHANISM_READOUT_RESULTS.md) (2026-11-18). Separate readouts per mechanism scored 112/128 versus the existing latent readout 119/128 on training-data folds; the gate failed. Fresh-error analysis narrows the ambiguity to pool contention versus delay. No retraining or cluster changes.

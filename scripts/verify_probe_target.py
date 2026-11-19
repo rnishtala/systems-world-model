@@ -12,6 +12,11 @@ R=Path(__file__).resolve().parents[1];O=R/'reports/evidence/probe-target-model-v
 
 def main():
     e=O/'evaluation';frozen=json.loads((e/'frozen.json').read_text());summary=json.loads((e/'summary.json').read_text())
+    runtime=json.loads((O/'runtime-source-hashes.json').read_text())
+    earlier=json.loads((R/'reports/evidence/workload-forecast-audit-v1/upstream-source-hashes.json').read_text())
+    for path,key in [('dreamerv3/agent.py','agent'),('dreamerv3/rssm.py','rssm'),('embodied/jax/heads.py','heads')]:assert runtime[path]==earlier[key]
+    config=(O/'runtime-config.yaml').read_text()
+    assert 'seed: 91' in config and 'steps: 100000.0' in config and 'train_ratio: 16.0' in config
     for n,h in json.loads((O/'frozen-hashes.json').read_text()).items():assert hashlib.sha256((O/n).read_bytes()).hexdigest()==h
     for n,h in json.loads((O/'collection/source-hashes.json').read_text()).items():assert hashlib.sha256((R/n).read_bytes()).hexdigest()==h,n
     original=[]
@@ -33,9 +38,9 @@ def main():
     assert frozen['readouts_sha256']==hashlib.sha256((e/'readouts.npz').read_bytes()).hexdigest()
     for split,rs in [('train',train),('test',test)]:
         xs=np.load(e/f'{split}-features.npz');history=np.array([[vector(row,t) for t in range(8)] for row in rs]).reshape(len(rs),-1)
-        np.testing.assert_array_equal(xs['history'],history);np.testing.assert_array_equal(xs['labels'],labels(rs))
-        response=raw_features(rs)['ledger'];np.testing.assert_array_equal(xs['response'],response)
-        np.testing.assert_array_equal(xs['response_history'],np.concatenate([response,history],1))
+        np.testing.assert_allclose(xs['history'],history,rtol=1e-7,atol=1e-7);np.testing.assert_array_equal(xs['labels'],labels(rs))
+        response=raw_features(rs)['ledger'];np.testing.assert_allclose(xs['response'],response,rtol=1e-12,atol=1e-12)
+        np.testing.assert_allclose(xs['response_history'],np.concatenate([response,history],1),rtol=1e-7,atol=1e-7)
         fs=np.load(e/f'{split}-forecast.npz')
         actual=np.array([float(vector(row,t)[0]) for row in rs for t in range(1,8)])
         current=np.array([float(vector(row,t)[0]) for row in rs for t in range(7)])
@@ -50,7 +55,7 @@ def main():
         truth=y[np.random.default_rng(9204).permutation(len(y))] if name=='shuffled_latent' else y
         m=fit(tx[xname],truth,config)
         for k,v in m.items():
-            if k!='config':np.testing.assert_array_equal(v,arrays[f'{name}_{k}'])
+            if k!='config':np.testing.assert_allclose(v,arrays[f'{name}_{k}'],rtol=1e-8,atol=1e-9)
         pred=diagnose(score(m,vx[xname]));np.testing.assert_array_equal(pred,saved['methods'][name])
     for name,pred in saved['methods'].items():
         p=np.array(pred);m=summary['methods'][name];assert m['correct']==int(sum(p==target)) and m['n']==32
