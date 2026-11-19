@@ -1,79 +1,142 @@
-# Training and validation
+# Training and testing the world model
 
-## Objective
+## What are we trying to learn?
 
-When checkout becomes slow, distinguish payment CPU saturation, ledger connection-pool contention, ledger delay, or combinations of those causes. Determine whether Dreamer's learned state diagnoses these incidents better than the same raw telemetry—and eventually with fewer probes.
+When checkout slows down, can the model identify **what went wrong and where**?
+The lab tests three causes: payment CPU saturation, ledger connection-pool
+contention, and ledger delay. These can occur alone or together, giving eight
+cases including a healthy system.
 
-## System and observations
+The main question is: **does DreamerV3 diagnose these issues more accurately than
+using the same telemetry directly?**
+
+## The system we observe
 
 ```mermaid
 flowchart LR
-    C[Collector: prescribed probe schedule] --> A[Checkout]
-    A --> B[Payment]
-    B --> L[Ledger]
-    C -->|Direct probe| L
+    P[Send test requests] --> C[Checkout]
+    C --> PAY[Payment]
+    PAY --> L[Ledger]
     L --> DB[(Postgres)]
-    F[Leased fault controls] -.->|CPU work| B
-    F -.->|Pool size / delay| L
-    A & B & L --> T[Measured latency and error windows]
-    T --> J[Incident JSONL]
-    F -->|Ground-truth labels stored separately| J
+    P -->|Also test ledger directly| L
+    F[Inject a known fault] -.-> PAY
+    F -.-> L
+    C & PAY & L --> T[Record latency and errors]
 ```
 
-All live collection stays in `systems-world-model-lab`. The current benchmark uses eight windows: four checkout windows, then two checkout and two direct-ledger windows in balanced order. Each pair uses low/high concurrency; the test includes original loads 3/9 and shifted loads 4/10. Fault controls have 45-second leases, each incident has a 35-second checked budget, and controls reset after every incident and on exit.
+Everything runs inside `systems-world-model-lab`. Faults expire automatically
+and are reset after each incident.
 
-Each model observation is a 14-value vector: log-scaled latency measurements; current target/load; declared next target/load; availability, progress and completion flags; ledger error rate. Direct-ledger windows mask unavailable upstream telemetry. Fault IDs and control values are excluded. The declared next action is known schedule metadata, not a future measurement.
+An **incident** is one example: a known fault and eight short measurement windows.
+The first four windows test checkout. The remaining four test checkout and ledger
+at different request loads. The fault label is the answer used for training and
+scoring; it is not included in the model's telemetry input.
 
-## Training architecture
-
-```mermaid
-flowchart TD
-    D[Designated training incidents] --> E[Measured replay environment]
-    E -->|Telemetry vectors + measured actions| ENC[Dreamer encoder]
-    ENC --> RSSM[Recurrent state-space model: RSSM]
-    RSSM --> DEC[Observation / reward / continuation heads]
-    DEC --> LOSS[Upstream world-model losses]
-    RSSM --> AUX[Auxiliary CPU / pool / delay head]
-    Y[Training labels only] --> AUX
-    AUX --> BCE[Supervised loss at complete evidence]
-    LOSS & BCE --> W[Train and save Dreamer weights]
-    W --> F[Frozen checkpoint]
-```
-
-DreamerV3 learns a recurrent latent model of how observations evolve with actions. We reuse the pinned upstream encoder, RSSM, decoder and training loop, adding a supervised mechanism head. Labels are removed from encoder, decoder and policy inputs; a runtime audit checks that changing labels cannot change policy outputs.
-
-The existing size1m configuration uses 100,000 environment steps, batch 8 × 16, replay capacity 10,000 and train ratio 16. Weights are trained from scratch unless an explicit matching resume is requested. Replay rejects actions that were not measured. Upstream actor/critic machinery remains present, but this experiment uses a fixed probe schedule and zero rewards: **it does not establish learned remediation or free-form counterfactual planning**.
-
-## Validation architecture
+## What happens in an experiment?
 
 ```mermaid
 flowchart LR
-    TR[Training incidents] --> CP[Frozen Dreamer]
-    CP --> Z[Latent states at windows 6 and 8]
-    TR --> H[Same telemetry prefixes]
-    Z & H --> CV[Training-only grouped selection]
-    CV --> FR[Freeze readouts and hashes]
-    FR --> NEW[Collect fresh test incidents]
-    NEW --> P[Identical prefixes for every method]
-    P --> WM[Dreamer latent + frozen readout]
-    P --> RAW[Telemetry + frozen readout]
-    WM & RAW --> SCORE[Exact diagnosis / per-family errors / paired comparison]
-    GT[Test labels: scoring only] --> SCORE
+    D[Training incidents] --> T[Train DreamerV3]
+    T --> R[Fit a diagnosis classifier]
+    R --> F[Freeze model and classifier]
+    F --> N[Collect 64 new test incidents]
+    N --> E[Compare diagnoses with known faults]
 ```
 
-1. **Train:** use designated training incidents only. Never recycle completed tests into a later training set without explicitly redefining that experiment's split.
-2. **Fit readouts:** extract 640-dimensional latent states (16-particle mean) and flattened telemetry at six/eight windows. Select among eight linear/RBF ridge configurations using leave-repeat-modulo-four-out validation; fit selected readouts on training data only.
-3. **Freeze:** record training seeds, input hash, checkpoint hash, readout hash and timestamp. Readout selection assesses a frozen model already trained on those incidents; its CV score is development evidence, not independent model generalization.
-4. **Test:** collect 64 new incidents with a new seed after freezing: eight fault families × four repeats × two regimes. Reject seed overlap, premature collection and incomplete coverage.
-5. **Compare:** use identical incidents for all models. Report exact three-bit diagnosis, healthy/family/regime accuracy, false pool positives, bit errors and paired discordance. A prior model comparison requires byte-identical test data.
+1. **Train the world model.** DreamerV3 learns how measurements change as requests
+   are sent through the services. Each run trains new weights unless explicitly
+   configured to resume a matching checkpoint.
+2. **Learn to diagnose.** A small classifier, called a *readout*, turns Dreamer's
+   learned state into a prediction of the three fault causes. Training also uses
+   an auxiliary fault-prediction head to help the state capture useful signals.
+3. **Freeze everything.** Save the model, classifier, dataset identity and settings.
+   No more learning or tuning happens against the final test batch.
+4. **Test on fresh incidents.** Collect 64 new examples covering all eight cases
+   under two request-load settings. Their labels are used only to score predictions.
+5. **Compare fairly.** Give Dreamer and a telemetry-only classifier the same
+   measurements, then count how often each identifies the complete set of causes.
 
-The prior engineering gate for six-window diagnosis is ≥58/64, healthy 8/8 and each family ≥6/8; each regime ≥29/32, healthy 4/4 and each family ≥3/4; within two correct of telemetry6 and Dreamer8. To claim improvement over a prior six-window model, also require ≥2 additional correct diagnoses and fewer false pool positives. Without a baseline, the improvement/overall gates are reported as unevaluated. These engineering gates are not statistical significance tests; paired p-values are exploratory and unadjusted.
+DreamerV3 is the reused world-model implementation: its encoder, recurrent state
+model, decoder and training loop learn a compact representation of the system's
+behavior. This experiment uses a fixed request schedule. It does **not** yet learn
+which probe to run next or how to repair a fault.
 
-All eight windows are currently collected. Scoring a six-window prefix measures diagnostic accuracy, **not actual time/request savings**. One architecture, known fault families and one training seed do not establish generalization.
+## Run it in the UI
 
-## Run the workflow
+Open [Experiments](https://noninstructive-unprevalently-minerva.ngrok-free.dev/experiments/):
 
-Use Python 3.11 or 3.12. Obtain the pinned upstream code; keep its license. `RUN` is an external output directory, not a source directory.
+1. Enter a run name and select a training dataset.
+2. Choose a **model seed** and training steps.
+3. Click **Queue experiment**, then follow its progress and results.
+
+| Setting | Meaning | Starting choice |
+|---|---|---|
+| Training dataset | Examples the model learns from | Built-in 128-incident dataset |
+| Model seed | Controls randomized training choices; record it to help reproduce a run | Keep it fixed when comparing a change, then repeat with other seeds |
+| Training steps | How much training to perform | 100,000 for comparisons; 1,000 only to check the workflow |
+| Test seed | Controls the fresh test collection | Assigned separately by the launcher |
+
+To use your own data, expand **Upload training dataset**. Upload a training-only
+JSONL file containing 64–256 incidents, up to 2 MiB. The file must match the
+[dataset format](../launcher/static/dataset-format.md); arbitrary CSV files are
+not supported. Uploading does not start training.
+
+One experiment runs at a time. The launcher pauses serving inference while training
+and restores it afterward. Models and results stay on the lab's persistent storage,
+not in Git. See [UI and operations guide](EXPERIMENTS_UI.md) for access and deployment.
+
+## How do we judge success?
+
+```mermaid
+flowchart LR
+    I[Same fresh test incidents] --> D[Dreamer state + classifier]
+    I --> T[Raw telemetry + classifier]
+    D & T --> S[Correct diagnoses out of 64]
+    S --> B[Check healthy cases and each fault family]
+```
+
+Read the results in this order:
+
+1. **Exact diagnosis:** how many of the 64 incidents had all three causes identified
+   correctly? A partially correct diagnosis does not count as an exact match.
+2. **Telemetry comparison:** does Dreamer beat the classifier using raw measurements?
+   A high score alone does not demonstrate value from the world model.
+3. **Earlier diagnosis:** compare six-window and eight-window scores. A strong
+   six-window result suggests less evidence may be sufficient.
+4. **Consistency:** check healthy cases, each fault combination and both load settings.
+   Repeat with other model seeds and fresh test batches before claiming improvement.
+
+All eight windows are still collected. Six-window scoring does **not** yet demonstrate
+actual time savings. This lab also does not establish performance on unseen service
+architectures or new kinds of faults.
+
+<details>
+<summary>Technical acceptance criteria and comparison rules</summary>
+
+The existing engineering gate for six-window diagnosis requires:
+
+- At least **58/64** correct overall, **8/8** healthy, and **6/8** in every fault family.
+- In each load setting: **29/32** overall, **4/4** healthy, and **3/4** per family.
+- No more than two fewer correct diagnoses than either telemetry at six windows
+  or Dreamer at eight windows.
+
+A claim of improvement over an earlier model also requires at least two additional
+correct diagnoses and fewer false pool-contention predictions on the **same test file**.
+Freeze both models' readouts before collecting that test. Without this matched
+baseline, prior-model improvement is unevaluated.
+
+Readouts are selected using training-only grouped validation, then fitted on the
+training data. That development score is not an independent test of generalization.
+The engineering thresholds are not statistical significance tests; reported paired
+p-values are exploratory. Never silently reuse test incidents as training data.
+
+</details>
+
+<details>
+<summary>Run manually from the command line</summary>
+
+Use Python 3.11 or 3.12. Keep outputs outside the repository and retain the upstream
+Dreamer license.
 
 ```sh
 git clone https://github.com/danijar/dreamerv3.git /tmp/dreamerv3
@@ -87,63 +150,50 @@ export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
 export XLA_FLAGS='--xla_cpu_multi_thread_eigen=false intra_op_parallelism_threads=1'
 export RUN=/absolute/path/to/new-run
 mkdir -p "$RUN"
-```
 
-Training data must follow the incident schema in `tests/fixtures.py`, with real measured windows, seed/fault/repeat/regime and collection time. For the existing experiment, recover the 128 designated training rows using the artifact-recovery command below. Alternatively, collect new training incidents **inside an authorized lab runner pod**:
+# Recover the designated historical training dataset.
+git show 763e555:reports/evidence/probe-retrain-v1/collection/train.jsonl > "$RUN/train.jsonl"
 
-```sh
-# Runner must use namespace systems-world-model-lab and label swm-role=runner.
-# Supply POD_NAMESPACE using Kubernetes' downward API, not a cross-namespace override.
-python -m microservice.collect --split train --seed 9601 --out "$RUN/train.jsonl"
-```
-
-A collection creates 64 incidents. To combine training batches, use distinct seeds and concatenate only explicitly designated training files. The numeric seeds below are examples: use unused test seeds and register the experimental protocol before collection.
-
-```sh
-# Offline: genuinely updates Dreamer weights.
+# Train Dreamer, then fit and freeze the diagnosis readouts.
 python -m microservice.train --data "$RUN/train.jsonl" \
   --out "$RUN/models" --seed 111 --steps 100000
-
-# Offline: fits readouts without changing the model.
 python -m microservice.validate fit --data "$RUN/train.jsonl" \
   --models "$RUN/models" --seed 111 --out "$RUN/readouts"
+```
 
-# Lab runner only; collect AFTER all compared readouts are frozen.
+Collect test data only **after freezing**, inside an authorized lab runner pod with
+label `swm-role=runner` and `POD_NAMESPACE` supplied by Kubernetes' downward API.
+The seed below is an example; choose an unused test seed and record the protocol.
+Manual jobs must account for inference resource usage and restore it afterward;
+the UI handles this automatically.
+
+```sh
+# Lab runner only: collect 64 fresh test incidents.
 python -m microservice.collect --split test --seed 9602 --out "$RUN/test.jsonl"
 
-# Offline: scores fixed six/eight-window prefixes.
+# Score the frozen model and telemetry classifiers.
 python -m microservice.validate evaluate --data "$RUN/test.jsonl" \
   --models "$RUN/models" --seed 111 --readouts "$RUN/readouts" \
   --out "$RUN/evaluation"
 ```
 
-For a paired comparison, freeze the baseline's readouts before collecting that test, evaluate it on the same test file, then supply `--baseline /path/to/baseline-evaluation` to the candidate evaluation. The comparator is the baseline's six-window prediction, using its own checkpoint and readout. Each evaluation process loads one model; do not load several large models into the same constrained runner.
+For new training data, use `microservice.collect --split train` with a distinct
+seed in an authorized runner. Combine only batches explicitly assigned to training.
+For a matched prior-model comparison, add `--baseline /path/to/baseline-evaluation`
+to evaluation. Load one model per process.
 
-Training outputs `models/final-SEED/`, `models/train-SEED/config.yaml` and training metadata. **Keep these together:** loading a checkpoint requires its generated config and metadata. Fitting outputs `readouts.npz`, `frozen.json`, extracted features and audit results. Evaluation outputs predictions, summary, features, audit and provenance. These are runtime artifacts, not repository files.
+Keep `models/final-SEED/`, `models/train-SEED/config.yaml` and training metadata
+together: all are needed to reload the model. Keep the readouts, `frozen.json`,
+predictions and evaluation summary to reproduce its results.
 
-The current lab has limited shared quota. An operator must account for serving inference before launching a training job and restore its exact deployment afterward. This source cleanup neither provisions a cluster nor changes the existing lab. No service account is needed by the Python trainer; collector traffic is scoped to lab service DNS and control ports. Keep the existing namespace/network policies and leased-fault service implementation.
-
-## Check the code
+To check the source code:
 
 ```sh
 PYTHONDONTWRITEBYTECODE=1 python -m pytest -q -p no:cacheprovider
 ```
 
-The cleanup was checked against the latest archived experiment: identical observation vectors, readout selection, fitted coefficients, scores and gates. These checks do not substitute for a new runtime training test when changing Dreamer or JAX versions.
+Historical evidence is preserved at commit `763e555`. The original Dreamer101
+checkpoint remains at `/results/probe-retrain-v1/models/final-101` on the lab PVC.
+These artifacts are separate from the maintained source code.
 
-## Artifact recovery
-
-Historical experiment code and evidence remain at commit `763e555`; no Git history was rewritten. Retrieve only what a run needs:
-
-```sh
-# Reuse the 128 designated training incidents; excludes previous test incidents.
-git show 763e555:reports/evidence/probe-retrain-v1/collection/train.jsonl > "$RUN/train.jsonl"
-
-# Optional: recover the complete evidence to an external directory.
-mkdir -p "$RUN/archive"
-git archive 763e555 reports/evidence/probe-retrain-v1 | tar -x -C "$RUN/archive"
-python scripts/verify_cleanup.py \
-  --evidence "$RUN/archive/reports/evidence/probe-retrain-v1"
-```
-
-The actual Dreamer101 weights remain on the lab results PVC at `/results/probe-retrain-v1/models/final-101`; the matching runtime config is in `models/train-101/config.yaml`. No PVC data is deleted by this cleanup. RCAEval datasets and other ignored local artifacts are not part of the maintained training source; retain them separately if needed for a distinct experiment.
+</details>
