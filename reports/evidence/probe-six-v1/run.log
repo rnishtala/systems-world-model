@@ -1,0 +1,81 @@
+Observations
+  vector           Space(float32, shape=(14,), low=-inf, high=inf)
+  reward           Space(float32, shape=(), low=-inf, high=inf)
+  is_first         Space(bool, shape=(), low=False, high=True)
+  is_last          Space(bool, shape=(), low=False, high=True)
+  is_terminal      Space(bool, shape=(), low=False, high=True)
+  mechanism_target Space(float32, shape=(3,), low=0, high=1)
+Actions
+  action           Space(float32, shape=(2,), low=-1, high=1)
+Extras
+  consec           Space(int32, shape=(), low=-2147483648, high=2147483647)
+  stepid           Space(uint8, shape=(20,), low=0, high=255)
+  dyn/deter        Space(float32, shape=(512,), low=-inf, high=inf)
+  dyn/stoch        Space(float32, shape=(32, 4), low=-inf, high=inf)
+JAX devices (1): [TFRT_CPU_0]
+Policy devices: TFRT_CPU_0
+Train devices:  TFRT_CPU_0
+Initializing parameters...
+Optimizer opt has 640,724 params:
+       364,160 dyn
+        66,111 val
+        57,663 rew
+        50,446 dec
+        49,796 pol
+        41,153 con
+         9,472 enc
+         1,923 mechanisms
+Done initializing!
+Compiling 1 checkpoint groups...
+Largest checkpoint group: 0 GB
+Compiling train and report...
+Train cost analysis:
+  FLOPS:            2.2e+09
+  Memory (temp):    3.3e+07
+  Memory (inputs):  8.3e+06
+  Memory (outputs): 8.3e+06
+  Memory (code):    1.2e+06
+
+Report cost analysis:
+No available
+Done compiling!
+Loading checkpoint: /results/probe-target-model-v1/models/final-91/20261119T025904F633057
+Loaded checkpoint.
+PROBE_SIX_FROZEN_VERIFIED
+PROBE_TEST_COLLECT 1
+PROBE_TEST_COLLECT 2
+PROBE_TEST_COLLECT 3
+PROBE_TEST_COLLECT 4
+PROBE_TEST_COLLECT 5
+PROBE_TEST_COLLECT 6
+PROBE_TEST_COLLECT 7
+PROBE_TEST_COLLECT 8
+PROBE_TEST_COLLECT 9
+PROBE_TEST_COLLECT 10
+PROBE_TEST_COLLECT 11
+PROBE_TEST_COLLECT 12
+PROBE_TEST_COLLECT 13
+PROBE_TEST_COLLECT 14
+PROBE_TEST_COLLECT 15
+PROBE_TEST_COLLECT 16
+PROBE_TEST_COLLECT 17
+PROBE_TEST_COLLECT 18
+PROBE_TEST_COLLECT 19
+PROBE_TEST_COLLECT 20
+PROBE_TEST_COLLECT 21
+PROBE_TEST_COLLECT 22
+PROBE_TEST_COLLECT 23
+PROBE_TEST_COLLECT 24
+PROBE_TEST_COLLECT 25
+PROBE_TEST_COLLECT 26
+PROBE_TEST_COLLECT 27
+PROBE_TEST_COLLECT 28
+PROBE_TEST_COLLECT 29
+PROBE_TEST_COLLECT 30
+PROBE_TEST_COLLECT 31
+PROBE_TEST_COLLECT 32
+PROBE_EXTRACT 0
+PROBE_EXTRACT 8
+PROBE_EXTRACT 16
+PROBE_EXTRACT 24
+PROBE_SIX_COMPLETE {"methods": {"latent6": {"n": 32, "correct": 32, "families": {"0": {"n": 4, "correct": 4}, "1": {"n": 4, "correct": 4}, "2": {"n": 4, "correct": 4}, "3": {"n": 4, "correct": 4}, "4": {"n": 4, "correct": 4}, "5": {"n": 4, "correct": 4}, "6": {"n": 4, "correct": 4}, "7": {"n": 4, "correct": 4}}}, "latent8": {"n": 32, "correct": 32, "families": {"0": {"n": 4, "correct": 4}, "1": {"n": 4, "correct": 4}, "2": {"n": 4, "correct": 4}, "3": {"n": 4, "correct": 4}, "4": {"n": 4, "correct": 4}, "5": {"n": 4, "correct": 4}, "6": {"n": 4, "correct": 4}, "7": {"n": 4, "correct": 4}}}, "history6": {"n": 32, "correct": 30, "families": {"0": {"n": 4, "correct": 4}, "1": {"n": 4, "correct": 4}, "2": {"n": 4, "correct": 4}, "3": {"n": 4, "correct": 4}, "4": {"n": 4, "correct": 4}, "5": {"n": 4, "correct": 2}, "6": {"n": 4, "correct": 4}, "7": {"n": 4, "correct": 4}}}, "history8": {"n": 32, "correct": 32, "families": {"0": {"n": 4, "correct": 4}, "1": {"n": 4, "correct": 4}, "2": {"n": 4, "correct": 4}, "3": {"n": 4, "correct": 4}, "4": {"n": 4, "correct": 4}, "5": {"n": 4, "correct": 4}, "6": {"n": 4, "correct": 4}, "7": {"n": 4, "correct": 4}}}, "summary_history6": {"n": 32, "correct": 29, "families": {"0": {"n": 4, "correct": 4}, "1": {"n": 4, "correct": 4}, "2": {"n": 4, "correct": 4}, "3": {"n": 4, "correct": 4}, "4": {"n": 4, "correct": 2}, "5": {"n": 4, "correct": 3}, "6": {"n": 4, "correct": 4}, "7": {"n": 4, "correct": 4}}}, "summary_history8": {"n": 32, "correct": 32, "families": {"0": {"n": 4, "correct": 4}, "1": {"n": 4, "correct": 4}, "2": {"n": 4, "correct": 4}, "3": {"n": 4, "correct": 4}, "4": {"n": 4, "correct": 4}, "5": {"n": 4, "correct": 4}, "6": {"n": 4, "correct": 4}, "7": {"n": 4, "correct": 4}}}, "response8": {"n": 32, "correct": 32, "families": {"0": {"n": 4, "correct": 4}, "1": {"n": 4, "correct": 4}, "2": {"n": 4, "correct": 4}, "3": {"n": 4, "correct": 4}, "4": {"n": 4, "correct": 4}, "5": {"n": 4, "correct": 4}, "6": {"n": 4, "correct": 4}, "7": {"n": 4, "correct": 4}}}}, "paired": {"latent8": {"latent6_only_correct": 0, "control_only_correct": 0, "p": 1.0}, "history6": {"latent6_only_correct": 2, "control_only_correct": 0, "p": 0.5}, "history8": {"latent6_only_correct": 0, "control_only_correct": 0, "p": 1.0}, "summary_history6": {"latent6_only_correct": 3, "control_only_correct": 0, "p": 0.25}, "summary_history8": {"latent6_only_correct": 0, "control_only_correct": 0, "p": 1.0}, "response8": {"latent6_only_correct": 0, "control_only_correct": 0, "p": 1.0}}, "reliable": true, "within_one_of_full_controls": true, "feasibility_gate": true, "shadow_mean_requests": {"6": 36.0, "8": 48.0}, "shadow_window_saving": 0.25, "shadow_request_saving": 0.25, "request_saving_including_warmup": 0.1428571428571429, "actual_early_stopping": false, "checkpoint_unchanged": true, "readouts_unchanged": true, "collection_started_utc": 1795103793.4771688, "frozen_utc": 1795103670.804544}

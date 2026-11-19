@@ -1,0 +1,317 @@
+{
+  "methods": {
+    "latent6": {
+      "n": 32,
+      "correct": 32,
+      "families": {
+        "0": {
+          "n": 4,
+          "correct": 4
+        },
+        "1": {
+          "n": 4,
+          "correct": 4
+        },
+        "2": {
+          "n": 4,
+          "correct": 4
+        },
+        "3": {
+          "n": 4,
+          "correct": 4
+        },
+        "4": {
+          "n": 4,
+          "correct": 4
+        },
+        "5": {
+          "n": 4,
+          "correct": 4
+        },
+        "6": {
+          "n": 4,
+          "correct": 4
+        },
+        "7": {
+          "n": 4,
+          "correct": 4
+        }
+      }
+    },
+    "latent8": {
+      "n": 32,
+      "correct": 32,
+      "families": {
+        "0": {
+          "n": 4,
+          "correct": 4
+        },
+        "1": {
+          "n": 4,
+          "correct": 4
+        },
+        "2": {
+          "n": 4,
+          "correct": 4
+        },
+        "3": {
+          "n": 4,
+          "correct": 4
+        },
+        "4": {
+          "n": 4,
+          "correct": 4
+        },
+        "5": {
+          "n": 4,
+          "correct": 4
+        },
+        "6": {
+          "n": 4,
+          "correct": 4
+        },
+        "7": {
+          "n": 4,
+          "correct": 4
+        }
+      }
+    },
+    "history6": {
+      "n": 32,
+      "correct": 30,
+      "families": {
+        "0": {
+          "n": 4,
+          "correct": 4
+        },
+        "1": {
+          "n": 4,
+          "correct": 4
+        },
+        "2": {
+          "n": 4,
+          "correct": 4
+        },
+        "3": {
+          "n": 4,
+          "correct": 4
+        },
+        "4": {
+          "n": 4,
+          "correct": 4
+        },
+        "5": {
+          "n": 4,
+          "correct": 2
+        },
+        "6": {
+          "n": 4,
+          "correct": 4
+        },
+        "7": {
+          "n": 4,
+          "correct": 4
+        }
+      }
+    },
+    "history8": {
+      "n": 32,
+      "correct": 32,
+      "families": {
+        "0": {
+          "n": 4,
+          "correct": 4
+        },
+        "1": {
+          "n": 4,
+          "correct": 4
+        },
+        "2": {
+          "n": 4,
+          "correct": 4
+        },
+        "3": {
+          "n": 4,
+          "correct": 4
+        },
+        "4": {
+          "n": 4,
+          "correct": 4
+        },
+        "5": {
+          "n": 4,
+          "correct": 4
+        },
+        "6": {
+          "n": 4,
+          "correct": 4
+        },
+        "7": {
+          "n": 4,
+          "correct": 4
+        }
+      }
+    },
+    "summary_history6": {
+      "n": 32,
+      "correct": 29,
+      "families": {
+        "0": {
+          "n": 4,
+          "correct": 4
+        },
+        "1": {
+          "n": 4,
+          "correct": 4
+        },
+        "2": {
+          "n": 4,
+          "correct": 4
+        },
+        "3": {
+          "n": 4,
+          "correct": 4
+        },
+        "4": {
+          "n": 4,
+          "correct": 2
+        },
+        "5": {
+          "n": 4,
+          "correct": 3
+        },
+        "6": {
+          "n": 4,
+          "correct": 4
+        },
+        "7": {
+          "n": 4,
+          "correct": 4
+        }
+      }
+    },
+    "summary_history8": {
+      "n": 32,
+      "correct": 32,
+      "families": {
+        "0": {
+          "n": 4,
+          "correct": 4
+        },
+        "1": {
+          "n": 4,
+          "correct": 4
+        },
+        "2": {
+          "n": 4,
+          "correct": 4
+        },
+        "3": {
+          "n": 4,
+          "correct": 4
+        },
+        "4": {
+          "n": 4,
+          "correct": 4
+        },
+        "5": {
+          "n": 4,
+          "correct": 4
+        },
+        "6": {
+          "n": 4,
+          "correct": 4
+        },
+        "7": {
+          "n": 4,
+          "correct": 4
+        }
+      }
+    },
+    "response8": {
+      "n": 32,
+      "correct": 32,
+      "families": {
+        "0": {
+          "n": 4,
+          "correct": 4
+        },
+        "1": {
+          "n": 4,
+          "correct": 4
+        },
+        "2": {
+          "n": 4,
+          "correct": 4
+        },
+        "3": {
+          "n": 4,
+          "correct": 4
+        },
+        "4": {
+          "n": 4,
+          "correct": 4
+        },
+        "5": {
+          "n": 4,
+          "correct": 4
+        },
+        "6": {
+          "n": 4,
+          "correct": 4
+        },
+        "7": {
+          "n": 4,
+          "correct": 4
+        }
+      }
+    }
+  },
+  "paired": {
+    "latent8": {
+      "latent6_only_correct": 0,
+      "control_only_correct": 0,
+      "p": 1.0
+    },
+    "history6": {
+      "latent6_only_correct": 2,
+      "control_only_correct": 0,
+      "p": 0.5
+    },
+    "history8": {
+      "latent6_only_correct": 0,
+      "control_only_correct": 0,
+      "p": 1.0
+    },
+    "summary_history6": {
+      "latent6_only_correct": 3,
+      "control_only_correct": 0,
+      "p": 0.25
+    },
+    "summary_history8": {
+      "latent6_only_correct": 0,
+      "control_only_correct": 0,
+      "p": 1.0
+    },
+    "response8": {
+      "latent6_only_correct": 0,
+      "control_only_correct": 0,
+      "p": 1.0
+    }
+  },
+  "reliable": true,
+  "within_one_of_full_controls": true,
+  "feasibility_gate": true,
+  "shadow_mean_requests": {
+    "6": 36.0,
+    "8": 48.0
+  },
+  "shadow_window_saving": 0.25,
+  "shadow_request_saving": 0.25,
+  "request_saving_including_warmup": 0.1428571428571429,
+  "actual_early_stopping": false,
+  "checkpoint_unchanged": true,
+  "readouts_unchanged": true,
+  "collection_started_utc": 1795103793.4771688,
+  "frozen_utc": 1795103670.804544
+}

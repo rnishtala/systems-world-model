@@ -1,0 +1,11 @@
+{
+  "frozen/config.json": "df5d4b99cb45dadbd0ba6782640d9045eb721f8a116d74573c3c6d750fee1bfd",
+  "frozen/readouts.npz": "746f58a163c77e8aee6eea19f456a35062cf4c5ee33da1c1b40c3ff0f097ef35",
+  "collection/train.jsonl": "2e5158ce9577d2dc5340200a0b346b7ca61a4c3f146db4d6bdcd8479b3ccad35",
+  "collection/source-hashes.json": "f4552ef9507338765169b8957d9571bcaaf24974468805876139b2a90b54ed3a",
+  "evaluation/audit.json": "4f8c82b9b1b4615055a34720cbef0181c2c6c1ac5b8397f1bbf33643ec91f3f8",
+  "evaluation/test.jsonl": "e8deb3c7179d5d0a1405a6d83f6fa1494b05440b0c7312fdb43a53512df82403",
+  "evaluation/summary.json": "9322a562d0add3c393a4b56e636cdc64359b67da94285a6996a3697781a62122",
+  "evaluation/predictions.json": "ea3ad175690fa176b050e125259a17b5c3a8681e8883e6b9fccbc549baab9b66",
+  "evaluation/test-features.npz": "84e27287bb1bb88f81d463479b0d89d1422b4c6d93f473e774512f4093f095ca"
+}

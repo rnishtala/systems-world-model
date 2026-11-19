@@ -1,0 +1,8 @@
+{
+  "export_and_source_hashes_verified": true,
+  "training_only_fits_reproduced": true,
+  "prefix_telemetry_reproduced": true,
+  "predictions_and_gate_reproduced": true,
+  "frozen_before_collection": true,
+  "checkpoint_matches_previous": true
+}
