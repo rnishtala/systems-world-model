@@ -5,6 +5,12 @@ TARGET = 'mechanism_target'
 def telemetry(obs):
     return {k: v for k, v in obs.items() if k != TARGET}
 
+def diagnosis_mask(vector, is_last):
+    """Supervise six and eight observed windows; never the terminal duplicate."""
+    progress = vector[..., 9]
+    return (((abs(progress - 5 / 7) < 1e-5) | (abs(progress - 1) < 1e-5))
+            & ~is_last)
+
 def make_agent(config):
     # Import only after microservice.configuration sets the pinned upstream import path.
     from dreamerv3 import agent as module, main
@@ -25,9 +31,9 @@ def make_agent(config):
             clean = telemetry(obs)
             loss, (carry, entries, outs, metrics) = super().loss(carry, clean, prevact, training)
             logits = self.mechanisms(self.feat2tensor(outs['repfeat'])).astype(jnp.float32)
-            # Only complete evidence before diagnosis: terminal reward must not
-            # become a shortcut for this supervised objective.
-            valid = jnp.all(clean['vector'][..., 10:13] > .5, -1) & ~clean['is_last']
+            # Six-window posterior gets a direct training signal, alongside
+            # the complete eight-window posterior. Labels never enter inputs.
+            valid = diagnosis_mask(clean['vector'], clean['is_last'])
             count = jnp.maximum(valid.sum(), 1)
             bce = jax.nn.softplus(logits) - target * logits
             auxiliary = (bce.mean(-1) * valid).sum() / count

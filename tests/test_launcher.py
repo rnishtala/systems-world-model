@@ -154,3 +154,15 @@ def test_frozen_test_requires_completed_owned_sources(tmp_path):
 def test_frozen_test_invalid_sources(candidate,baseline):
     from launcher.common import validate_retest
     with pytest.raises(ValueError):validate_retest(candidate,baseline)
+
+
+def test_training_comparison_pins_source_and_settings(tmp_path):
+    s=Store(tmp_path/'queue');source=s.create(ADMIN,ARGS,IMAGE,'old')
+    source['status']='completed';s.save(source)
+    r=s.create(ADMIN,ARGS,IMAGE,'new',training_source=source['id'])
+    assert r['baseline_run']==source['id']
+    command=job_manifest(r,IMAGE)['spec']['template']['spec']['containers'][0]['command']
+    assert command[-2:]==['--training-source-run',source['id']]
+    with pytest.raises(ValueError):s.create('other@example.com',ARGS,IMAGE,'new',training_source=source['id'])
+    with pytest.raises(ValueError):s.create(ADMIN,dict(ARGS,seed=114),IMAGE,'new',training_source=source['id'])
+    with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'new',training_source='../escape')

@@ -17,7 +17,7 @@ out=Path(a.out);log=out/f'train-{a.seed}'
 if log.exists() and not a.resume:raise SystemExit('Choose fresh output or explicitly --resume')
 if a.resume and not (log/'config.yaml').exists():raise SystemExit('Resume requires existing configuration')
 log.mkdir(parents=True,exist_ok=a.resume);c=configuration(a.seed,log,a.steps)
-identity=dict(seed=a.seed,steps=a.steps,compositional=a.compositional,mechanism_supervision=a.mechanism_supervision,calibration_sha256=hashlib.sha256(Path(a.data).read_bytes()).hexdigest())
+identity=dict(supervision_windows=[6,8],seed=a.seed,steps=a.steps,compositional=a.compositional,mechanism_supervision=a.mechanism_supervision,calibration_sha256=hashlib.sha256(Path(a.data).read_bytes()).hexdigest())
 if a.observation_view!='physical-v2':identity['observation_view']=a.observation_view
 identity_path=out/f'identity-{a.seed}.json'
 if a.resume:
@@ -33,5 +33,5 @@ args=elements.Config(**c.run,replica=0,replicas=1,logdir=c.logdir,batch_size=c.b
 c.save(elements.Path(c.logdir)/'config.yaml');start=time.time()
 embodied.run.train(build,lambda:upstream.make_replay(c,'replay'),lambda index:upstream.make_env(c,index),lambda replay,mode:upstream.make_stream(c,replay,mode),lambda:upstream.make_logger(c),args)
 cp=elements.Checkpoint(elements.Path(out/f'final-{a.seed}'));cp.agent=captured['agent'];cp.save()
-result=dict(resumed=a.resume,timing_scope="Current process only; interrupted training time excluded" if a.resume else "Complete training process",mechanism_supervision=a.mechanism_supervision,auxiliary_loss_weight=1.0 if a.mechanism_supervision else 0.0,action_contract='probe-target-v1' if a.observation_view=='trace-probe-target-v1' else 'workload-continuous-v1' if a.observation_view=='trace-workload-v1' else ('mechanisms-v1' if a.compositional else 'single-v1'),observation_version=a.observation_view,seed=a.seed,steps=a.steps,seconds=time.time()-start,calibration_sha256=hashlib.sha256(Path(a.data).read_bytes()).hexdigest(),coverage=captured['coverage'].stats,scope='Empirical surrogate training; no live test episodes used.')
+result=dict(supervision_windows=[6,8],resumed=a.resume,timing_scope="Current process only; interrupted training time excluded" if a.resume else "Complete training process",mechanism_supervision=a.mechanism_supervision,auxiliary_loss_weight=1.0 if a.mechanism_supervision else 0.0,action_contract='probe-target-v1' if a.observation_view=='trace-probe-target-v1' else 'workload-continuous-v1' if a.observation_view=='trace-workload-v1' else ('mechanisms-v1' if a.compositional else 'single-v1'),observation_version=a.observation_view,seed=a.seed,steps=a.steps,seconds=time.time()-start,calibration_sha256=hashlib.sha256(Path(a.data).read_bytes()).hexdigest(),coverage=captured['coverage'].stats,scope='Empirical surrogate training; no live test episodes used.')
 (out/f'training-{a.seed}.json').write_text(json.dumps(result,indent=2));print('TRAINING_COMPLETE',json.dumps(result),flush=True)

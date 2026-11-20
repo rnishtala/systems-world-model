@@ -13,12 +13,20 @@ class Store:
         return json.loads(row[0])
     def save(self,run):
         self.db.execute('INSERT OR REPLACE INTO runs VALUES (?,?,?)',(run['id'],run['created'],json.dumps(run)));self.db.commit()
-    def create(self,owner,body,image,version,dataset=None,expansion=None,evaluation=None):
+    def create(self,owner,body,image,version,dataset=None,expansion=None,evaluation=None,training_source=None):
         args=validate_request(body,{dataset['id']:dataset} if dataset else None);existing=self.all();pending=[r for r in existing if r['status'] not in TERMINAL]
         if len(pending)>=20 or sum(r['owner']==owner for r in pending)>=3:raise ValueError('Queue limit reached; wait for an existing run')
         used={r['test_seed'] for r in existing}|set(dataset['seeds'] if dataset else []);seed=1000000000+secrets.randbelow(1000000000)
         while seed in used:seed=1000000000+secrets.randbelow(1000000000)
         run=dict(**args,id=uuid.uuid4().hex[:12],owner=owner,created=time.time(),status='queued',phase='queued',test_seed=seed,image=image,version=version,cancel=False,error=None)
+        if training_source is not None:
+            if expansion is not None or evaluation is not None:raise ValueError('Training comparison must run alone')
+            import re
+            if not isinstance(training_source,str) or not re.fullmatch('[a-f0-9]{12}',training_source):raise ValueError('Invalid training source')
+            previous=self.get(training_source)
+            if previous['status']!='completed' or previous['owner']!=owner:raise ValueError('Use a completed model owned by this user')
+            if any(previous[k]!=args[k] for k in ('dataset','seed','steps')):raise ValueError('Keep source dataset, seed and steps fixed')
+            run.update(training_source=training_source,baseline_run=training_source)
         if evaluation is not None:
             if expansion is not None:raise ValueError('Frozen test cannot expand training')
             validate_retest(evaluation['candidate_run'],evaluation['baseline_run'])

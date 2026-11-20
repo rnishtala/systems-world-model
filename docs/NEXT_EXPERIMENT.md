@@ -1,42 +1,41 @@
-# Expand training coverage: seed 113
+# Earlier diagnosis supervision
 
-Question: does adding 64 fresh training incidents improve diagnosis of CPU + ledger
-delay, without changing the model, training seed or step budget?
+Question: does teaching the Dreamer representation to identify mechanisms after
+six observation windows improve early diagnosis?
 
-- Baseline: completed run `f4405906195f`, 128 designated training incidents,
-  model seed 113, 100,000 steps. Preserve its frozen model and readouts.
-- Candidate: those exact 128 incidents plus 64 newly collected training incidents,
-  balanced across all eight families. Existing collector varies severity and load.
-- Hold model architecture, auxiliary loss, readout selection and training budget fixed.
-- Collect a new 64-incident test batch only after the candidate readouts are frozen.
-- Evaluate both models sequentially on that same test file, including telemetry
-  controls. Do not reuse either model's earlier test data for training.
+The expanded model scored 123/128 across two fresh batches; the original model
+scored 121/128 on those same incidents. This is a small gain, not substantial proof.
 
 ```mermaid
 flowchart LR
-  OLD[128 designated training incidents] --> NEW[192 training incidents]
-  ADD[64 fresh training incidents] --> NEW
-  NEW --> TRAIN[Same seed and 100k steps]
-  TRAIN --> FREEZE[Freeze candidate]
-  FREEZE --> TEST[64 new test incidents]
-  TEST --> BASE[Evaluate frozen baseline]
-  TEST --> CAND[Evaluate candidate]
-  BASE & CAND --> SCORE[Paired comparison and family-level errors]
+  DATA[Same 192 training incidents] --> TRAIN[Train from scratch: seed 113, 100k steps]
+  TRAIN --> LOSS[Diagnosis loss at windows 6 and 8]
+  LOSS --> FREEZE[Freeze model and readouts]
+  FREEZE --> TEST[64 fresh incidents]
+  TEST --> CAND[New model]
+  TEST --> BASE[Frozen expanded model]
+  CAND & BASE --> RESULT[Matched six-window comparison]
 ```
 
-Primary criteria: existing six-window reliability and load-regime gates; at least
-2 more exact diagnoses than the baseline and fewer false pool positives. Report
-CPU + delay performance separately, especially under shifted load. No claim of
-statistical reliability from a single batch or seed.
+Baseline: `ea18a74cd710`, with supervision only at window eight. The candidate
+uses its exact training file, architecture, seed, steps, auxiliary weight and
+readout selection. The sole intentional change is the supervision mask: windows
+six and eight instead of eight alone. The loss averages over eligible observations;
+labels remain training targets only and never enter the encoder or policy.
+Terminal observations remain excluded.
 
-The launcher records `expansion_seed` and `baseline_run` in its durable queue. These
-are operator-selected protocol fields, not arbitrary commands accepted by the API.
-The normal controller reserves the lab, limits the job and restores inference.
-Its dataset field identifies the **base** dataset; the actual expanded training file
-is `runs/RUN_ID/train.jsonl`. `protocol.json` records its hash, row count, collection
-seeds and baseline hashes. Historical annotations in the designated training file
-are preserved; no previous test file is relabeled or appended.
+The operator-only `training_source` queue field pins the baseline. The worker
+verifies source hashes, copies the exact training file and records the protocol
+before training. Each model is evaluated on the same fresh batch; no test data is
+used for training or readout selection. Frozen model comparisons can then repeat
+on a second fresh batch without training again.
 
-Outputs remain on the results PVC: `additional-train.jsonl`, `train.jsonl`, model,
-readouts, fresh `test.jsonl`, `baseline-evaluation/` and `evaluation/`. The experiment
-is visible in the existing UI; its final report includes the matched baseline score.
+Keep existing reliability and load-regime gates. The improvement gate requires
+at least two additional correct six-window diagnoses and fewer false pool positives
+than the matched baseline. Report telemetry controls and eight-window results too.
+A repeatable advantage across fresh batches is required before calling this a useful
+improvement; one training seed does not establish generality. Near-ceiling results
+on this small service environment do not establish production triage performance.
+
+Results, logs and comparison reports remain in the existing UI and results PVC.
+All live operations are confined to `systems-world-model-lab`.

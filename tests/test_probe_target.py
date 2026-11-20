@@ -34,3 +34,13 @@ def test_only_measured_actions_replay(monkeypatch,tmp_path):
     wrong=next_action(a,0).copy();wrong[0]=1-wrong[0]
     with pytest.raises(ValueError,match='counterfactual'):env.step(dict(reset=False,action=wrong))
     with pytest.raises(ValueError):env.step(dict(reset=False,action=np.zeros(1,np.float32)))
+
+
+def test_partial_supervision_uses_six_and_eight_windows_without_terminal():
+    from microservice.supervision import diagnosis_mask, telemetry
+    a=row()
+    observations=np.stack([vector(a,t) for t in range(9)])
+    terminal=np.arange(9)==8
+    np.testing.assert_array_equal(diagnosis_mask(observations,terminal),
+                                  [False,False,False,False,False,True,False,True,False])
+    assert 'mechanism_target' not in telemetry(dict(vector=observations,mechanism_target=np.ones((9,3))))

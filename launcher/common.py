@@ -33,6 +33,10 @@ def job_manifest(run,image):
     uid=run['id'];label={'swm-role':'runner','swm-experiment':uid,'app.kubernetes.io/managed-by':'swm-experiments'}
     command=['python','-m','launcher.pipeline','--run',uid,'--dataset',run['dataset'],'--seed',str(run['seed']),'--steps',str(run['steps']),'--test-seed',str(run['test_seed'])]
     if run.get('dataset_sha256'):command+=['--dataset-sha256',run['dataset_sha256']]
+    if run.get('training_source'):
+        validate_retest(uid,run['training_source'])
+        if run.get('evaluate_run') or run.get('expansion_seed') is not None:raise ValueError('Training comparison must run alone')
+        command+=['--training-source-run',run['training_source']]
     if run.get('evaluate_run'):
         validate_retest(run['evaluate_run'],run.get('baseline_run'))
         if run.get('expansion_seed') is not None:raise ValueError('Cannot expand training during a frozen test')
