@@ -39,3 +39,10 @@ on this small service environment do not establish production triage performance
 
 Results, logs and comparison reports remain in the existing UI and results PVC.
 All live operations are confined to `systems-world-model-lab`.
+
+## Outcome
+
+Run `0fc61b145fff`: candidate and baseline both 59/64 at six windows, with identical
+errors. Earlier supervision did not improve this batch. See
+[pool-error analysis](POOL_ERROR_ANALYSIS.md) for evidence and the proposed next
+probe-order experiment. Preserve both models; do not promote the candidate.
