@@ -118,3 +118,12 @@ Dreamer8 63/64, telemetry8 62/64, prior frozen model6 62/64 on the same test.
 Reliability and regime checks passed; the improvement gate did not (only one more
 correct diagnosis and equal false-pool counts). Next: repeat frozen-model comparisons
 on fresh batches before changing the model or claiming a reliable improvement.
+
+## Frozen-model repeat tests
+
+Operator-queued runs labeled **TEST ONLY** collect a new 64-incident test batch and
+evaluate two completed, frozen source models on identical measurements. They never
+train or refit readouts. The displayed step count describes the source model's
+original training budget. Source run IDs appear in the report; `protocol.json`
+records both checkpoints, readouts and training identities. Hashes are verified
+before and after testing. Each repeat appears as a separate row in Results over time.

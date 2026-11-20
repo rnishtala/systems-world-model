@@ -33,6 +33,11 @@ def job_manifest(run,image):
     uid=run['id'];label={'swm-role':'runner','swm-experiment':uid,'app.kubernetes.io/managed-by':'swm-experiments'}
     command=['python','-m','launcher.pipeline','--run',uid,'--dataset',run['dataset'],'--seed',str(run['seed']),'--steps',str(run['steps']),'--test-seed',str(run['test_seed'])]
     if run.get('dataset_sha256'):command+=['--dataset-sha256',run['dataset_sha256']]
+    if run.get('evaluate_run'):
+        validate_retest(run['evaluate_run'],run.get('baseline_run'))
+        if run.get('expansion_seed') is not None:raise ValueError('Cannot expand training during a frozen test')
+        command[2]='launcher.retest'
+        command+=['--candidate-run',run['evaluate_run'],'--baseline-run',run['baseline_run']]
     if run.get('expansion_seed') is not None:
         expansion_args=validate_expansion(run['expansion_seed'],run.get('baseline_run'),run['test_seed'])
         command+=expansion_args
@@ -45,3 +50,9 @@ def validate_expansion(seed,baseline,test_seed):
     if not isinstance(baseline,str) or not re.fullmatch('[a-f0-9]{12}',baseline):
         raise ValueError('Expansion requires a baseline run ID')
     return ['--expand-training-seed',str(seed),'--baseline-run',baseline]
+
+
+def validate_retest(candidate,baseline):
+    if any(not isinstance(v,str) or not re.fullmatch('[a-f0-9]{12}',v) for v in (candidate,baseline)):
+        raise ValueError('Frozen test requires valid source run IDs')
+    if candidate==baseline:raise ValueError('Choose two distinct frozen models')

@@ -131,3 +131,26 @@ def test_expansion_is_durable_and_scoped(tmp_path):
     assert command[-4:]==['--expand-training-seed','9601','--baseline-run','f4405906195f']
     # Public requests cannot smuggle an internal experimental protocol.
     with pytest.raises(ValueError):validate_request(dict(ARGS,expansion_seed=9601))
+
+
+def test_frozen_test_requires_completed_owned_sources(tmp_path):
+    store=Store(tmp_path/'queue')
+    candidate=store.create(ADMIN,ARGS,IMAGE,'test')
+    baseline=store.create(ADMIN,ARGS,IMAGE,'test')
+    protocol=dict(candidate_run=candidate['id'],baseline_run=baseline['id'])
+    with pytest.raises(ValueError):store.create(ADMIN,ARGS,IMAGE,'test',evaluation=protocol)
+    for r in (candidate,baseline):r['status']='completed';store.save(r)
+    run=store.create(ADMIN,ARGS,IMAGE,'test',evaluation=protocol)
+    command=job_manifest(run,IMAGE)['spec']['template']['spec']['containers'][0]['command']
+    assert command[:3]==['python','-m','launcher.retest']
+    assert command[-4:]==['--candidate-run',candidate['id'],'--baseline-run',baseline['id']]
+    assert run['test_seed'] not in (candidate['test_seed'],baseline['test_seed'])
+    with pytest.raises(ValueError):store.create('other@example.com',ARGS,IMAGE,'test',evaluation=protocol)
+    with pytest.raises(ValueError):store.create(ADMIN,dict(ARGS,seed=113),IMAGE,'test',evaluation=protocol)
+    with pytest.raises(ValueError):store.create(ADMIN,ARGS,IMAGE,'test',evaluation=protocol,expansion=dict(seed=9601,baseline_run=baseline['id']))
+
+
+@pytest.mark.parametrize('candidate,baseline',[('../models','a'*12),('a'*12,'a'*12),('a'*12,None)])
+def test_frozen_test_invalid_sources(candidate,baseline):
+    from launcher.common import validate_retest
+    with pytest.raises(ValueError):validate_retest(candidate,baseline)

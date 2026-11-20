@@ -7,7 +7,7 @@ from launcher.common import ADMIN,ORIGIN,DATASETS,STEPS,identity
 from launcher.store import Store
 from launcher.datasets import Catalog
 
-PUBLIC=('id','name','owner','created','status','phase','dataset','seed','test_seed','steps','started','finished','error','version','restored','dataset_name','dataset_sha256','training_seeds','expansion_seed','baseline_run')
+PUBLIC=('id','name','owner','created','status','phase','dataset','seed','test_seed','steps','started','finished','error','version','restored','dataset_name','dataset_sha256','training_seeds','expansion_seed','baseline_run','mode','evaluate_run')
 
 def create_app(store,root,key,origin=ORIGIN):
     root=Path(root);catalog=Catalog(root)
