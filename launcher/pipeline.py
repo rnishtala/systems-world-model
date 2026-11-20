@@ -1,7 +1,7 @@
 """Immutable per-run process: train, freeze, collect fresh test, evaluate."""
 import argparse,json,os,signal,subprocess,sys,time
 from pathlib import Path
-from launcher.common import dataset_check,NAMESPACE
+from launcher.common import dataset_check,NAMESPACE,validate_expansion
 
 child=None
 
@@ -11,13 +11,15 @@ def stop(signum,frame):
 
 def main():
     global child
-    p=argparse.ArgumentParser();p.add_argument('--run',required=True);p.add_argument('--dataset',required=True);p.add_argument('--seed',type=int,required=True);p.add_argument('--steps',type=int,required=True);p.add_argument('--test-seed',type=int,required=True);p.add_argument('--dataset-sha256');a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--run',required=True);p.add_argument('--dataset',required=True);p.add_argument('--seed',type=int,required=True);p.add_argument('--steps',type=int,required=True);p.add_argument('--test-seed',type=int,required=True);p.add_argument('--dataset-sha256');p.add_argument('--expand-training-seed',type=int);p.add_argument('--baseline-run');a=p.parse_args()
     if os.environ.get('POD_NAMESPACE')!=NAMESPACE:raise RuntimeError('Wrong namespace')
     import re
     if not re.fullmatch('[a-f0-9]{12}',a.run):raise ValueError('Invalid run ID')
     root=Path('/results/experiments/runs')/a.run;root.mkdir(parents=True,exist_ok=True)
     if (root/'models').exists():raise RuntimeError('Refusing to overwrite an existing training attempt')
     data=dataset_check(a.dataset,a.dataset_sha256)
+    if (a.expand_training_seed is None)!=(a.baseline_run is None):raise ValueError('Expansion and baseline must be supplied together')
+    if a.expand_training_seed is not None:validate_expansion(a.expand_training_seed,a.baseline_run,a.test_seed)
     signal.signal(signal.SIGTERM,stop);signal.signal(signal.SIGINT,stop)
     def phase(name,args):
         global child
@@ -28,10 +30,44 @@ def main():
             code=child.wait()
         if code:raise RuntimeError(f'{name} exited with status {code}')
     try:
+        if a.expand_training_seed is not None:
+            import hashlib
+            from microservice.validate import read_rows,load_readouts
+            from microservice.readout import digest
+            from launcher.datasets import validate_jsonl,Catalog
+            base=Path('/results/experiments/runs')/a.baseline_run
+            # The baseline is the completed standard run; its training metadata
+            # and frozen artifacts establish the actual comparison identity.
+            candidates=list((base/'models').glob('training-*.json'))
+            if len(candidates)!=1:raise ValueError('Expected exactly one baseline training identity')
+            metadata=json.loads(candidates[0].read_text());baseline_seed=metadata['seed']
+            frozen,_=load_readouts(base/'readouts')
+            if metadata['seed']!=a.seed or metadata['steps']!=a.steps:raise ValueError('Keep baseline model seed and step budget fixed')
+            original=read_rows(data)
+            if frozen['train_sha256']!=hashlib.sha256(data.read_bytes()).hexdigest():raise ValueError('Expansion must start with the baseline training data')
+            if digest(base/'models'/f'final-{baseline_seed}')!=frozen['checkpoint_sha256']:raise ValueError('Baseline checkpoint changed')
+            used={r['seed'] for r in original}
+            for path in Path('/results/experiments/runs').glob('*/test.jsonl'):
+                used.update(r['seed'] for r in read_rows(path))
+            if a.expand_training_seed in used or a.test_seed in used:raise ValueError('Collection seed already used')
+            protocol=dict(base_dataset=a.dataset,base_sha256=frozen['train_sha256'],baseline_run=a.baseline_run,baseline_checkpoint_sha256=frozen['checkpoint_sha256'],baseline_readouts_sha256=frozen['readouts_sha256'],model_seed=a.seed,steps=a.steps,expansion_seed=a.expand_training_seed,test_seed=a.test_seed,base_incidents=len(original),added_incidents=64,utc=time.time(),change='Append fresh balanced training incidents; model and training settings unchanged')
+            (root/'protocol.json').write_text(json.dumps(protocol,indent=2))
+            phase('collecting additional training incidents',['microservice.collect','--split','train','--seed',str(a.expand_training_seed),'--out',str(root/'additional-train.jsonl')])
+            added_text=(root/'additional-train.jsonl').read_text()
+            validate_jsonl(added_text,Catalog().heldout())
+            # Preserve historical split annotations byte-for-byte. Only the
+            # explicitly designated baseline training file is extended.
+            expanded=root/'train.jsonl'
+            expanded.write_bytes(data.read_bytes().rstrip(b'\n')+b'\n'+added_text.encode())
+            data=expanded
+            protocol.update(training_incidents=len(read_rows(data)),training_sha256=hashlib.sha256(data.read_bytes()).hexdigest())
+            (root/'protocol.json').write_text(json.dumps(protocol,indent=2))
         phase('training',['microservice.train','--data',str(data),'--out',str(root/'models'),'--seed',str(a.seed),'--steps',str(a.steps)])
         phase('fitting readouts',['microservice.validate','fit','--data',str(data),'--models',str(root/'models'),'--seed',str(a.seed),'--out',str(root/'readouts')])
         phase('collecting validation incidents',['microservice.collect','--split','test','--seed',str(a.test_seed),'--out',str(root/'test.jsonl')])
-        phase('evaluating',['microservice.validate','evaluate','--data',str(root/'test.jsonl'),'--models',str(root/'models'),'--seed',str(a.seed),'--readouts',str(root/'readouts'),'--out',str(root/'evaluation')])
+        if a.baseline_run:
+            phase('evaluating frozen baseline',['microservice.validate','evaluate','--data',str(root/'test.jsonl'),'--models',str(base/'models'),'--seed',str(baseline_seed),'--readouts',str(base/'readouts'),'--out',str(root/'baseline-evaluation')])
+        phase('evaluating',['microservice.validate','evaluate','--data',str(root/'test.jsonl'),'--models',str(root/'models'),'--seed',str(a.seed),'--readouts',str(root/'readouts'),'--out',str(root/'evaluation')]+(['--baseline',str(root/'baseline-evaluation')] if a.baseline_run else []))
         (root/'progress.json').write_text(json.dumps(dict(phase='completed',utc=time.time())))
     finally:
         from microservice.live import reset

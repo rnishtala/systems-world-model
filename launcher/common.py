@@ -33,4 +33,15 @@ def job_manifest(run,image):
     uid=run['id'];label={'swm-role':'runner','swm-experiment':uid,'app.kubernetes.io/managed-by':'swm-experiments'}
     command=['python','-m','launcher.pipeline','--run',uid,'--dataset',run['dataset'],'--seed',str(run['seed']),'--steps',str(run['steps']),'--test-seed',str(run['test_seed'])]
     if run.get('dataset_sha256'):command+=['--dataset-sha256',run['dataset_sha256']]
+    if run.get('expansion_seed') is not None:
+        expansion_args=validate_expansion(run['expansion_seed'],run.get('baseline_run'),run['test_seed'])
+        command+=expansion_args
     return dict(apiVersion='batch/v1',kind='Job',metadata=dict(name='swm-run-'+uid,namespace=NAMESPACE,labels=label),spec=dict(backoffLimit=0,activeDeadlineSeconds=3600,ttlSecondsAfterFinished=86400,template=dict(metadata=dict(labels=label),spec=dict(restartPolicy='Never',automountServiceAccountToken=False,imagePullSecrets=[dict(name='swm-experiment-pull')],terminationGracePeriodSeconds=30,securityContext=dict(runAsNonRoot=True,runAsUser=1000,runAsGroup=1000,fsGroup=1000,seccompProfile=dict(type='RuntimeDefault')),containers=[dict(name='experiment',image=image,command=command,env=[dict(name='POD_NAMESPACE',valueFrom=dict(fieldRef=dict(fieldPath='metadata.namespace')))],resources=dict(requests=dict(cpu='1',memory='3Gi'),limits=dict(cpu='2',memory='4Gi')),securityContext=dict(allowPrivilegeEscalation=False,readOnlyRootFilesystem=True,capabilities=dict(drop=['ALL'])),volumeMounts=[dict(name='results',mountPath='/results'),dict(name='tmp',mountPath='/tmp')])],volumes=[dict(name='results',persistentVolumeClaim=dict(claimName='results')),dict(name='tmp',emptyDir=dict(sizeLimit='512Mi'))]))))
+
+
+def validate_expansion(seed,baseline,test_seed):
+    if type(seed) is not int or not 1<=seed<1000000000 or seed==test_seed:
+        raise ValueError('Expansion requires a distinct training collection seed')
+    if not isinstance(baseline,str) or not re.fullmatch('[a-f0-9]{12}',baseline):
+        raise ValueError('Expansion requires a baseline run ID')
+    return ['--expand-training-seed',str(seed),'--baseline-run',baseline]

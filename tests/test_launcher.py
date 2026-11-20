@@ -114,3 +114,20 @@ def test_proxy_preserves_compression_headers():
     from launcher.proxy import HOP
     assert 'content-encoding' not in HOP
     assert 'transfer-encoding' in HOP
+
+
+@pytest.mark.parametrize('seed,baseline',[(True,'a'*12),(0,'a'*12),(1000000000,'a'*12),(9601,'../baseline')])
+def test_expansion_rejects_invalid_protocol(seed,baseline):
+    from launcher.common import validate_expansion
+    with pytest.raises(ValueError):validate_expansion(seed,baseline,1461433385)
+
+
+def test_expansion_is_durable_and_scoped(tmp_path):
+    store=Store(tmp_path/'queue')
+    run=store.create(ADMIN,dict(ARGS,seed=113,steps=100000),IMAGE,'test',expansion=dict(seed=9601,baseline_run='f4405906195f'))
+    saved=Store(tmp_path/'queue').get(run['id'])
+    assert saved['expansion_seed']==9601
+    command=job_manifest(saved,IMAGE)['spec']['template']['spec']['containers'][0]['command']
+    assert command[-4:]==['--expand-training-seed','9601','--baseline-run','f4405906195f']
+    # Public requests cannot smuggle an internal experimental protocol.
+    with pytest.raises(ValueError):validate_request(dict(ARGS,expansion_seed=9601))
