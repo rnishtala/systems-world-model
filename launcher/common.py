@@ -37,6 +37,10 @@ def job_manifest(run,image):
         validate_retest(uid,run['training_source'])
         if run.get('evaluate_run') or run.get('expansion_seed') is not None:raise ValueError('Training comparison must run alone')
         command+=['--training-source-run',run['training_source']]
+    if run.get('probe_training_seeds'):
+        if not run.get('training_source'):raise ValueError('Probe experiment requires a frozen reference')
+        seeds=validate_probe_seeds(run['probe_training_seeds'])
+        command+=['--probe-training-seeds',*[str(s) for s in seeds]]
     if run.get('evaluate_run'):
         validate_retest(run['evaluate_run'],run.get('baseline_run'))
         if run.get('expansion_seed') is not None:raise ValueError('Cannot expand training during a frozen test')
@@ -45,7 +49,7 @@ def job_manifest(run,image):
     if run.get('expansion_seed') is not None:
         expansion_args=validate_expansion(run['expansion_seed'],run.get('baseline_run'),run['test_seed'])
         command+=expansion_args
-    return dict(apiVersion='batch/v1',kind='Job',metadata=dict(name='swm-run-'+uid,namespace=NAMESPACE,labels=label),spec=dict(backoffLimit=0,activeDeadlineSeconds=3600,ttlSecondsAfterFinished=86400,template=dict(metadata=dict(labels=label),spec=dict(restartPolicy='Never',automountServiceAccountToken=False,imagePullSecrets=[dict(name='swm-experiment-pull')],terminationGracePeriodSeconds=30,securityContext=dict(runAsNonRoot=True,runAsUser=1000,runAsGroup=1000,fsGroup=1000,seccompProfile=dict(type='RuntimeDefault')),containers=[dict(name='experiment',image=image,command=command,env=[dict(name='POD_NAMESPACE',valueFrom=dict(fieldRef=dict(fieldPath='metadata.namespace')))],resources=dict(requests=dict(cpu='1',memory='3Gi'),limits=dict(cpu='2',memory='4Gi')),securityContext=dict(allowPrivilegeEscalation=False,readOnlyRootFilesystem=True,capabilities=dict(drop=['ALL'])),volumeMounts=[dict(name='results',mountPath='/results'),dict(name='tmp',mountPath='/tmp')])],volumes=[dict(name='results',persistentVolumeClaim=dict(claimName='results')),dict(name='tmp',emptyDir=dict(sizeLimit='512Mi'))]))))
+    return dict(apiVersion='batch/v1',kind='Job',metadata=dict(name='swm-run-'+uid,namespace=NAMESPACE,labels=label),spec=dict(backoffLimit=0,activeDeadlineSeconds=run_budget(run),ttlSecondsAfterFinished=86400,template=dict(metadata=dict(labels=label),spec=dict(restartPolicy='Never',automountServiceAccountToken=False,imagePullSecrets=[dict(name='swm-experiment-pull')],terminationGracePeriodSeconds=30,securityContext=dict(runAsNonRoot=True,runAsUser=1000,runAsGroup=1000,fsGroup=1000,seccompProfile=dict(type='RuntimeDefault')),containers=[dict(name='experiment',image=image,command=command,env=[dict(name='POD_NAMESPACE',valueFrom=dict(fieldRef=dict(fieldPath='metadata.namespace')))],resources=dict(requests=dict(cpu='1',memory='3Gi'),limits=dict(cpu='2',memory='4Gi')),securityContext=dict(allowPrivilegeEscalation=False,readOnlyRootFilesystem=True,capabilities=dict(drop=['ALL'])),volumeMounts=[dict(name='results',mountPath='/results'),dict(name='tmp',mountPath='/tmp')])],volumes=[dict(name='results',persistentVolumeClaim=dict(claimName='results')),dict(name='tmp',emptyDir=dict(sizeLimit='512Mi'))]))))
 
 
 def validate_expansion(seed,baseline,test_seed):
@@ -60,3 +64,13 @@ def validate_retest(candidate,baseline):
     if any(not isinstance(v,str) or not re.fullmatch('[a-f0-9]{12}',v) for v in (candidate,baseline)):
         raise ValueError('Frozen test requires valid source run IDs')
     if candidate==baseline:raise ValueError('Choose two distinct frozen models')
+
+
+def validate_probe_seeds(seeds):
+    if not isinstance(seeds,(list,tuple)) or len(seeds)!=3 or any(type(s) is not int or not 1<=s<1000000000 for s in seeds) or len(set(seeds))!=3:
+        raise ValueError('Provide three distinct training collection seeds')
+    return list(seeds)
+
+
+def run_budget(run):
+    return 7200 if run.get('probe_training_seeds') else 3600

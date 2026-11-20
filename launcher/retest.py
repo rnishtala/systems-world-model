@@ -36,7 +36,10 @@ def main():
     for path in root.parent.glob('*/test.jsonl'):
         used.update(json.loads(line)['seed'] for line in path.read_text().splitlines())
     if a.test_seed in used:raise ValueError('Test seed already used')
-    protocol=dict(mode='test-only',candidate_run=a.candidate_run,baseline_run=a.baseline_run,test_seed=a.test_seed,identities=identities,utc=time.time())
+    source_protocol=candidate/'protocol.json'
+    schedule=json.loads(source_protocol.read_text()).get('probe_schedule','mixed') if source_protocol.exists() else 'mixed'
+    if schedule not in ('mixed','ledger-first'):raise ValueError('Unknown recorded probe schedule')
+    protocol=dict(probe_schedule=schedule,mode='test-only' ,candidate_run=a.candidate_run,baseline_run=a.baseline_run,test_seed=a.test_seed,identities=identities,utc=time.time())
     (root/'protocol.json').write_text(json.dumps(protocol,indent=2))
     signal.signal(signal.SIGTERM,stop);signal.signal(signal.SIGINT,stop)
     def phase(name,args):
@@ -47,7 +50,7 @@ def main():
             code=pipeline.child.wait()
         if code:raise RuntimeError(f'{name} exited with status {code}')
     try:
-        phase('collecting validation incidents',['microservice.collect','--split','test','--seed',str(a.test_seed),'--out',str(root/'test.jsonl')])
+        phase('collecting validation incidents',['microservice.collect','--split','test','--seed',str(a.test_seed),'--out',str(root/'test.jsonl'),'--probe-schedule',schedule])
         for name,source,out in [('baseline',baseline,'baseline-evaluation'),('candidate',candidate,'evaluation')]:
             args=['microservice.validate','evaluate','--data',str(root/'test.jsonl'),'--models',str(source/'models'),'--seed',str(identities[name]['seed']),'--readouts',str(source/'readouts'),'--out',str(root/out)]
             if name=='candidate':args+=['--baseline',str(root/'baseline-evaluation')]

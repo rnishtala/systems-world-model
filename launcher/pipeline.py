@@ -11,7 +11,7 @@ def stop(signum,frame):
 
 def main():
     global child
-    p=argparse.ArgumentParser();p.add_argument('--run',required=True);p.add_argument('--dataset',required=True);p.add_argument('--seed',type=int,required=True);p.add_argument('--steps',type=int,required=True);p.add_argument('--test-seed',type=int,required=True);p.add_argument('--dataset-sha256');p.add_argument('--expand-training-seed',type=int);p.add_argument('--baseline-run');p.add_argument('--training-source-run');a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--run',required=True);p.add_argument('--dataset',required=True);p.add_argument('--seed',type=int,required=True);p.add_argument('--steps',type=int,required=True);p.add_argument('--test-seed',type=int,required=True);p.add_argument('--dataset-sha256');p.add_argument('--expand-training-seed',type=int);p.add_argument('--baseline-run');p.add_argument('--training-source-run');p.add_argument('--probe-training-seeds',type=int,nargs=3);a=p.parse_args()
     if os.environ.get('POD_NAMESPACE')!=NAMESPACE:raise RuntimeError('Wrong namespace')
     import re
     if not re.fullmatch('[a-f0-9]{12}',a.run):raise ValueError('Invalid run ID')
@@ -20,6 +20,8 @@ def main():
     data=dataset_check(a.dataset,a.dataset_sha256)
     if (a.expand_training_seed is None)!=(a.baseline_run is None):raise ValueError('Expansion and baseline must be supplied together')
     if a.expand_training_seed is not None:validate_expansion(a.expand_training_seed,a.baseline_run,a.test_seed)
+    if a.probe_training_seeds is not None and not a.training_source_run:raise ValueError('Probe experiment requires a frozen reference')
+    schedule='ledger-first' if a.probe_training_seeds is not None else 'mixed'
     signal.signal(signal.SIGTERM,stop);signal.signal(signal.SIGINT,stop)
     def phase(name,args):
         global child
@@ -48,6 +50,29 @@ def main():
             data=root/'train.jsonl';data.write_bytes(source.read_bytes())
             a.baseline_run=a.training_source_run
             protocol=dict(change='Supervise diagnosis at six and eight windows instead of eight only',supervision_windows=[6,8],baseline_run=a.baseline_run,baseline_identity=frozen,model_seed=a.seed,steps=a.steps,training_sha256=frozen['train_sha256'],test_seed=a.test_seed,utc=time.time())
+            (root/'protocol.json').write_text(json.dumps(protocol,indent=2))
+        if a.probe_training_seeds is not None:
+            from launcher.common import validate_probe_seeds
+            from launcher.datasets import Catalog,validate_jsonl
+            seeds=validate_probe_seeds(a.probe_training_seeds)
+            metadata=json.loads((base/'models'/f'training-{baseline_seed}.json').read_text())
+            if metadata.get('supervision_windows')!=[6,8]:raise ValueError('Reference must use the same six/eight-window supervision')
+            for path in root.parent.glob('*/train.jsonl'):
+                used.update(json.loads(line)['seed'] for line in path.read_text().splitlines())
+            used.update(Catalog().all()[a.dataset]['seeds'])
+            if set(seeds)&used:raise ValueError('Probe collection seed already used')
+            protocol.update(change='Fresh training trajectories with direct ledger probes first',probe_schedule=schedule,training_collection_seeds=seeds,training_incidents=192,training_sha256=None,comparison_scope='Frozen reference trained on mixed schedules and different training incidents; not a causal schedule ablation')
+            (root/'protocol.json').write_text(json.dumps(protocol,indent=2))
+            parts=[]
+            for i,seed in enumerate(seeds):
+                part=root/f'collected-train-{seed}.jsonl'
+                phase(f'collecting ledger-first training batch {i+1}/3',['microservice.collect','--split','train','--seed',str(seed),'--out',str(part),'--probe-schedule',schedule])
+                text=part.read_text();rows=validate_jsonl(text,Catalog().heldout())
+                if any(r['order']!=['ledger','checkout'] for r in rows):raise ValueError('Unexpected training probe order')
+                parts.append(text)
+            data.write_text(''.join(parts))
+            validate_jsonl(data.read_text(),Catalog().heldout())
+            protocol['training_sha256']=hashlib.sha256(data.read_bytes()).hexdigest()
             (root/'protocol.json').write_text(json.dumps(protocol,indent=2))
         if a.expand_training_seed is not None:
             import hashlib
@@ -83,7 +108,7 @@ def main():
             (root/'protocol.json').write_text(json.dumps(protocol,indent=2))
         phase('training',['microservice.train','--data',str(data),'--out',str(root/'models'),'--seed',str(a.seed),'--steps',str(a.steps)])
         phase('fitting readouts',['microservice.validate','fit','--data',str(data),'--models',str(root/'models'),'--seed',str(a.seed),'--out',str(root/'readouts')])
-        phase('collecting validation incidents',['microservice.collect','--split','test','--seed',str(a.test_seed),'--out',str(root/'test.jsonl')])
+        phase('collecting validation incidents',['microservice.collect','--split','test','--seed',str(a.test_seed),'--out',str(root/'test.jsonl'),'--probe-schedule',schedule])
         if a.baseline_run:
             phase('evaluating frozen baseline',['microservice.validate','evaluate','--data',str(root/'test.jsonl'),'--models',str(base/'models'),'--seed',str(baseline_seed),'--readouts',str(base/'readouts'),'--out',str(root/'baseline-evaluation')])
         phase('evaluating',['microservice.validate','evaluate','--data',str(root/'test.jsonl'),'--models',str(root/'models'),'--seed',str(a.seed),'--readouts',str(root/'readouts'),'--out',str(root/'evaluation')]+(['--baseline',str(root/'baseline-evaluation')] if a.baseline_run else []))

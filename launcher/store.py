@@ -13,7 +13,7 @@ class Store:
         return json.loads(row[0])
     def save(self,run):
         self.db.execute('INSERT OR REPLACE INTO runs VALUES (?,?,?)',(run['id'],run['created'],json.dumps(run)));self.db.commit()
-    def create(self,owner,body,image,version,dataset=None,expansion=None,evaluation=None,training_source=None):
+    def create(self,owner,body,image,version,dataset=None,expansion=None,evaluation=None,training_source=None,probe_training_seeds=None):
         args=validate_request(body,{dataset['id']:dataset} if dataset else None);existing=self.all();pending=[r for r in existing if r['status'] not in TERMINAL]
         if len(pending)>=20 or sum(r['owner']==owner for r in pending)>=3:raise ValueError('Queue limit reached; wait for an existing run')
         used={r['test_seed'] for r in existing}|set(dataset['seeds'] if dataset else []);seed=1000000000+secrets.randbelow(1000000000)
@@ -27,6 +27,13 @@ class Store:
             if previous['status']!='completed' or previous['owner']!=owner:raise ValueError('Use a completed model owned by this user')
             if any(previous[k]!=args[k] for k in ('dataset','seed','steps')):raise ValueError('Keep source dataset, seed and steps fixed')
             run.update(training_source=training_source,baseline_run=training_source)
+        if probe_training_seeds is not None:
+            from launcher.common import validate_probe_seeds
+            seeds=validate_probe_seeds(probe_training_seeds)
+            if training_source is None:raise ValueError('Probe experiment requires a frozen reference')
+            known=used|{v for r in existing for v in r.get('probe_training_seeds',[])}
+            if set(seeds)&known:raise ValueError('Probe collection seed already used')
+            run.update(probe_training_seeds=seeds,probe_schedule='ledger-first')
         if evaluation is not None:
             if expansion is not None:raise ValueError('Frozen test cannot expand training')
             validate_retest(evaluation['candidate_run'],evaluation['baseline_run'])
@@ -35,10 +42,11 @@ class Store:
                 if previous['status']!='completed' or previous['owner']!=owner:raise ValueError('Use completed models owned by this user')
             candidate=self.get(evaluation['candidate_run'])
             if candidate['seed']!=args['seed'] or candidate['steps']!=args['steps']:raise ValueError('Candidate settings mismatch')
-            run.update(mode='test-only',evaluate_run=evaluation['candidate_run'],baseline_run=evaluation['baseline_run'])
+            run.update(probe_schedule=candidate.get('probe_schedule','mixed'),mode='test-only',evaluate_run=evaluation['candidate_run'],baseline_run=evaluation['baseline_run'])
         if expansion is not None:
             validate_expansion(expansion['seed'],expansion['baseline_run'],seed)
             if expansion['seed'] in used:raise ValueError('Expansion seed overlaps a known seed')
             run.update(expansion_seed=expansion['seed'],baseline_run=expansion['baseline_run'])
         if dataset:run.update(dataset_sha256=dataset['sha256'],dataset_name=dataset['name'],training_seeds=dataset['seeds'])
+        if probe_training_seeds is not None:run.update(training_seeds=seeds,dataset_name='Fresh ledger-first training - 192 incidents')
         self.save(run);return run

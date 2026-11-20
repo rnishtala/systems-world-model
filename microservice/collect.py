@@ -24,7 +24,12 @@ def configure_training(c):
     live.request('ledger','/control',control,True)
     if fault in (1,4,5,7):live.request('payment','/control',dict(cpu_seconds=c['cpu']),True)
 
-def collect(path,training,seed):
+def probe_order(repeat, schedule='mixed'):
+    if schedule not in ('mixed','ledger-first'):raise ValueError('Unknown probe schedule')
+    return ['ledger','checkout'] if schedule=='ledger-first' or repeat%4>=2 else ['checkout','ledger']
+
+def collect(path,training,seed,schedule='mixed'):
+    probe_order(0,schedule)  # Reject invalid schedules before touching the lab.
     rng=RNG(seed)
     cases=training_cases(seed) if training else [dict(regime=g,fault=f,repeat=r) for g in (0,1) for f in range(8) for r in range(4)]
     if not training:rng.r.shuffle(cases)
@@ -41,7 +46,7 @@ def collect(path,training,seed):
                             if batch(target,9)!=9:raise RuntimeError('Warmup failed')
                     loads=[3,9] if c['regime']==0 else [4,10]
                     if c['repeat']%2:loads.reverse()
-                    order=['checkout','ledger'] if c['repeat']%4<2 else ['ledger','checkout']
+                    order=probe_order(c['repeat'],schedule)
                     base=[frame('checkout',n) for n in loads*2];extra={target:[frame(target,n) for n in loads] for target in order}
                     seconds=time.monotonic()-start
                     row=dict(seed=seed,episode=i,fault=c['fault'],repeat=c['repeat'],regime=c['regime'],base=base,extra=extra,order=order,seconds=seconds,utc=time.time())
@@ -56,9 +61,9 @@ def collect(path,training,seed):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--split',choices=['train','test'],required=True)
-    p.add_argument('--seed',type=int,required=True);p.add_argument('--out',required=True);a=p.parse_args()
+    p.add_argument('--seed',type=int,required=True);p.add_argument('--out',required=True);p.add_argument('--probe-schedule',choices=['mixed','ledger-first'],default='mixed');a=p.parse_args()
     if os.environ.get('POD_NAMESPACE')!='systems-world-model-lab':
         p.error('Run inside systems-world-model-lab with POD_NAMESPACE from the downward API')
     Path(a.out).parent.mkdir(parents=True,exist_ok=True)
-    collect(a.out,a.split=='train',a.seed)
+    collect(a.out,a.split=='train',a.seed,a.probe_schedule)
 if __name__=='__main__':main()

@@ -1,48 +1,48 @@
-# Earlier diagnosis supervision
+# Direct ledger probes before diagnosis
 
-Question: does teaching the Dreamer representation to identify mechanisms after
-six observation windows improve early diagnosis?
-
-The expanded model scored 123/128 across two fresh batches; the original model
-scored 121/128 on those same incidents. This is a small gain, not substantial proof.
+Question: does measuring ledger behavior directly before the six-window diagnosis
+reduce confusion between fixed delay and pool contention?
 
 ```mermaid
 flowchart LR
-  DATA[Same 192 training incidents] --> TRAIN[Train from scratch: seed 113, 100k steps]
-  TRAIN --> LOSS[Diagnosis loss at windows 6 and 8]
-  LOSS --> FREEZE[Freeze model and readouts]
-  FREEZE --> TEST[64 fresh incidents]
-  TEST --> CAND[New model]
-  TEST --> BASE[Frozen expanded model]
-  CAND & BASE --> RESULT[Matched six-window comparison]
+  COLLECT[192 fresh ledger-first training incidents] --> TRAIN[Dreamer: seed 113, 100k steps]
+  TRAIN --> FREEZE[Freeze model and readouts]
+  FREEZE --> TEST[64 fresh ledger-first test incidents]
+  TEST --> CAND[New candidate]
+  TEST --> REF[Frozen mixed-schedule reference]
+  CAND & REF --> SCORE[Exact diagnoses and pool errors]
 ```
 
-Baseline: `ea18a74cd710`, with supervision only at window eight. The candidate
-uses its exact training file, architecture, seed, steps, auxiliary weight and
-readout selection. The sole intentional change is the supervision mask: windows
-six and eight instead of eight alone. The loss averages over eligible observations;
-labels remain training targets only and never enter the encoder or policy.
-Terminal observations remain excluded.
+Each incident: four checkout windows, two direct ledger windows, then two checkout
+windows. Both low and high load are measured. Trajectories are collected in that
+order; archived measurements are never rearranged to simulate new actions.
 
-The operator-only `training_source` queue field pins the baseline. The worker
-verifies source hashes, copies the exact training file and records the protocol
-before training. Each model is evaluated on the same fresh batch; no test data is
-used for training or readout selection. Frozen model comparisons can then repeat
-on a second fresh batch without training again.
+- Three new 64-incident training collections: seeds 20261121, 20261122, 20261123.
+- Reference: `0fc61b145fff`, 192 training incidents, seed 113, 100,000 steps,
+  six/eight-window supervision. Preserve its model and readouts unchanged.
+- Keep architecture, telemetry fields, auxiliary weight and readout selection fixed.
+- Candidate receives new training data as well as a different schedule. This is a
+  feasibility experiment, not a causal ablation of schedule alone. The reference
+  faces a schedule shift on the shared test batch; report that limitation.
+- Freeze before collecting a new balanced 64-incident test batch. Compare both models
+  on exactly that file. Retests retain the candidate's ledger-first schedule.
 
-Keep existing reliability and load-regime gates. The improvement gate requires
-at least two additional correct six-window diagnoses and fewer false pool positives
-than the matched baseline. Report telemetry controls and eight-window results too.
-A repeatable advantage across fresh batches is required before calling this a useful
-improvement; one training seed does not establish generality. Near-ceiling results
-on this small service environment do not establish production triage performance.
+Success: existing reliability, family and shifted-load gates; at least two additional
+six-window exact diagnoses and fewer false pool positives than the reference.
+Also inspect missed pool faults so an apparent false-positive gain cannot hide a
+recall regression. Report raw telemetry controls and eight-window accuracy. Repeat
+on a fresh batch before claiming a repeatable gain.
 
-Results, logs and comparison reports remain in the existing UI and results PVC.
-All live operations are confined to `systems-world-model-lab`.
+The queue records `probe_training_seeds` and the frozen `training_source` before
+launch. These are bounded operator-only fields, not arbitrary API commands. Workers
+check source hashes, supervision identity and seed overlap; protocol files record the
+actual training hash and comparison scope. The UI name/report identify the schedule.
+The catalogue dataset field is only a lineage/preflight reference for this run;
+the actual new training data is the run's `train.jsonl`.
 
-## Outcome
+Fresh collection adds runtime, so this protocol has a two-hour worker cap; normal
+runs retain their one-hour cap. Controller recovery allows five additional minutes.
+Fault leases, per-incident safety budgets, namespace isolation, cancellation and
+inference restoration remain unchanged. No resources outside the lab are modified.
 
-Run `0fc61b145fff`: candidate and baseline both 59/64 at six windows, with identical
-errors. Earlier supervision did not improve this batch. See
-[pool-error analysis](POOL_ERROR_ANALYSIS.md) for evidence and the proposed next
-probe-order experiment. Preserve both models; do not promote the candidate.
+See [pool error analysis](POOL_ERROR_ANALYSIS.md) for the evidence behind this test.

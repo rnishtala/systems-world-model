@@ -166,3 +166,27 @@ def test_training_comparison_pins_source_and_settings(tmp_path):
     with pytest.raises(ValueError):s.create('other@example.com',ARGS,IMAGE,'new',training_source=source['id'])
     with pytest.raises(ValueError):s.create(ADMIN,dict(ARGS,seed=114),IMAGE,'new',training_source=source['id'])
     with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'new',training_source='../escape')
+
+
+@pytest.mark.parametrize('seeds',[[1,2],[1,1,2],[True,2,3],[0,2,3],[1000000000,2,3],'123'])
+def test_probe_protocol_rejects_invalid_seeds(seeds):
+    from launcher.common import validate_probe_seeds
+    with pytest.raises(ValueError):validate_probe_seeds(seeds)
+
+
+def test_probe_collection_is_durable_bounded_and_operator_only(tmp_path):
+    from launcher.common import run_budget
+    s=Store(tmp_path/'queue');source=s.create(ADMIN,ARGS,IMAGE,'old')
+    source['status']='completed';s.save(source)
+    with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'new',probe_training_seeds=[9601,9602,9603])
+    run=s.create(ADMIN,ARGS,IMAGE,'new',training_source=source['id'],probe_training_seeds=[9601,9602,9603])
+    saved=Store(tmp_path/'queue').get(run['id'])
+    assert saved['training_seeds']==[9601,9602,9603]
+    assert saved['probe_schedule']=='ledger-first'
+    job=job_manifest(saved,IMAGE)
+    assert job['spec']['activeDeadlineSeconds']==run_budget(saved)==7200
+    assert run_budget(source)==3600
+    cmd=job['spec']['template']['spec']['containers'][0]['command']
+    assert cmd[-4:]==['--probe-training-seeds','9601','9602','9603']
+    with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'new',training_source=source['id'],probe_training_seeds=[9601,9604,9605])
+    with pytest.raises(ValueError):validate_request(dict(ARGS,probe_training_seeds=[9601,9602,9603]))

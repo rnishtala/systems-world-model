@@ -7,7 +7,7 @@ from launcher.common import ADMIN,ORIGIN,DATASETS,STEPS,identity
 from launcher.store import Store
 from launcher.datasets import Catalog
 
-PUBLIC=('id','name','owner','created','status','phase','dataset','seed','test_seed','steps','started','finished','error','version','restored','dataset_name','dataset_sha256','training_seeds','expansion_seed','baseline_run','mode','evaluate_run','training_source')
+PUBLIC=('id','name','owner','created','status','phase','dataset','seed','test_seed','steps','started','finished','error','version','restored','dataset_name','dataset_sha256','training_seeds','expansion_seed','baseline_run','mode','evaluate_run','training_source','probe_schedule','probe_training_seeds')
 
 def create_app(store,root,key,origin=ORIGIN):
     root=Path(root);catalog=Catalog(root)
@@ -44,6 +44,12 @@ def create_app(store,root,key,origin=ORIGIN):
             with log.open('rb') as f:f.seek(max(0,log.stat().st_size-12000));tail=f.read().decode(errors='replace')
             steps=re.findall(r'Agent Step ([\d_]+)',tail)
             if steps:result['training_step']=int(steps[-1].replace('_',''))
+        protocol=path/'protocol.json'
+        if protocol.exists():
+            try:
+                info=json.loads(protocol.read_text())
+                result['protocol']={k:info[k] for k in ('probe_schedule','comparison_scope','training_incidents','training_sha256','training_collection_seeds') if k in info}
+            except (OSError,ValueError):pass
         summary=path/'evaluation/summary.json'
         if summary.exists():
             try:result['summary']=json.loads(summary.read_text())

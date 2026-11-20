@@ -1,7 +1,7 @@
 """Reconcile the durable queue, including interrupted launches and restoration."""
 import copy,json,shutil,time
 from pathlib import Path
-from launcher.common import ACTIVE,job_manifest,dataset_check
+from launcher.common import ACTIVE,job_manifest,dataset_check,run_budget
 from launcher.kube import KubeError
 
 def cpu(value):return float(value[:-1])/1000 if str(value).endswith('m') else float(value)
@@ -65,7 +65,7 @@ class Controller:
                 run.update(status='restoring',outcome='completed' if complete else 'failed',error=None if complete else 'Worker disappeared before completion',release_after=time.time()+45)
             elif job.get('status',{}).get('succeeded'):
                 run.update(status='restoring',outcome='completed',release_after=time.time())
-            elif job.get('status',{}).get('failed') or time.time()-run['started']>3900:
+            elif job.get('status',{}).get('failed') or time.time()-run['started']>run_budget(run)+300:
                 run.update(status='restoring',outcome='failed',error='Worker failed or exceeded its time budget; inspect the run log',release_after=time.time()+45)
             self.store.save(run)
         if run['status']=='restoring':
