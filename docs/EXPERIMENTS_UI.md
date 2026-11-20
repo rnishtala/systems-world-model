@@ -99,3 +99,22 @@ known held-out seeds, copied trajectories from retained launcher test runs, dupl
 incidents, nonfinite telemetry, unsupported schemas, and insufficient group coverage.
 Fresh evaluation remains separate. These checks cannot independently establish the
 provenance or correct fault labels of arbitrary external data.
+
+## Persistent results and trends
+
+**Results over time** shows all completed runs you are authorized to view, oldest
+first, with Dreamer/telemetry scores at six and eight windows, a matched prior-model
+score when available, gate outcomes and report downloads. Smoke tests are hidden
+from this view by default and can be included explicitly. History is loaded from
+the results PVC, not kept only in browser memory.
+
+Click a run to open its details. The URL retains the selected run ID through refresh;
+without a selection, the newest completed non-smoke result opens automatically.
+Each run normally has a different test batch, so the trend is descriptive. Only
+scores within a run's matched comparison establish a same-test comparison.
+
+Expanded run `ea18a74cd710` completed in 43m06s: Dreamer6 63/64, telemetry6 60/64,
+Dreamer8 63/64, telemetry8 62/64, prior frozen model6 62/64 on the same test.
+Reliability and regime checks passed; the improvement gate did not (only one more
+correct diagnosis and equal false-pool counts). Next: repeat frozen-model comparisons
+on fresh batches before changing the model or claiming a reliable improvement.
