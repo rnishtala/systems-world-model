@@ -46,3 +46,22 @@ Fault leases, per-incident safety budgets, namespace isolation, cancellation and
 inference restoration remain unchanged. No resources outside the lab are modified.
 
 See [pool error analysis](POOL_ERROR_ANALYSIS.md) for the evidence behind this test.
+
+## First result and frozen repeat
+
+Run `782a827a06f9` completed in 66 minutes 35 seconds and restored inference.
+On its fresh 64-incident ledger-first test batch, six-window accuracy was 63/64 for
+both candidate and frozen reference, and 64/64 for the raw-telemetry classifier.
+Candidate eight-window accuracy was also 63/64. Reliability, shifted-load and
+matched-control gates passed; improvement and feasibility gates did not.
+
+Candidate made one false pool diagnosis on a delay-only incident; reference missed
+pool contention in one combined-fault incident. Their equal scores conceal different
+errors. These results do not establish an advantage for the new world model or a
+causal benefit from probe ordering.
+
+Frozen repeat `182e90a9a3d8` was queued on 2026-11-21: collect 64 new ledger-first
+incidents (test seed 1514326914), then evaluate the same candidate and reference.
+No training, readout fitting or threshold tuning is performed. Both artifact hashes
+are checked before and after evaluation. Preserve the raw-telemetry control and
+report combined matched results once the repeat completes.
