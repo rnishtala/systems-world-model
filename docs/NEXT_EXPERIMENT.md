@@ -77,3 +77,32 @@ The next repeat preserves both frozen models and collects an entirely fresh batc
 Diagnostic errors now include target, service, expected/actual counts, successful
 requests, error rate and incident context. Checks and fail-fast behavior are unchanged;
 no automatic per-incident retry or selective removal of bad incidents is added.
+
+## Repeat outcome: no demonstrated Dreamer advantage
+
+Diagnostic repeat `604d743bd9d4` completed successfully in 18 minutes 50 seconds,
+including startup and restoration. Test seed: 1367641920. The lab was restored and
+the worker cleaned up. The earlier failed 61-incident acquisition is excluded from
+accuracy totals and remains retained as a collection failure.
+
+| Six-window method | First completed batch | Fresh repeat | Combined |
+|---|---:|---:|---:|
+| Ledger-first Dreamer candidate | 63/64 | 62/64 | 125/128 (97.7%) |
+| Frozen mixed-schedule Dreamer reference | 63/64 | 61/64 | 124/128 (96.9%) |
+| Raw-telemetry classifier | 64/64 | 63/64 | 127/128 (99.2%) |
+
+Both completed batches pass reliability, load-regime and matched-control gates;
+neither passes the predefined improvement gate. Across both batches, candidate and
+reference each have two false pool diagnoses. Candidate fixes three reference errors
+and introduces two; its one-incident net advantage is not persuasive evidence of
+improvement. The telemetry classifier is correct on every incident the candidate gets
+right, plus two additional incidents. No claim of world-model advantage is supported.
+
+Do not promote a model or extend training solely on these results. The next research
+question should test a temporal prediction capability that this static diagnosis task
+does not establish: whether the frozen world model predicts the response to a probe
+better than simple persistence and telemetry-based predictors, on genuinely held-out
+trajectories. Specify training-only model selection, equal observation histories,
+held-out target windows and scoring before collecting new evaluation data. Until that
+protocol is implemented and validated, this is a proposed direction, not an executed
+experiment or a demonstrated Dreamer planning capability.
