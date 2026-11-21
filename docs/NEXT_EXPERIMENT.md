@@ -65,3 +65,15 @@ incidents (test seed 1514326914), then evaluate the same candidate and reference
 No training, readout fitting or threshold tuning is performed. Both artifact hashes
 are checked before and after evaluation. Preserve the raw-telemetry control and
 report combined matched results once the repeat completes.
+
+
+The first repeat failed during incident 62 after retaining 61 complete incidents.
+The collector rejected invalid measurement counts/errors; the old log did not
+identify which service or counts. No model evaluation ran. The failure was not a
+one-hour timeout (the full run and restoration took about 13 minutes). Inference
+was restored. Keep this partial batch as a failed acquisition, not an accuracy result.
+
+The next repeat preserves both frozen models and collects an entirely fresh batch.
+Diagnostic errors now include target, service, expected/actual counts, successful
+requests, error rate and incident context. Checks and fail-fast behavior are unchanged;
+no automatic per-incident retry or selective removal of bad incidents is added.

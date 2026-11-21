@@ -23,6 +23,6 @@ def frame(target,n):
         m=live.request(s,'/metrics')
         metrics[s]={k:m[k] for k in ('count','latency_p95','self_p95','downstream_p95','error_rate')}
         expected=n if target=='checkout' or s=='ledger' else 0
-        if m['count']!=expected or m['error_rate']!=0:raise RuntimeError('Invalid measurement counts/errors')
-    if ok!=n:raise RuntimeError('Failed measured requests')
+        if m['count']!=expected or m['error_rate']!=0:raise RuntimeError('Invalid measurement counts/errors: '+json.dumps(dict(target=target,requests=n,successes=ok,service=s,expected_count=expected,actual_count=m['count'],error_rate=m['error_rate'],seconds=time.monotonic()-start),sort_keys=True))
+    if ok!=n:raise RuntimeError(f'Failed measured requests: target={target}, expected={n}, successes={ok}')
     return dict(target=target,requests=n,successes=ok,metrics=metrics,seconds=time.monotonic()-start)

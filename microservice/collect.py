@@ -52,6 +52,9 @@ def collect(path,training,seed,schedule='mixed'):
                     row=dict(seed=seed,episode=i,fault=c['fault'],repeat=c['repeat'],regime=c['regime'],base=base,extra=extra,order=order,seconds=seconds,utc=time.time())
                     if seconds>35:raise RuntimeError('Incident exceeded lease safety budget')
                     out.write(json.dumps(row)+'\n');out.flush();rows.append(row)
+                except Exception as exc:
+                    print('PROBE_RANGE_FAILURE',json.dumps(dict(seed=seed,episode=i,fault=c['fault'],repeat=c['repeat'],regime=c['regime'],schedule=schedule,elapsed_seconds=time.monotonic()-start,error=str(exc)),sort_keys=True),flush=True)
+                    raise
                 finally:live.reset()
                 print('PROBE_RANGE_COLLECT',('train' if training else 'test'),i+1,'/64',flush=True)
     finally:live.reset()

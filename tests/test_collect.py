@@ -45,3 +45,27 @@ def test_invalid_schedule_cannot_touch_lab(tmp_path):
     with patch('microservice.collect.live.wait_ready') as ready:
         with pytest.raises(ValueError):collect(tmp_path/'rows',True,123,'arbitrary')
         ready.assert_not_called()
+
+
+def test_measurement_failure_is_reported_without_retry_or_partial_row(tmp_path,capsys):
+    from microservice.collect import collect
+    path=tmp_path/'rows.jsonl';case=dict(fault=3,repeat=0,regime=1)
+    with patch('microservice.collect.training_cases',return_value=[case]), patch('microservice.collect.configure_training'), patch('microservice.collect.live.wait_ready'), patch('microservice.collect.live.reset') as reset, patch('microservice.collect.batch',return_value=9), patch('microservice.collect.frame',side_effect=RuntimeError('count mismatch')) as frame:
+        with pytest.raises(RuntimeError,match='count mismatch'):collect(path,True,123,'ledger-first')
+    assert frame.call_count==1 and path.read_text()==''
+    assert reset.call_count==2
+    line=capsys.readouterr().out.split('PROBE_RANGE_FAILURE ',1)[1]
+    details=json.loads(line)
+    assert details['seed']==123 and details['episode']==0 and details['fault']==3
+    assert details['schedule']=='ledger-first'
+
+
+def test_measurement_error_identifies_service_counts_and_successes():
+    from microservice.ledger_probe import frame
+    metrics=dict(count=2,latency_p95=.1,self_p95=.1,downstream_p95=0.,error_rate=0.)
+    with patch('microservice.ledger_probe.live.reset_measurement_window'), patch('microservice.ledger_probe.batch',return_value=3), patch('microservice.ledger_probe.live.request',return_value=metrics):
+        with pytest.raises(RuntimeError) as error:frame('checkout',3)
+    details=json.loads(str(error.value).split(': ',1)[1])
+    assert details['service']=='checkout'
+    assert details['target']=='checkout'
+    assert details['expected_count']==3 and details['actual_count']==2 and details['successes']==3
