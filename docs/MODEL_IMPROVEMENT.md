@@ -1,0 +1,68 @@
+# Improving world-model triage
+
+The goal is to identify system faults reliably with fewer useful measurements.
+Better latency prediction is evidence that the model learned some system behavior;
+it is not yet proof of better root-cause diagnosis.
+
+```mermaid
+flowchart LR
+  A[Measured service incidents] --> B[Train Dreamer world model]
+  B --> C[Freeze model and comparison rules]
+  C --> D[Check predictions on fresh incidents]
+  D --> E[Use prediction errors to assist diagnosis]
+  E --> F[Test fewer probes and unseen conditions]
+  F --> G[Change training only for measured weaknesses]
+  G --> B
+```
+
+| Step | Purpose | Status / decision |
+|---|---|---|
+| Establish telemetry and Dreamer diagnosis baselines | Check whether the model adds value | Diagnosis advantage not established |
+| Test frozen-model forecasting | Check learned system behavior | Two fresh 64-incident batches passed: 24.5% and 23.3% lower log MAE than regression |
+| Audit scoring | Ensure apparent gains/losses reflect model quality | Fixed decoder symlog conversion; invalid scores retained as superseded |
+| Strengthen simple forecasting controls | Avoid comparing with an unnecessarily weak baseline | Select regression or persistence separately by window using training data only |
+| Connect predictions to diagnosis | See whether unexpected measurements help identify causes earlier | Compare telemetry alone, telemetry plus simple forecast errors, and telemetry plus Dreamer forecast errors |
+| Confirm triage benefit on fresh incidents | Distinguish exploration from dependable improvement | Only after the offline comparison; freeze readouts before collecting fresh data |
+| Expand difficulty | Test generalization beyond familiar schedules | Later: new loads, severities, configurations, then service dependencies |
+| Change training | Address demonstrated weaknesses | Keep model weights fixed for current comparisons; do not add capacity without evidence |
+
+## Current experiment
+
+Use the same 192 training incidents and the second completed forecasting batch as a
+retained exploratory test. Fit diagnosis readouts only on training data using grouped
+cross-validation. Compare the same readout candidate family for all feature sets.
+The primary comparison is after **six observations**; also report four through eight.
+
+```mermaid
+flowchart LR
+  H[Telemetry observed so far] --> T[Telemetry-only diagnosis]
+  H --> P[Predict next measurement]
+  P --> R[Compare prediction with measurement once it arrives]
+  H --> D[Residual-assisted diagnosis]
+  R --> D
+  T --> S[Score exact cause combination and false pool diagnoses]
+  D --> S
+```
+
+A residual becomes available only after its measurement arrives. At observation six,
+use predictions made after observations four and five; never use future measurements.
+Both simple and Dreamer residuals are tested so that useful feature engineering is not
+mistaken for a unique world-model benefit. Simple training residuals use out-of-fold
+predictions; Dreamer remains fitted on its source training set. This asymmetry and the
+reuse of retained tests make the comparison exploratory, requiring fresh confirmation.
+
+No adaptive probe selection or early stopping is implemented here. All eight windows
+were collected. Prefix accuracy estimates information requirements, not elapsed-time
+savings. A later prospective experiment must measure actual probes and time saved.
+
+## What counts as progress
+
+- Better exact fault-combination accuracy at the same observation count, without more
+  false pool accusations; or similar accuracy with fewer observations.
+- Repeat the chosen approach on fresh incidents with frozen settings before calling it
+  an improvement. Inspect healthy cases, individual fault families and shifted loads.
+- Keep forecasting and diagnosis claims separate. An LLM can later explain measured
+  evidence; it must not supply the benchmark's ground-truth verdict.
+
+Code and reports stay in this repository; data, checkpoints and execution remain in
+`systems-world-model-lab`. Existing experiments and other namespaces are untouched.

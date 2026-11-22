@@ -67,6 +67,12 @@ function renderDiagnostic(r){
  if(!r.audit_source)return;
  el('interpretation').textContent='Retrospective diagnostic on existing data; no new faults or training. Reconstruction has seen its target and is not a forecast baseline.';
  if(!r.diagnostic_summary)return;
+ if(r.diagnostic_summary.kind==='triage'){
+  el('interpretation').textContent='Retrospective triage comparison. Readouts selected on training data only; fresh validation required. All windows were collected; no measured early stopping.';
+  const grid=text('div','','metrics');el('metrics').replaceChildren();
+  for(const [prefix,methods] of Object.entries(r.diagnostic_summary.prefixes))for(const [name,m] of Object.entries(methods)){const cell=text('div','','metric');cell.append(text('span',prefix+' observations · '+name.replaceAll('_',' ')),text('strong',m.correct+'/'+m.n),text('span','False pool diagnoses: '+m.false_pool));grid.append(cell);}
+  el('metrics').append(grid);return;
+ }
  const grid=text('div','','metrics');el('metrics').replaceChildren();
  for(const [split,data] of Object.entries(r.diagnostic_summary.splits))for(const [method,m] of Object.entries(data.methods)){
   const cell=text('div','','metric');cell.append(text('span',split+' · '+method.replaceAll('_',' ')),text('strong',m.log_mae.toFixed(4)+' log MAE'),text('span',m.milliseconds_mae.toFixed(1)+' ms MAE · bias '+m.bias.toFixed(4)));grid.append(cell);

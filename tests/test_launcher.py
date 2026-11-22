@@ -217,3 +217,15 @@ def test_forecast_diagnostic_requires_matching_completed_owned_forecast(tmp_path
     assert cmd[-2:]==['--audit-source',prior['id']]
     with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'new',audit_source=prior['id'])
     with pytest.raises(ValueError):validate_request(dict(ARGS,audit_source=prior['id']))
+
+
+def test_triage_requires_retained_forecast_and_uses_bounded_worker(tmp_path):
+    s=Store(str(tmp_path/'triage.db'))
+    with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'v',triage=True)
+    source=s.create(ADMIN,ARGS,IMAGE,'v');source['status']='completed';s.save(source)
+    prior=s.create(ADMIN,ARGS,IMAGE,'v',forecast_source=source['id']);prior['status']='completed';s.save(prior)
+    run=s.create(ADMIN,ARGS,IMAGE,'v',forecast_source=source['id'],audit_source=prior['id'],triage=True)
+    job=job_manifest(run,IMAGE)
+    assert job['spec']['template']['spec']['containers'][0]['command'][-1]=='--triage'
+    assert job['spec']['activeDeadlineSeconds']==3600
+    with pytest.raises(ValueError):validate_request(dict(ARGS,triage=True))

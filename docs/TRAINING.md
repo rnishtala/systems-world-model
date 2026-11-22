@@ -1,5 +1,7 @@
 # Training and testing the world model
 
+For current results and the sequence of improvements, see [Model improvement steps](MODEL_IMPROVEMENT.md).
+
 ## What are we trying to learn?
 
 When checkout slows down, can the model identify **what went wrong and where**?

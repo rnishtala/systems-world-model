@@ -41,6 +41,7 @@ def job_manifest(run,image):
         if run.get('audit_source'):
             validate_retest(uid,run['audit_source'])
             command+=['--audit-source',run['audit_source']]
+            if run.get('triage'):command+=['--triage']
     if run.get('training_source'):
         validate_retest(uid,run['training_source'])
         if run.get('evaluate_run') or run.get('expansion_seed') is not None:raise ValueError('Training comparison must run alone')

@@ -17,7 +17,10 @@ Train DreamerV3 on measured service trajectories and test whether its learned st
 
 The repository contains source, tests and documentation. Datasets, fitted readouts, checkpoints, runtime YAML and reports are generated artifacts; keep them in an external run directory or the lab results PVC. The collector targets only `systems-world-model-lab`; training and evaluation can run offline.
 
-Latest completed experiment: 128 training incidents, 100,000 Dreamer steps, 64 fresh test incidents. Six-observation Dreamer scored 61/64 versus 60/64 for the prior expanded-data readout; eight-observation Dreamer scored 64/64 versus telemetry's 62/64. The six-observation acceptance gate **failed**. This is not established generalization or reliable early stopping.
+Current evidence: two fresh 64-incident forecasting batches passed the fixed gate,
+with 24.5% and 23.3% lower log-latency prediction error than regression. Diagnosis
+advantage remains unproven. See [the improvement steps](docs/MODEL_IMPROVEMENT.md)
+and [forecasting evidence and limitations](docs/FORECAST_EXPERIMENT.md).
 
 Historical code and evidence remain in Git at `763e555`. See [artifact recovery](docs/TRAINING.md#artifact-recovery). Cleanup changes source only; it does not delete deployed services, datasets or PVC checkpoints.
 

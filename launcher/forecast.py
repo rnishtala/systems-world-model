@@ -9,7 +9,7 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('run','dataset','candidate-run'):p.add_argument('--'+name,required=True)
     for name in ('seed','steps','test-seed'):p.add_argument('--'+name,type=int,required=True)
-    p.add_argument('--audit-source');p.add_argument('--dataset-sha256');a=p.parse_args()
+    p.add_argument('--triage',action='store_true');p.add_argument('--audit-source');p.add_argument('--dataset-sha256');a=p.parse_args()
     if os.environ.get('POD_NAMESPACE')!=NAMESPACE:raise ValueError('Wrong namespace')
     validate_retest(a.run,a.candidate_run)
     root=Path('/results/experiments/runs')/a.run;source=root.parent/a.candidate_run
@@ -44,7 +44,7 @@ def main():
         if not (retained/'forecast-evaluation/summary.json').exists():raise ValueError('Forecast must have completed')
         protocol.update(mode='forecast-diagnostic',audit_source=a.audit_source,scope='Existing training and retained test only; no fitting or fault collection')
         (root/'protocol.json').write_text(json.dumps(protocol,indent=2))
-        phase('auditing posterior reconstruction and prior forecasts',['microservice.forecast_audit','--train',str(data),'--test',str(retained/'test.jsonl'),'--original-predictions',str(retained/'forecast-evaluation/predictions.json'),'--out',str(root/'forecast-diagnostic'),*common])
+        phase('auditing residual-assisted triage' if a.triage else 'auditing posterior reconstruction and prior forecasts',['microservice.triage_audit' if a.triage else 'microservice.forecast_audit','--train',str(data),'--test',str(retained/'test.jsonl'),'--original-predictions',str(retained/'forecast-evaluation/predictions.json'),'--out',str(root/'forecast-diagnostic'),*common])
         if frozen_identity(source)!=identity:raise ValueError('Frozen source artifacts changed')
         (root/'progress.json').write_text(json.dumps(dict(phase='completed',utc=time.time())))
         return
