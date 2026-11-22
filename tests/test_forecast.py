@@ -43,3 +43,18 @@ def test_scoring_uses_incidents_and_preselected_control():
     assert not summarize(y,pred,'regression',2)['improvement_gate']
     pred['dreamer'][0]=np.nan
     with pytest.raises(ValueError):summarize(y,pred,'persistence',2)
+
+
+def test_diagnostic_scores_reconstruction_against_current_and_forecast_against_next():
+    from microservice.forecast_audit import summarize
+    rows=[{'fault':0},{'fault':1}]
+    actual=np.array([[[1.,5.]]*4,[[2.,7.]]*4])
+    pred=actual.copy();pred[:,:,1]-=2
+    result=summarize(rows,actual,pred)['methods']
+    assert result['posterior_reconstruction']['log_mae']==0
+    assert result['prior_forecast']['log_mae']==2
+    assert result['prior_forecast']['bias']==-2
+    assert result['prior_forecast']['by_fault']['1']['log_mae']==2
+    with pytest.raises(ValueError):summarize(rows,actual[:1],pred)
+    pred[0,0,0]=np.nan
+    with pytest.raises(ValueError):summarize(rows,actual,pred)

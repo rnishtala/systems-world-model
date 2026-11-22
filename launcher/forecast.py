@@ -9,7 +9,7 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('run','dataset','candidate-run'):p.add_argument('--'+name,required=True)
     for name in ('seed','steps','test-seed'):p.add_argument('--'+name,type=int,required=True)
-    p.add_argument('--dataset-sha256');a=p.parse_args()
+    p.add_argument('--audit-source');p.add_argument('--dataset-sha256');a=p.parse_args()
     if os.environ.get('POD_NAMESPACE')!=NAMESPACE:raise ValueError('Wrong namespace')
     validate_retest(a.run,a.candidate_run)
     root=Path('/results/experiments/runs')/a.run;source=root.parent/a.candidate_run
@@ -36,6 +36,18 @@ def main():
             code=pipeline.child.wait()
         if code:raise RuntimeError(f'{name} exited with status {code}')
     common=['--models',str(source/'models'),'--seed',str(a.seed)]
+    if a.audit_source:
+        validate_retest(a.run,a.audit_source)
+        retained=root.parent/a.audit_source
+        previous=json.loads((retained/'protocol.json').read_text())
+        if previous['candidate_run']!=a.candidate_run:raise ValueError('Diagnostic source mismatch')
+        if not (retained/'forecast-evaluation/summary.json').exists():raise ValueError('Forecast must have completed')
+        protocol.update(mode='forecast-diagnostic',audit_source=a.audit_source,scope='Existing training and retained test only; no fitting or fault collection')
+        (root/'protocol.json').write_text(json.dumps(protocol,indent=2))
+        phase('auditing posterior reconstruction and prior forecasts',['microservice.forecast_audit','--train',str(data),'--test',str(retained/'test.jsonl'),'--original-predictions',str(retained/'forecast-evaluation/predictions.json'),'--out',str(root/'forecast-diagnostic'),*common])
+        if frozen_identity(source)!=identity:raise ValueError('Frozen source artifacts changed')
+        (root/'progress.json').write_text(json.dumps(dict(phase='completed',utc=time.time())))
+        return
     try:
         phase('freezing forecast controls and checking Dreamer prior',['microservice.forecast','prepare','--data',str(data),'--out',str(root/'forecast-controls'),*common])
         phase('collecting fresh forecast incidents',['microservice.collect','--split','test','--seed',str(a.test_seed),'--out',str(root/'test.jsonl'),'--probe-schedule',schedule])

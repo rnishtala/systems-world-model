@@ -55,7 +55,7 @@ def prepare(data,out):
     return frozen
 
 class Forecaster:
-    def __init__(self,model):
+    def __init__(self,model,diagnostic=False):
         import jax,jax.numpy as jnp,ninjax as nj
         inner=model.agent.model;self.params=model.agent.params;self.jax=jax
         @nj.pure
@@ -66,17 +66,21 @@ class Forecaster:
                 obs={'vector':jnp.repeat(h[t][None],16,axis=0)}
                 enc,_,tokens=inner.enc(enc,obs,reset,training=False,single=True)
                 dyn,_,feat=inner.dyn.observe(dyn,tokens,prev,reset,training=False,single=True)
-                dec,_,_=inner.dec(dec,feat,reset,training=False,single=True)
+                dec,_,reconstruction=inner.dec(dec,feat,reset,training=False,single=True)
                 prev={'action':jnp.repeat((2*h[t,6:8]-1)[None],16,axis=0)}
             # Advance only with the known next action; no next-observation tokens.
             _,(prior,_)=inner.dyn.imagine(dyn,prev,1,training=False,single=True)
             _,_,pred=inner.dec(dec,prior,jnp.zeros((16,),bool),training=False,single=True)
-            return pred['vector'].pred()[:,0].mean()
+            forecast=pred['vector'].pred()[:,0].mean()
+            if diagnostic:return jnp.stack([reconstruction['vector'].pred()[:,0].mean(),forecast])
+            return forecast
+        self.diagnostic=diagnostic
         self.run=jax.jit(lambda params,h,key:run(params,h,seed=key,create=False,modify=False)[1])
     def __call__(self,h):
         # Fixed RNG and particle budget; no tuning from test outcomes.
         with self.jax.transfer_guard('allow'):
-            return float(self.run(self.params,np.asarray(h,np.float32),self.jax.random.PRNGKey(777)))
+            value=self.run(self.params,np.asarray(h,np.float32),self.jax.random.PRNGKey(777))
+            return np.asarray(value) if self.diagnostic else float(value)
 
 def summarize(y,pred,selected,n):
     y=np.asarray(y);errors={k:abs(np.asarray(v)-y).reshape(n,len(CUTS)).mean(1) for k,v in pred.items()}

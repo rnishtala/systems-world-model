@@ -204,3 +204,16 @@ def test_forecast_uses_completed_owned_model_and_separate_worker(tmp_path):
     with pytest.raises(ValueError):s.create(ADMIN,dict(ARGS,seed=999),IMAGE,'new',forecast_source=source['id'])
     with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'new',forecast_source=source['id'],training_source=source['id'])
     with pytest.raises(ValueError):validate_request(dict(ARGS,forecast_source=source['id']))
+
+
+def test_forecast_diagnostic_requires_matching_completed_owned_forecast(tmp_path):
+    s=Store(str(tmp_path/'audit.db'))
+    source=s.create(ADMIN,ARGS,IMAGE,'old');source['status']='completed';s.save(source)
+    prior=s.create(ADMIN,ARGS,IMAGE,'old',forecast_source=source['id'])
+    with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'new',forecast_source=source['id'],audit_source=prior['id'])
+    prior['status']='completed';s.save(prior)
+    run=s.create(ADMIN,ARGS,IMAGE,'new',forecast_source=source['id'],audit_source=prior['id'])
+    cmd=job_manifest(run,IMAGE)['spec']['template']['spec']['containers'][0]['command']
+    assert cmd[-2:]==['--audit-source',prior['id']]
+    with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'new',audit_source=prior['id'])
+    with pytest.raises(ValueError):validate_request(dict(ARGS,audit_source=prior['id']))

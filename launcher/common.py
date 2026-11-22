@@ -38,6 +38,9 @@ def job_manifest(run,image):
         if any(run.get(k) for k in ('training_source','probe_training_seeds','evaluate_run','expansion_seed')):raise ValueError('Forecast experiment must run alone')
         command[2]='launcher.forecast'
         command+=['--candidate-run',run['forecast_source']]
+        if run.get('audit_source'):
+            validate_retest(uid,run['audit_source'])
+            command+=['--audit-source',run['audit_source']]
     if run.get('training_source'):
         validate_retest(uid,run['training_source'])
         if run.get('evaluate_run') or run.get('expansion_seed') is not None:raise ValueError('Training comparison must run alone')
