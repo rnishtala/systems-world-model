@@ -190,3 +190,17 @@ def test_probe_collection_is_durable_bounded_and_operator_only(tmp_path):
     assert cmd[-4:]==['--probe-training-seeds','9601','9602','9603']
     with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'new',training_source=source['id'],probe_training_seeds=[9601,9604,9605])
     with pytest.raises(ValueError):validate_request(dict(ARGS,probe_training_seeds=[9601,9602,9603]))
+
+
+def test_forecast_uses_completed_owned_model_and_separate_worker(tmp_path):
+    s=Store(tmp_path/'queue');source=s.create(ADMIN,ARGS,IMAGE,'old')
+    with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'new',forecast_source=source['id'])
+    source['status']='completed';s.save(source)
+    run=s.create(ADMIN,ARGS,IMAGE,'new',forecast_source=source['id'])
+    cmd=job_manifest(run,IMAGE)['spec']['template']['spec']['containers'][0]['command']
+    assert cmd[:3]==['python','-m','launcher.forecast'] and run['mode']=='forecast'
+    assert cmd[-2:]==['--candidate-run',source['id']]
+    with pytest.raises(ValueError):s.create('other@example.com',ARGS,IMAGE,'new',forecast_source=source['id'])
+    with pytest.raises(ValueError):s.create(ADMIN,dict(ARGS,seed=999),IMAGE,'new',forecast_source=source['id'])
+    with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'new',forecast_source=source['id'],training_source=source['id'])
+    with pytest.raises(ValueError):validate_request(dict(ARGS,forecast_source=source['id']))

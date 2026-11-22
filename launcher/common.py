@@ -33,6 +33,11 @@ def job_manifest(run,image):
     uid=run['id'];label={'swm-role':'runner','swm-experiment':uid,'app.kubernetes.io/managed-by':'swm-experiments'}
     command=['python','-m','launcher.pipeline','--run',uid,'--dataset',run['dataset'],'--seed',str(run['seed']),'--steps',str(run['steps']),'--test-seed',str(run['test_seed'])]
     if run.get('dataset_sha256'):command+=['--dataset-sha256',run['dataset_sha256']]
+    if run.get('forecast_source'):
+        validate_retest(uid,run['forecast_source'])
+        if any(run.get(k) for k in ('training_source','probe_training_seeds','evaluate_run','expansion_seed')):raise ValueError('Forecast experiment must run alone')
+        command[2]='launcher.forecast'
+        command+=['--candidate-run',run['forecast_source']]
     if run.get('training_source'):
         validate_retest(uid,run['training_source'])
         if run.get('evaluate_run') or run.get('expansion_seed') is not None:raise ValueError('Training comparison must run alone')

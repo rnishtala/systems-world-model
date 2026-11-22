@@ -7,7 +7,7 @@ from launcher.common import ADMIN,ORIGIN,DATASETS,STEPS,identity
 from launcher.store import Store
 from launcher.datasets import Catalog
 
-PUBLIC=('id','name','owner','created','status','phase','dataset','seed','test_seed','steps','started','finished','error','version','restored','dataset_name','dataset_sha256','training_seeds','expansion_seed','baseline_run','mode','evaluate_run','training_source','probe_schedule','probe_training_seeds')
+PUBLIC=('id','name','owner','created','status','phase','dataset','seed','test_seed','steps','started','finished','error','version','restored','dataset_name','dataset_sha256','training_seeds','expansion_seed','baseline_run','mode','evaluate_run','training_source','probe_schedule','probe_training_seeds','forecast_source')
 
 def create_app(store,root,key,origin=ORIGIN):
     root=Path(root);catalog=Catalog(root)
@@ -54,6 +54,10 @@ def create_app(store,root,key,origin=ORIGIN):
         if summary.exists():
             try:result['summary']=json.loads(summary.read_text())
             except ValueError:pass
+        forecast=path/'forecast-evaluation/summary.json'
+        if forecast.exists():
+            try:result['forecast_summary']=json.loads(forecast.read_text())
+            except (OSError,ValueError):pass
         return result
     async def config(request):return web.json_response(dict(email=request['email'],admin=request['email']==ADMIN,version=os.environ.get('CODE_VERSION','development'),datasets=catalog.visible(request['email']),steps=list(STEPS)))
     async def listing(request):return web.json_response([public(r) for r in reversed(store.all()) if request['email'] in (r['owner'],ADMIN)])
