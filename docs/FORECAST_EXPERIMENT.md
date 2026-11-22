@@ -154,3 +154,30 @@ also do not by themselves prove or rule out overfitting.
 **Next experiment:** repeat the corrected frozen forecasting protocol on a new seed
 and 64 fresh balanced incidents, keeping the model, controls, particle count, schedule,
 metric and success gate fixed. Do not retrain or tune using the retained test batch.
+
+## First fresh confirmation — 21 November 2026
+
+Run `3d66a2902e2b`, fresh collection seed `1054344277`, completed 64 incidents /
+256 predictions in **13 minutes 8 seconds**, including reservation and restoration.
+Checkpoint, training data, baseline fit and protocol settings matched the earlier run.
+The corrected evaluator was fixed before this batch was collected; no retraining occurred.
+
+| Method | Log MAE (primary) | Latency MAE |
+|---|---:|---:|
+| Dreamer | **0.08322** | **30.50 ms** |
+| Frozen telemetry regression | 0.11025 | 38.45 ms |
+| Last matching probe | 0.13461 | 53.18 ms |
+| Last observation | 0.20572 | 81.80 ms |
+
+Dreamer reduced primary error by **24.5%** versus the preselected regression control.
+The paired incident bootstrap 95% error-difference interval was
+**[-0.04129, -0.01342]**. The fixed improvement gate passed on this fresh batch.
+
+This supports one-step prediction under this measured schedule, not improved RCA,
+unseen-action planning, or remediation. Matching-probe persistence still beats Dreamer
+at prefixes 6 and 7 individually (log MAE 0.04455 / 0.04507 versus 0.08110 / 0.06247).
+Do not infer that Dreamer is best at every window. A future stronger comparator could
+select a baseline by prefix using training data only; that would be a separate protocol.
+
+Next: one additional fresh batch using the same frozen settings, without tuning, to
+check repeatability. Keep retrospective and prospective evidence clearly distinguished.
