@@ -127,3 +127,30 @@ including training data. This triggered the library source inspection above.
 Those uncorrected audit errors are also superseded. Model weights and diagnosis
 results are unchanged. Corrected retained-test scores are retrospective and require
 fresh confirmation before claiming improvement.
+
+## Corrected retrospective result
+
+Run `9dfd68aa18f5` completed the audit with unchanged checkpoint/data hashes and
+**zero difference** from the original raw decoder predictions. Corrected values
+invert symlog for each of the 16 particles before averaging.
+
+| Split | Posterior reconstruction log MAE | Next-window forecast log MAE |
+|---|---:|---:|
+| Training, 192 incidents | 0.06168 | 0.07663 |
+| Retained test, 64 incidents | 0.06877 | 0.09271 |
+
+On the retained test, corrected Dreamer forecasting MAE is **34.74 ms**, versus
+**38.07 ms** for the frozen telemetry regression. Primary log MAE improves **14.8%**
+(0.09271 versus 0.10881); the paired incident bootstrap 95% interval for the error
+difference is **[-0.03045, -0.00145]**. The numerical gate passes on this retrospective
+rescore. This is not an independent replication or evidence of improved diagnosis.
+
+Reconstruction MAE is 27.49 ms on retained data; it sees the target measurement and
+is diagnostic only. Forecasting is harder, but the large shared downward bias was
+caused by the missing inverse transform. There is no basis from this audit alone to
+increase model size or change the training objective. Training-versus-test differences
+also do not by themselves prove or rule out overfitting.
+
+**Next experiment:** repeat the corrected frozen forecasting protocol on a new seed
+and 64 fresh balanced incidents, keeping the model, controls, particle count, schedule,
+metric and success gate fixed. Do not retrain or tune using the retained test batch.
