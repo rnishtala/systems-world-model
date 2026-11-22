@@ -54,6 +54,11 @@ def prepare(data,out):
     (out/'frozen.json').write_text(json.dumps(frozen,indent=2))
     return frozen
 
+def observation_prediction(values,symlog=True,xp=np):
+    """Pinned symlog_mse.pred() returns transformed values; invert per particle."""
+    values=xp.asarray(values)
+    return xp.sign(values)*xp.expm1(xp.abs(values)) if symlog else values
+
 class Forecaster:
     def __init__(self,model,diagnostic=False):
         import jax,jax.numpy as jnp,ninjax as nj
@@ -71,8 +76,11 @@ class Forecaster:
             # Advance only with the known next action; no next-observation tokens.
             _,(prior,_)=inner.dyn.imagine(dyn,prev,1,training=False,single=True)
             _,_,pred=inner.dec(dec,prior,jnp.zeros((16,),bool),training=False,single=True)
-            forecast=pred['vector'].pred()[:,0].mean()
-            if diagnostic:return jnp.stack([reconstruction['vector'].pred()[:,0].mean(),forecast])
+            raw=pred['vector'].pred()[:,0]
+            forecast=observation_prediction(raw,inner.dec.symlog,jnp).mean()
+            if diagnostic:
+                reconstructed=observation_prediction(reconstruction['vector'].pred()[:,0],inner.dec.symlog,jnp).mean()
+                return jnp.stack([reconstructed,forecast,raw.mean()])
             return forecast
         self.diagnostic=diagnostic
         self.run=jax.jit(lambda params,h,key:run(params,h,seed=key,create=False,modify=False)[1])

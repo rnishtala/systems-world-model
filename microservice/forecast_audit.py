@@ -38,13 +38,18 @@ def main():
             actual.append([[float(vector(row,c-1)[0]),float(vector(row,c)[0])] for c in CUTS])
             pred.append([predict(history(row,c)).tolist() for c in CUTS])
             if i%16==0:print('AUDIT_PROGRESS',split,i,'/',len(rows),flush=True)
-        result['splits'][split]=summarize(rows,actual,pred)
+        result['splits'][split]=summarize(rows,actual,np.asarray(pred)[:,:,:2])
         if split=='retained_test':
             original=json.loads(Path(a.original_predictions).read_text())
             if original['test_sha256']!=sha(path):raise ValueError('Original test identity mismatch')
-            delta=float(np.max(abs(np.asarray(pred)[:,:,1].ravel()-original['methods']['dreamer'])))
+            delta=float(np.max(abs(np.asarray(pred)[:,:,2].ravel()-original['methods']['dreamer'])))
             result['prior_reproduction_max_abs_error']=delta
-            if delta>1e-5:raise ValueError('Diagnostic changed prior forecasts')
+            if delta>1e-5:raise ValueError('Diagnostic changed raw prior forecasts')
+            from microservice.forecast import summarize as score_forecast
+            methods=dict(original['methods'],dreamer=np.asarray(pred)[:,:,1].ravel().tolist())
+            result['corrected_forecast']=score_forecast(original['target'],methods,'regression',len(rows))
+            result['correction']='Invert decoder symlog per particle before averaging; original raw outputs reproduce exactly'
+            result['test_status']='Retrospective corrected scoring, requires fresh confirmation'
     if digest(cp)!=before or any(sha(p)!=hashes[str(p)] for p in paths):raise ValueError('Source artifact changed')
     out=Path(a.out);out.mkdir(parents=True,exist_ok=False)
     (out/'summary.json').write_text(json.dumps(result,indent=2))

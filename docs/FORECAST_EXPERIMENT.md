@@ -47,7 +47,12 @@ The existing queue reserves only `systems-world-model-lab`, retains the one-hour
 cap, resets leased faults and restores inference. UI detail and downloadable report
 show forecasting error separately from diagnosis accuracy. No existing results are replaced.
 
-## Completed result — 21 November 2026
+## Superseded result — 21 November 2026
+
+**Scoring bug found:** the original evaluator omitted the inverse of the decoder's
+symlog transform. The table below preserves the original output for traceability;
+it is not a valid assessment of Dreamer forecast accuracy. The corrective diagnostic
+reproduces these raw outputs and rescales each particle before averaging.
 
 Run `99fc86f8d57b` completed all 64 fresh incidents / 256 forecasts; the controller
 restored the lab. The frozen model **did not pass** the predeclared success gate.
@@ -106,3 +111,19 @@ be presented as a forecast baseline. Verify action alignment and decoder output 
 Do not tune on this batch and call it held out again. Any subsequent change must be
 selected on training/validation data and assessed with fresh incidents. No additional
 training or fault collection was launched during this aggregate error analysis.
+
+
+## Decoder-scale correction
+
+The pinned upstream `Head.symlog_mse` constructs `MSE(pred, nets.symlog)`.
+`MSE.loss` transforms the target, while `MSE.pred` returns the transformed mean
+without inversion. Our evaluator must apply `symexp` before comparing that output
+with the observation vector's log-latency value. This is separate from converting
+log-latency to milliseconds. Invert each particle first, then average.
+
+The first retrospective audit (`ad7d2694ce33`) reproduced original raw forecasts
+exactly and exposed similar underprediction in reconstruction and forecasting,
+including training data. This triggered the library source inspection above.
+Those uncorrected audit errors are also superseded. Model weights and diagnosis
+results are unchanged. Corrected retained-test scores are retrospective and require
+fresh confirmation before claiming improvement.

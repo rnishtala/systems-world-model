@@ -58,3 +58,13 @@ def test_diagnostic_scores_reconstruction_against_current_and_forecast_against_n
     with pytest.raises(ValueError):summarize(rows,actual[:1],pred)
     pred[0,0,0]=np.nan
     with pytest.raises(ValueError):summarize(rows,actual,pred)
+
+
+def test_decoder_prediction_inverts_symlog_before_particle_average():
+    from microservice.forecast import observation_prediction
+    observations=np.array([-2.,0.,1.,4.])
+    encoded=np.sign(observations)*np.log1p(abs(observations))
+    np.testing.assert_allclose(observation_prediction(encoded),observations)
+    np.testing.assert_array_equal(observation_prediction(observations,False),observations)
+    assert observation_prediction(encoded).mean()==pytest.approx(observations.mean())
+    assert observation_prediction(encoded).mean()!=pytest.approx(observation_prediction(encoded.mean()))
