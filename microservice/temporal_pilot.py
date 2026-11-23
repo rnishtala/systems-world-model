@@ -13,10 +13,11 @@ def drain(timeout=25):
         time.sleep(.2)
     raise RuntimeError('Outstanding requests did not drain; refusing reset')
 
-def configure(mechanism,relief=None):
+def configure(mechanism,relief=None,profile=None):
+    profile=profile or {}
     live.request('checkout','/control',dict(max_active=16,lease_seconds=45),True)
     # No pool resizing during an incident; controls preserve active work and windows.
-    live.request('ledger','/control',dict(pool_size=2,db_hold=.12 if mechanism=='database' and relief!='database' else .04,lease_seconds=45,max_active=16),True)
+    live.request('ledger','/control',dict(pool_size=2,db_hold=profile.get('fault_hold',.12) if mechanism=='database' and relief!='database' else profile.get('healthy_hold',.04),lease_seconds=45,max_active=16),True)
     live.request('payment','/control',dict(retry_limit=0 if relief=='retry' else 1,attempt_timeout=.1,request_budget=.25,retry_backoff=.01,lease_seconds=45,max_active=16),True)
 
 def measure(previous):
@@ -27,18 +28,19 @@ def measure(previous):
         result[service]=m
     return result
 
-def incident(mechanism,relief):
+def incident(mechanism,relief,profile=None):
+    profile=profile or {}
     if mechanism not in ('healthy','database','upstream') or relief not in ('none','database','load','retry'):raise ValueError('Unknown pilot case')
-    drain();live.reset();configure('healthy');previous=drain()
+    drain();live.reset();configure('healthy',profile=profile);previous=drain()
     windows=[];pending=set();submitted=0;dropped=0;completed=0;errors=0
     start=time.monotonic();next_request=start;next_window=start+.5;stage=0
     executor=concurrent.futures.ThreadPoolExecutor(max_workers=8)
     try:
-        while time.monotonic()-start<22:
+        while time.monotonic()-start<profile.get('duration',22):
             now=time.monotonic();elapsed=now-start
-            if stage==0 and elapsed>=3:configure(mechanism);stage=1
-            if stage==1 and elapsed>=9:configure(mechanism,relief);stage=2
-            rate=2 if stage==2 and relief=='load' else (96 if mechanism=='upstream' and stage>=1 else 24)
+            if stage==0 and elapsed>=profile.get('onset',3):configure(mechanism,profile=profile);stage=1
+            if stage==1 and elapsed>=profile.get('relief_at',9):configure(mechanism,relief,profile);stage=2
+            rate=2 if stage==2 and relief=='load' else (profile.get('burst_rate',96) if mechanism=='upstream' and stage>=1 else profile.get('base_rate',24))
             if now>=next_request:
                 next_request=now+1/rate
                 if len(pending)<8:

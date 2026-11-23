@@ -34,6 +34,7 @@ def job_manifest(run,image):
     command=['python','-m','launcher.pipeline','--run',uid,'--dataset',run['dataset'],'--seed',str(run['seed']),'--steps',str(run['steps']),'--test-seed',str(run['test_seed'])]
     if run.get('dataset_sha256'):command+=['--dataset-sha256',run['dataset_sha256']]
     if run.get('temporal_pilot'):command[2]='launcher.temporal_pipeline'
+    if run.get('snapshot_calibration'):command+=['--snapshot-calibration']
     if run.get('forecast_source'):
         validate_retest(uid,run['forecast_source'])
         if any(run.get(k) for k in ('training_source','probe_training_seeds','evaluate_run','expansion_seed')):raise ValueError('Forecast experiment must run alone')

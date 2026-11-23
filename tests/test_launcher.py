@@ -251,3 +251,10 @@ def test_temporal_pilot_is_separate_and_namespace_bounded(tmp_path):
     assert job['spec']['template']['spec']['containers'][0]['command'][2]=='launcher.temporal_pipeline'
     with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'v',temporal_pilot=True,fresh_triage=True)
     with pytest.raises(ValueError):validate_request(dict(ARGS,temporal_pilot=True))
+
+
+def test_snapshot_calibration_requires_temporal_mode(tmp_path):
+    s=Store(tmp_path/'queue.sqlite')
+    with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'v',snapshot_calibration=True)
+    run=s.create(ADMIN,ARGS,IMAGE,'v',temporal_pilot=True,snapshot_calibration=True)
+    assert '--snapshot-calibration' in job_manifest(run,IMAGE)['spec']['template']['spec']['containers'][0]['command']

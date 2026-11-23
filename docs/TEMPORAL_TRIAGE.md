@@ -248,3 +248,42 @@ query duration separately from rejection rate, then test a simple snapshot class
 before ordered-history methods. If snapshots remain sufficient, stop developing this
 scenario as evidence for Dreamer and retain the simpler diagnosis. A separate naturally
 history-dependent scenario would then need its own justification.
+
+### Randomized snapshot screen — frozen before collection
+
+Collect 36 new incidents: 18 training and 18 testing, six of each class per split.
+Separate deterministic collection seeds generate the two groups. Shuffle incidents
+within each split; finish and freeze the classifier before collecting the test group.
+Both groups use the same ranges, so this tests new incidents within the configured
+conditions, not transfer to other systems or unseen regimes.
+
+| Parameter | Range |
+|---|---|
+| Background load, shared across classes | 18–34 requests/s |
+| Healthy database hold | 30–50 ms |
+| Degraded database hold | 80–120 ms |
+| Upstream burst | 65–115 requests/s |
+| Fault onset | 2–4 seconds |
+
+Each incident runs for 11 seconds without relief, retaining all admission limits,
+leases and drain checks. Select the first completed telemetry window at or after
+second 10. Inputs are current-window measurements, active-work gauges and counter
+increments within that window. Exclude timestamps, cumulative counters, settings,
+labels and event history. Report query-only database duration separately from the
+legacy all-request average; rejected requests must not look like fast database calls.
+
+Fit one fixed depth-two CART classifier (minimum two training incidents per leaf).
+Choose features/thresholds using training incidents only; no hyperparameter search or
+test-driven retries. Publish the confusion matrix and a Wilson interval for overall
+accuracy. A descriptive promising screen requires at least 17/18 correct, at least
+5/6 per class, and zero healthy false alarms. This small test cannot establish high
+reliability. A failed screen is not evidence that Dreamer would succeed.
+
+```mermaid
+flowchart LR
+  A[18 varied training incidents] --> B[Fit small snapshot decision tree]
+  B --> C[Freeze classifier]
+  C --> D[Collect 18 separate test incidents]
+  D --> E[Score once and inspect errors]
+  E --> F[Decide whether history is needed]
+```

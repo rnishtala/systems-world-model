@@ -85,6 +85,16 @@ function renderTemporal(r){
  el('interpretation').textContent='Mechanism feasibility pilot: checks retries, backlog and recovery. No model training or accuracy claim.';
  if(!r.temporal_summary)return;
  el('metrics').replaceChildren();
+ if(r.temporal_summary.calibration){
+  const c=r.temporal_summary.calibration;
+  el('interpretation').textContent='Snapshot-only screening: a depth-two decision tree was frozen after 18 training incidents and tested on 18 separate incidents. No Dreamer training. Small sample; this is not confirmed generalization.';
+  const cell=text('div','','metric');
+  cell.append(text('span','Held-out snapshot diagnosis'),text('strong',c.correct+'/'+c.n),text('span','95% Wilson interval: '+c.wilson95.map(v=>(100*v).toFixed(0)+'%').join('–')));
+  for(let i=0;i<c.labels.length;i++)cell.append(text('span',c.labels[i]+': '+c.confusion[i][i]+'/'+c.confusion[i].reduce((a,b)=>a+b,0)+' correct'));
+  cell.append(text('span',c.snapshot_promising?'Simple snapshot method looks promising; validate more broadly.':'Screening threshold not reached; inspect errors before adding model complexity.'),text('span',c.all_restored?'All incident cleanup checks passed':'Check incident cleanup'));
+  el('metrics').append(cell);return;
+ }
+
  for(const row of r.temporal_summary.incidents){
   const cell=text('div','','metric');cell.append(text('span',row.mechanism+' · relief: '+row.relief),text('strong',row.restored?'Restored':'Check restoration'));
   for(const [name,stage] of Object.entries(row.stages))cell.append(text('span',name+': checkout '+(1000*stage.checkout.mean_window_latency).toFixed(0)+' ms · payment timeouts '+stage.payment.timeout_delta+' · ledger waiters '+stage.ledger.max_pool_waiters));

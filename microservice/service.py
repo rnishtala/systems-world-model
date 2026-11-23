@@ -85,7 +85,9 @@ def snapshot(after=None):
             'sequence':sequence,'window_gap':gap,'counters':counters,
             'error_rate':mean('error'),'latency_p95':p95('elapsed'),
             'cpu_mean':mean('cpu'),'pool_wait_p95':p95('pool_wait'),
-            'db_mean':mean('db'),'downstream_p95':p95('downstream'),
+            'db_mean':mean('db'),'db_query_count':sum(r['db']>0 for r in rows),
+            'db_query_mean':sum(r['db'] for r in rows)/max(1,sum(r['db']>0 for r in rows)),
+            'downstream_p95':p95('downstream'),
             'self_p95':p95('self_time')}
 
 def reset_metrics():

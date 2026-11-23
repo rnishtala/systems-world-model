@@ -104,3 +104,12 @@ def test_admission_caps_server_work_and_keeps_metrics_available(service):
 @pytest.mark.parametrize('limit',[0,65,True])
 def test_admission_limit_is_bounded(service,limit):
     with pytest.raises(ValueError):service.apply({'max_active':limit})
+
+
+def test_query_duration_excludes_rejected_requests(service):
+    base=dict(elapsed=.1,cpu=0,pool_wait=0,downstream=0,self_time=.1)
+    service.ROWS.extend([dict(base,sequence=1,db=.12,error=0),dict(base,sequence=2,db=0,error=1)])
+    service.SEQUENCE=2
+    metrics=service.snapshot(0)
+    assert metrics['db_mean']==.06
+    assert metrics['db_query_mean']==.12 and metrics['db_query_count']==1
