@@ -122,3 +122,15 @@ Severity and onset are deliberately fixed for this pilot; one case per intervent
 cannot establish generalization or causal efficacy statistically. Inspect baseline,
 incident and relief telemetry before designing the larger validity dataset. Do not
 train Dreamer on these nine incidents or report diagnosis accuracy from them.
+
+### Deployment checkpoint — 23 November 2026
+
+Instrumentation is deployed to checkout, payment and ledger in the lab namespace.
+The post-rollout healthy-chain check passed, continuous-window telemetry responded,
+and default retries remained zero. All 100 tests passed, including a real HTTP
+retry/timeout test. The rollout is reproducible with `scripts/deploy_temporal_services.py`.
+
+Pilot `5a6a43c1a820` is queued through the normal lab controller. At this checkpoint,
+a registry connection reset left the worker in `ImagePullBackOff`; Kubernetes is
+retrying. No pilot incidents or new Dreamer training have run yet. This checkpoint
+records deployment status, not evidence that the benchmark mechanisms are valid.
