@@ -89,9 +89,10 @@ review observability and ground truth rather than increasing model size by defau
 
 ## Current status
 
-**Both mechanisms reproduced; scenario-validity gate not passed.** No new Dreamer
-training has started. Match queue/load symptoms and measure full recovery before
-collecting a randomized benchmark.
+**Queue symptoms now overlap and mechanism-specific recovery is demonstrated.**
+Current metrics still separate the causes in this fixed pilot. Next, test simple
+snapshot diagnosis across varied conditions before deciding whether history is needed.
+No new Dreamer training has started.
 
 ## Foundation implementation
 
@@ -204,3 +205,46 @@ that finish during shutdown. Leases and drain-before-reset checks remain in effe
 This is still a calibration pilot with fixed settings, not a randomized benchmark.
 Direct database timing, traffic counts or rejection rates may still make current-state
 triage sufficient; retain those features and report that limitation rather than hide them.
+
+### Bounded recovery results — 23 November 2026
+
+Run `89f1ac3c616a`, code `42bbe6f`, completed 12 cases. All case cleanup checks passed;
+104 local tests passed, including real concurrent HTTP admission/rejection. The healthy
+service chain passed after deployment. Both faults reached 16 active ledger requests
+and 14 pool waiters; no sampled service exceeded the 16-request admission limit.
+
+The table uses the final 18–22 second observation period. Counts are counter differences
+between its first and last samples, not totals for the entire incident.
+
+| Fault and intervention | Successful / completed requests | Checkout latency* | Peak queue | Interpretation |
+|---|---:|---:|---:|---|
+| Database fault → database repair | 76 / 76 | 48 ms | 0 | Recovered |
+| Database fault → reduced load | 0 / 7 | 216 ms | 0 | Queue cleared, underlying fault remains |
+| Database fault → retries off | 0 / 82 | 105 ms | 14 | Faster failure, not recovery |
+| Upstream overload → reduced load | 7 / 7 | 46 ms | 0 | Recovered at reduced offered load |
+| Upstream overload → database relief | 3 / 298 | 121 ms | 14 | Not recovered |
+| Upstream overload → retries off | 1 / 300 | 104 ms | 14 | Not recovered |
+
+*Mean of window p95 values. Database relief removes injected degradation; it does not
+add capacity when the database is already healthy. Successful load shedding does not
+prove the system can serve the original overloaded demand. Healthy controls had zero
+client errors across all four cases. No-relief fault cases remained unhealthy.
+
+**What this establishes:** the experiment can reproduce two bounded failure mechanisms
+with the same peak queue depth and can distinguish successful relief from faster errors.
+Each intervention has only one case; this is feasibility evidence, not a statistical
+causal estimate or diagnosis evaluation.
+
+**Why Dreamer is still on hold:** during the pre-relief incident windows, the existing
+ledger `db_mean` ranged from 11–13 ms for overload versus 37.5–75.9 ms for database
+faults. This metric averages across all completed requests, including rejected requests
+with zero database time; it is not a pure database-duration measurement. Throughput
+and admission rejections also differ. Do not remove these useful available features
+just to create an apparent advantage for history.
+
+The next useful dataset is a small randomized calibration set varying offered load,
+database hold time and onset, with complete incidents held out. Report conditional
+query duration separately from rejection rate, then test a simple snapshot classifier
+before ordered-history methods. If snapshots remain sufficient, stop developing this
+scenario as evidence for Dreamer and retain the simpler diagnosis. A separate naturally
+history-dependent scenario would then need its own justification.
