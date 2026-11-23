@@ -1,6 +1,6 @@
 # Improving world-model triage
 
-**Current direction:** pause steady-fault repetitions. See [the single temporal triage experiment](TEMPORAL_TRIAGE.md) for the next question, strong baselines and stop/go rule.
+**Current result:** a simple snapshot decision tree diagnosed **17/18 held-out varied incidents** using request count and latency. No new Dreamer training is justified by this scenario yet. See [the temporal experiment results and decision](TEMPORAL_TRIAGE.md).
 
 The goal is to identify system faults reliably with fewer useful measurements.
 Better latency prediction is evidence that the model learned some system behavior;
@@ -28,7 +28,7 @@ flowchart LR
 | Expand difficulty | Test generalization beyond familiar schedules | Later: new loads, severities, configurations, then service dependencies |
 | Change training | Address demonstrated weaknesses | Keep model weights fixed for current comparisons; do not add capacity without evidence |
 
-## Current experiment
+## Earlier residual-diagnosis experiment
 
 Use the same 192 training incidents and the second completed forecasting batch as a
 retained exploratory test. Fit diagnosis readouts only on training data using grouped

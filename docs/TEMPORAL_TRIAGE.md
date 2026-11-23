@@ -89,10 +89,10 @@ review observability and ground truth rather than increasing model size by defau
 
 ## Current status
 
-**Queue symptoms now overlap and mechanism-specific recovery is demonstrated.**
-Current metrics still separate the causes in this fixed pilot. Next, test simple
-snapshot diagnosis across varied conditions before deciding whether history is needed.
-No new Dreamer training has started.
+**Randomized snapshot screen completed: 17/18 held-out incidents correct.**
+A depth-two tree using request count and latency meets the predeclared descriptive
+screen. Keep it as the baseline; this scenario does not yet justify Dreamer training.
+The sample is small and does not establish production reliability.
 
 ## Foundation implementation
 
@@ -287,3 +287,45 @@ flowchart LR
   D --> E[Score once and inspect errors]
   E --> F[Decide whether history is needed]
 ```
+
+### Snapshot screening result — 23 November 2026
+
+Run `d517e1431475`, code `7f130c1`, completed all 36 incidents and restored the lab.
+The classifier was saved after 18 training incidents, before any test collection.
+All sampled active-work counts stayed at or below 16. The authenticated results API
+serves the score, and the experiment UI now displays the score, per-class counts,
+interval and cleanup status. All 109 tests passed.
+
+| Actual class | Correct / test incidents | Error |
+|---|---:|---|
+| Healthy | 6 / 6 | None |
+| Database degradation | 6 / 6 | None |
+| Upstream overload | 5 / 6 | One classified as database degradation |
+| Overall | **17 / 18 (94.4%)** | Wilson 95% interval **74.2–99.0%** |
+
+The frozen tree used only `checkout.count` and `checkout.latency_p95`:
+
+```mermaid
+flowchart TD
+  A[One current telemetry window] --> B{More than 23 completed requests?}
+  B -->|Yes| C[Upstream overload]
+  B -->|No| D{p95 latency above 75.8 ms?}
+  D -->|Yes| E[Database degradation]
+  D -->|No| F[Healthy]
+```
+
+These are learned lab thresholds, not portable operating rules. Counts depend on the
+approximately half-second measurement window. Although query-only database timing was
+available, the tree did not select it. No fault settings, event timestamps or ordered
+history were used. No thresholds were changed after inspecting test results.
+
+**Decision:** the simple snapshot baseline meets the predeclared promising screen.
+Do not train Dreamer on this scenario to manufacture an advantage. Keep the tree and
+this untouched test result as reference evidence. More validation under shifted
+conditions would be needed before relying on the tree operationally; this is a small,
+same-environment screen, not a head-to-head Dreamer comparison.
+
+Further world-model research should target a separately justified question where
+current state is insufficient—for example predicting the effect of a bounded action
+from partial observations—and compare against strong simple action-conditioned models.
+Do not discard informative telemetry merely to make that comparison favorable.
