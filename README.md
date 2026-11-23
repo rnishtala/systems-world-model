@@ -2,6 +2,8 @@
 
 Train DreamerV3 on measured service trajectories and test whether its learned state improves root-cause diagnosis over telemetry alone.
 
+**Next experiment: [Temporal triage](docs/TEMPORAL_TRIAGE.md)** — distinguish database-triggered retries from upstream amplification, and test against strong history baselines before claiming a Dreamer advantage.
+
 **Start with [Training and validation](docs/TRAINING.md)** for architecture diagrams, commands, data boundaries, and acceptance criteria.
 
 | Source | Responsibility |

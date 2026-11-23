@@ -1,5 +1,7 @@
 # Improving world-model triage
 
+**Current direction:** pause steady-fault repetitions. See [the single temporal triage experiment](TEMPORAL_TRIAGE.md) for the next question, strong baselines and stop/go rule.
+
 The goal is to identify system faults reliably with fewer useful measurements.
 Better latency prediction is evidence that the model learned some system behavior;
 it is not yet proof of better root-cause diagnosis.
