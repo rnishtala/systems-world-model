@@ -186,3 +186,21 @@ flowchart LR
 
 We are at **C**. This is progress in experiment validity, not measured improvement
 in Dreamer's diagnosis accuracy.
+
+### Next bounded recovery pilot
+
+The next pilot uses 24 requests/s before onset for both faults, then retains 24 for
+database degradation or raises it to 96 for upstream overload. Both may now queue.
+Active work is capped atomically at 16 requests per service in the pilot (default 64);
+excess requests return counted 503 failures without entering downstream work. This
+bounds application work, not all HTTP connection/thread overhead.
+
+Twelve cases separate database relief, load reduction to 2 requests/s, retry suppression,
+and no relief for each of three mechanisms. Onset stays at 3 seconds; relief at 9;
+traffic continues until 22. The final 18–22 second window measures completed and failed
+requests, timeouts, admission rejections and queue depth. Client totals include calls
+that finish during shutdown. Leases and drain-before-reset checks remain in effect.
+
+This is still a calibration pilot with fixed settings, not a randomized benchmark.
+Direct database timing, traffic counts or rejection rates may still make current-state
+triage sufficient; retain those features and report that limitation rather than hide them.

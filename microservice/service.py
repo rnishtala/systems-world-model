@@ -6,7 +6,7 @@ ROLE=os.environ['SERVICE_ROLE']
 NEXT=os.environ.get('DOWNSTREAM','')
 LOCK=threading.RLock()
 ROWS=collections.deque(maxlen=4096)
-DEFAULT={'cpu_seconds':0.001,'delay_seconds':0.0,'pool_size':8,'db_hold':0.04,'retry_limit':0,'attempt_timeout':8.0,'request_budget':8.0,'retry_backoff':0.0}
+DEFAULT={'cpu_seconds':0.001,'delay_seconds':0.0,'pool_size':8,'db_hold':0.04,'retry_limit':0,'attempt_timeout':8.0,'request_budget':8.0,'retry_backoff':0.0,'max_active':64}
 COUNTERS=collections.Counter();SEQUENCE=0;BOOT_ID=uuid.uuid4().hex
 
 def increment(name,amount=1):
@@ -30,6 +30,15 @@ def downstream_call(url,cfg,fetch,clock=time.monotonic,sleep=time.sleep,record=i
             if cfg['retry_backoff']:sleep(cfg['retry_backoff'])
             record('retries')
     raise RuntimeError('unreachable retry state')
+
+def admit_request():
+    """Atomic work admission: timed-out callers cannot grow server work unbounded."""
+    with LOCK:
+        COUNTERS['original_requests']+=1
+        admitted=COUNTERS['active_requests']<CONFIG['max_active']
+        if admitted:COUNTERS['active_requests']+=1
+        else:COUNTERS['admission_rejections']+=1
+        return admitted,CONFIG.copy(),POOL
 
 def fetch_json(url,timeout):
     with urllib.request.urlopen(url,timeout=timeout) as response:return json.load(response)
@@ -91,6 +100,7 @@ def apply(config):
     for k,high in [('cpu_seconds',.15),('delay_seconds',.6),('db_hold',.12),('retry_backoff',.1)]:
         if not 0<=float(new[k])<=high:raise ValueError(k)
     if type(new['pool_size']) is not int or not 1<=new['pool_size']<=8:raise ValueError('pool_size')
+    if type(new['max_active']) is not int or not 1<=new['max_active']<=64:raise ValueError('max_active')
     if type(new['retry_limit']) is not int or not 0<=new['retry_limit']<=2:raise ValueError('retry_limit')
     if not .05<=float(new['attempt_timeout'])<=8:raise ValueError('attempt_timeout')
     if not .1<=float(new['request_budget'])<=8:raise ValueError('request_budget')
@@ -129,9 +139,9 @@ class Handler(http.server.BaseHTTPRequestHandler):
             except ValueError:return self.reply({'error':'invalid cursor'},400)
         if self.path!='/request':return self.reply({'error':'not found'},404)
         started=time.monotonic();cpu=0.;downstream=0.;waited=0.;db=0.;err=0;trace=[]
-        with LOCK:COUNTERS['original_requests']+=1;COUNTERS['active_requests']+=1
-        with LOCK:cfg=CONFIG.copy();pool=POOL
+        admitted,cfg,pool=admit_request()
         try:
+            if not admitted:raise RuntimeError('service admission limit')
             cpu_start=time.thread_time()
             while time.thread_time()-cpu_start<cfg['cpu_seconds']:sum(i*i for i in range(100))
             cpu=time.thread_time()-cpu_start
@@ -146,7 +156,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
         row=dict(elapsed=elapsed,cpu=cpu,pool_wait=waited,db=db,downstream=downstream,self_time=max(0,elapsed-downstream),error=err)
         with LOCK:
             SEQUENCE+=1;row['sequence']=SEQUENCE;ROWS.append(row)
-            COUNTERS['active_requests']-=1;COUNTERS['completed_requests']+=1
+            COUNTERS['active_requests']-=int(admitted);COUNTERS['completed_requests']+=1
             COUNTERS['failed_requests']+=err
         trace.append({'service':ROLE,'duration':elapsed,'error':bool(err)})
         try:self.reply({'trace':trace},503 if err else 200)

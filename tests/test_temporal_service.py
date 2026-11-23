@@ -71,3 +71,36 @@ def test_real_http_timeouts_retry_without_hiding_completed_request(service):
         assert service.snapshot(0)['count']==1
     finally:
         for s in (server,upstream):s.shutdown();s.server_close()
+
+
+def test_admission_caps_server_work_and_keeps_metrics_available(service):
+    import concurrent.futures,http.server,json,threading,urllib.request,urllib.error
+    entered=threading.Event();release=threading.Event()
+    class BlockingPool:
+        def query(self,hold):
+            entered.set();assert release.wait(3)
+            return 0,0
+    service.apply({'max_active':1});service.POOL=BlockingPool()
+    server=http.server.ThreadingHTTPServer(('127.0.0.1',0),service.Handler)
+    threading.Thread(target=server.serve_forever,daemon=True).start()
+    url='http://127.0.0.1:'+str(server.server_port)
+    def fetch(path):
+        with urllib.request.urlopen(url+path,timeout=3) as r:return json.load(r)
+    try:
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            first=executor.submit(fetch,'/request');assert entered.wait(2)
+            with pytest.raises(urllib.error.HTTPError) as e:fetch('/request')
+            assert e.value.code==503
+            counts=fetch('/metrics')['counters']
+            assert counts['active_requests']==1 and counts['admission_rejections']==1
+            release.set();first.result()
+        counts=fetch('/metrics')['counters']
+        assert counts['active_requests']==0 and counts['completed_requests']==2
+        assert counts['failed_requests']==1
+        assert fetch('/request')['trace'][0]['error'] is False
+    finally:
+        release.set();server.shutdown();server.server_close()
+
+@pytest.mark.parametrize('limit',[0,65,True])
+def test_admission_limit_is_bounded(service,limit):
+    with pytest.raises(ValueError):service.apply({'max_active':limit})
