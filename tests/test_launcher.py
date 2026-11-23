@@ -258,3 +258,11 @@ def test_snapshot_calibration_requires_temporal_mode(tmp_path):
     with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'v',snapshot_calibration=True)
     run=s.create(ADMIN,ARGS,IMAGE,'v',temporal_pilot=True,snapshot_calibration=True)
     assert '--snapshot-calibration' in job_manifest(run,IMAGE)['spec']['template']['spec']['containers'][0]['command']
+
+
+def test_action_outcomes_requires_exclusive_temporal_mode(tmp_path):
+    s=Store(tmp_path/'queue.sqlite')
+    with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'v',action_outcomes=True)
+    with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'v',temporal_pilot=True,snapshot_calibration=True,action_outcomes=True)
+    run=s.create(ADMIN,ARGS,IMAGE,'v',temporal_pilot=True,action_outcomes=True)
+    assert '--action-outcomes' in job_manifest(run,IMAGE)['spec']['template']['spec']['containers'][0]['command']

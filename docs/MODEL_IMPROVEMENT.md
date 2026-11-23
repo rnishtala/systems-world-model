@@ -1,6 +1,6 @@
 # Improving world-model triage
 
-**Current result:** a simple snapshot decision tree diagnosed **17/18 held-out varied incidents** using request count and latency. No new Dreamer training is justified by this scenario yet. See [the temporal experiment results and decision](TEMPORAL_TRIAGE.md).
+**Current result:** a simple snapshot decision tree diagnosed **17/18 held-out varied incidents** using request count and latency. No new Dreamer training is justified by this scenario yet. The next experiment is [predicting action outcomes](ACTION_OUTCOMES.md), beginning with strong simple baselines. See [the temporal experiment results and decision](TEMPORAL_TRIAGE.md).
 
 The goal is to identify system faults reliably with fewer useful measurements.
 Better latency prediction is evidence that the model learned some system behavior;

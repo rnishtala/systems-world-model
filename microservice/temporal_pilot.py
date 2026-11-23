@@ -28,7 +28,7 @@ def measure(previous):
         result[service]=m
     return result
 
-def incident(mechanism,relief,profile=None):
+def incident(mechanism,relief,profile=None,before_action=None):
     profile=profile or {}
     if mechanism not in ('healthy','database','upstream') or relief not in ('none','database','load','retry'):raise ValueError('Unknown pilot case')
     drain();live.reset();configure('healthy',profile=profile);previous=drain()
@@ -39,7 +39,9 @@ def incident(mechanism,relief,profile=None):
         while time.monotonic()-start<profile.get('duration',22):
             now=time.monotonic();elapsed=now-start
             if stage==0 and elapsed>=profile.get('onset',3):configure(mechanism,profile=profile);stage=1
-            if stage==1 and elapsed>=profile.get('relief_at',9):configure(mechanism,relief,profile);stage=2
+            if stage==1 and elapsed>=profile.get('relief_at',9):
+                if before_action is not None:before_action(windows)
+                configure(mechanism,relief,profile);stage=2
             rate=2 if stage==2 and relief=='load' else (profile.get('burst_rate',96) if mechanism=='upstream' and stage>=1 else profile.get('base_rate',24))
             if now>=next_request:
                 next_request=now+1/rate

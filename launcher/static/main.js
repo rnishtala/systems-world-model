@@ -85,6 +85,16 @@ function renderTemporal(r){
  el('interpretation').textContent='Mechanism feasibility pilot: checks retries, backlog and recovery. No model training or accuracy claim.';
  if(!r.temporal_summary)return;
  el('metrics').replaceChildren();
+ if(r.temporal_summary.action_outcomes){
+  const c=r.temporal_summary.action_outcomes;
+  el('interpretation').textContent='Action-outcome screening: predictions saved before intervention. '+c.test_trials+' test trials across only '+c.independent_test_profiles+' independent workload profiles. No Dreamer comparison or reliable action-selection claim yet.';
+  for(const [name,m] of Object.entries(c.methods)){
+   const cell=text('div','','metric');
+   cell.append(text('span',name+(name===c.selected?' · selected using training data':'')),text('strong',(100*m.mae.error_fraction).toFixed(1)+' pp error-rate MAE'),text('span','Successful throughput MAE: '+m.mae.successful_requests_per_second.toFixed(2)+' req/s'),text('span','Latency MAE: '+(1000*m.mae.latency_seconds).toFixed(0)+' ms'),text('span','Queue MAE: '+m.mae.ledger_queue.toFixed(2)));
+   el('metrics').append(cell);
+  }
+  el('metrics').append(text('p',c.all_restored?'All trial cleanup checks passed':'Check trial cleanup'));return;
+ }
  if(r.temporal_summary.calibration){
   const c=r.temporal_summary.calibration;
   el('interpretation').textContent='Snapshot-only screening: a depth-two decision tree was frozen after 18 training incidents and tested on 18 separate incidents. No Dreamer training. Small sample; this is not confirmed generalization.';

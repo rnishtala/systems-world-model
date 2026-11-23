@@ -1,0 +1,78 @@
+# Predict the effect of a repair
+
+## Question
+
+Given recent telemetry and a proposed action, can a model predict what happens next?
+The previous snapshot screen was already strong at naming faults. This experiment
+moves to outcomes, where an action can reduce latency while leaving every request
+failed, or clear a queue by sacrificing most throughput.
+
+```mermaid
+flowchart LR
+  A[Recent telemetry] --> B[Predict outcomes for a proposed action]
+  C[Known action] --> B
+  B --> D[Save prediction before action]
+  D --> E[Apply bounded action in isolated lab]
+  E --> F[Measure errors, throughput, latency and queue]
+  F --> G[Compare prediction with measurement]
+```
+
+## First step: establish simple action-aware baselines
+
+Use four actions: do nothing, remove injected database degradation, reduce offered
+load to 2 requests/s, or disable retries. Database repair does not add capacity to an
+already healthy database. Measure error fraction, successful requests/s, mean window
+p95 latency, and mean queue depth separately; do not hide load shedding behind a
+single recovery score.
+
+Collect 36 trials from nine workload profiles. Each profile is independently recreated
+under all four actions, in shuffled order. The first six profiles (24 trials) are
+training; the remaining three (12 trials) are testing. All action variants of a profile
+stay in the same split. These are recreated trials, not identical counterfactual worlds.
+Only three independent test profiles means this is feasibility work, not confirmation.
+
+| Measurement | Protocol |
+|---|---|
+| Conditions | Healthy, database degradation, upstream overload |
+| Variation | Base load 18–34/s; burst 65–115/s; healthy DB hold 30–50 ms; degraded hold 80–120 ms |
+| Fault onset | Randomized between seconds 2 and 3 |
+| Action | Second 6, after saving the prediction |
+| Outcome | Final windows from seconds 12–16 |
+| Input | Last window or last four pre-action windows, plus proposed action |
+| Excluded | Fault label, injected settings, profile ID, event timestamps, post-action telemetry |
+| Safety | Eight client requests; 16 active requests/service; leased controls; drain before reset |
+
+Compare action-specific averages, ridge regression using the current window, and ridge
+regression using four ordered windows. All regressions include action interactions.
+Select regularization from 1, 10, 100 with leave-profile-out cross-validation on training
+data. Select the reference method by training CV error-fraction MAE; freeze all models
+before any test trial. Report all methods and all four outcome errors. No test-driven
+retuning, and no action-selection reliability claim from this small sample.
+
+## Where DreamerV3 fits next
+
+DreamerV3 learns a latent model of transitions from observations and actions. A future
+candidate would learn from these action-labelled telemetry sequences and roll forward
+under each proposed intervention. This requires a new observation/action adapter and
+training on the new data; the existing steady-fault checkpoint is not a validated
+predictor for this task.
+
+First verify collection, prediction timing and baseline performance. Then determine
+whether there is a measured gap worth testing with Dreamer. If proceeding, train the
+candidate only on training profiles and compare it with strong current-window and
+history baselines on a new, jointly frozen evaluation. The present test may inform
+research design, but must not later be described as untouched confirmation for a
+candidate developed after seeing it.
+
+```mermaid
+flowchart LR
+  A[Collect action transitions and fit baselines] --> B[Inspect held-out prediction errors]
+  B --> C{Useful unresolved prediction gap?}
+  C -->|Yes| D[Train action-conditioned Dreamer candidate]
+  D --> E[Freeze all methods and collect a fresh evaluation]
+  C -->|No| F[Keep simpler predictor for this task]
+```
+
+All execution stays in `systems-world-model-lab`. Full telemetry and model artifacts
+remain on its results volume. The UI displays aggregate baseline errors and cleanup
+status; no new Dreamer result is claimed by this first step.
