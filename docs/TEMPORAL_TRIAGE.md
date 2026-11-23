@@ -89,8 +89,9 @@ review observability and ground truth rather than increasing model size by defau
 
 ## Current status
 
-**First pilot complete; upstream burst needs calibration.** No new Dreamer training
-has started. Validate the scenario before collecting a randomized benchmark.
+**Both mechanisms reproduced; scenario-validity gate not passed.** No new Dreamer
+training has started. Match queue/load symptoms and measure full recovery before
+collecting a randomized benchmark.
 
 ## Foundation implementation
 
@@ -142,3 +143,46 @@ with the same eight-request concurrency cap, one retry, leases and drain checks.
 Its scheduler sleeps 2 ms instead of 10 ms; actual arrivals remain bounded and can
 fall below the target. Record submitted/dropped requests and failures as well as
 latency. This calibration is not evidence of improved diagnosis.
+
+### Calibrated pilot — 23 November 2026
+
+Run `0381be81c030` (code `ea50baf`) completed all nine cases; every case drained and
+reset successfully. Healthy controls remained at 46–49 ms with zero sampled failures.
+The stronger upstream burst now produces timeouts and a persistent queue.
+
+| Incident | Checkout latency* | Peak sampled ledger waiters | Effect of intended relief |
+|---|---:|---:|---|
+| Database slowdown | 215–216 ms | 0 | Database relief: 48 ms, zero sampled failures |
+| Upstream burst | 216 ms | 81–128 | Load/retry relief: fewer attempts, but backlog and failures persist in the short relief window |
+
+Without relief, burst queue depth reached 151 in the final phase; applying database
+relief to the burst did not resolve it (peak 172). Database relief here means removing
+injected degradation; it adds no capacity to an already healthy database. Upstream
+relief combines load reduction and retry suppression, so this pilot does not isolate
+the effect of those two actions. Client counts in the summary are the last sampled
+window, not final totals; restoration is checked separately after client completion.
+
+**Decision: do not train yet.** Similar latency alone does not make this a challenging
+history-based diagnosis: queue depth and traffic volume distinguish the two cases.
+The 3-second relief period is also too short to establish burst recovery. The next
+scenario revision should:
+
+1. Use overlapping workload and queue-depth ranges for both initiating mechanisms,
+   while keeping injected control values out of model features.
+2. Bound server backlog as well as client concurrency; timed-out work keeps running
+   downstream, so eight clients alone do not cap outstanding server requests.
+3. Observe a separately bounded recovery period long enough to measure successful
+   requests and queue clearance. Distinguish load shedding from retry suppression.
+4. Recheck snapshot separability and intervention outcomes before collecting training
+   data. If the current snapshot still suffices, use the simpler triage method.
+
+```mermaid
+flowchart LR
+  A[Retries and telemetry verified] --> B[Both faults reproduced]
+  B --> C[Match symptoms and verify recovery]
+  C --> D[Randomized training and held-out incidents]
+  D --> E[Compare history baselines with Dreamer]
+```
+
+We are at **C**. This is progress in experiment validity, not measured improvement
+in Dreamer's diagnosis accuracy.
