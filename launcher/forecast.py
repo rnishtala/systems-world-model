@@ -9,7 +9,7 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('run','dataset','candidate-run'):p.add_argument('--'+name,required=True)
     for name in ('seed','steps','test-seed'):p.add_argument('--'+name,type=int,required=True)
-    p.add_argument('--triage',action='store_true');p.add_argument('--audit-source');p.add_argument('--dataset-sha256');a=p.parse_args()
+    p.add_argument('--fresh-triage',action='store_true');p.add_argument('--triage',action='store_true');p.add_argument('--audit-source');p.add_argument('--dataset-sha256');a=p.parse_args()
     if os.environ.get('POD_NAMESPACE')!=NAMESPACE:raise ValueError('Wrong namespace')
     validate_retest(a.run,a.candidate_run)
     root=Path('/results/experiments/runs')/a.run;source=root.parent/a.candidate_run
@@ -36,6 +36,20 @@ def main():
             code=pipeline.child.wait()
         if code:raise RuntimeError(f'{name} exited with status {code}')
     common=['--models',str(source/'models'),'--seed',str(a.seed)]
+    if a.fresh_triage:
+        if a.audit_source:raise ValueError('Fresh triage cannot reuse tests')
+        protocol.update(mode='fresh-triage',primary_prefix=6,scope='Freeze readouts on source training data, then collect fresh incidents',success='Report paired exact diagnosis accuracy and false pool counts at six observations; other prefixes secondary')
+        (root/'protocol.json').write_text(json.dumps(protocol,indent=2))
+        try:
+            phase('freezing triage readouts',['microservice.triage_validate','fit','--data',str(data),'--out',str(root/'triage-readouts'),*common])
+            phase('collecting validation incidents',['microservice.collect','--split','test','--seed',str(a.test_seed),'--out',str(root/'test.jsonl'),'--probe-schedule',schedule])
+            phase('evaluating frozen triage readouts',['microservice.triage_validate','evaluate','--data',str(root/'test.jsonl'),'--out',str(root/'forecast-diagnostic'),'--readouts',str(root/'triage-readouts'),*common])
+            if frozen_identity(source)!=identity:raise ValueError('Frozen source artifacts changed')
+            (root/'progress.json').write_text(json.dumps(dict(phase='completed',utc=time.time())))
+        finally:
+            from microservice.live import reset
+            reset()
+        return
     if a.audit_source:
         validate_retest(a.run,a.audit_source)
         retained=root.parent/a.audit_source

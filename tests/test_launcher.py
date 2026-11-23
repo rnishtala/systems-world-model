@@ -229,3 +229,15 @@ def test_triage_requires_retained_forecast_and_uses_bounded_worker(tmp_path):
     assert job['spec']['template']['spec']['containers'][0]['command'][-1]=='--triage'
     assert job['spec']['activeDeadlineSeconds']==3600
     with pytest.raises(ValueError):validate_request(dict(ARGS,triage=True))
+
+
+def test_fresh_triage_cannot_reuse_retained_tests(tmp_path):
+    s=Store(str(tmp_path/'fresh.db'))
+    with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'v',fresh_triage=True)
+    source=s.create(ADMIN,ARGS,IMAGE,'v');source['status']='completed';s.save(source)
+    run=s.create(ADMIN,ARGS,IMAGE,'v',forecast_source=source['id'],fresh_triage=True)
+    assert run['fresh_triage'] and run['triage'] and not run.get('audit_source')
+    cmd=job_manifest(run,IMAGE)['spec']['template']['spec']['containers'][0]['command']
+    assert '--fresh-triage' in cmd and '--audit-source' not in cmd
+    with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'v',forecast_source=source['id'],fresh_triage=True,triage=True)
+    with pytest.raises(ValueError):validate_request(dict(ARGS,fresh_triage=True))

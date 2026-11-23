@@ -13,7 +13,7 @@ class Store:
         return json.loads(row[0])
     def save(self,run):
         self.db.execute('INSERT OR REPLACE INTO runs VALUES (?,?,?)',(run['id'],run['created'],json.dumps(run)));self.db.commit()
-    def create(self,owner,body,image,version,dataset=None,expansion=None,evaluation=None,training_source=None,probe_training_seeds=None,forecast_source=None,audit_source=None,triage=False):
+    def create(self,owner,body,image,version,dataset=None,expansion=None,evaluation=None,training_source=None,probe_training_seeds=None,forecast_source=None,audit_source=None,triage=False,fresh_triage=False):
         args=validate_request(body,{dataset['id']:dataset} if dataset else None);existing=self.all();pending=[r for r in existing if r['status'] not in TERMINAL]
         if len(pending)>=20 or sum(r['owner']==owner for r in pending)>=3:raise ValueError('Queue limit reached; wait for an existing run')
         used={r['test_seed'] for r in existing}|set(dataset['seeds'] if dataset else []);seed=1000000000+secrets.randbelow(1000000000)
@@ -32,6 +32,9 @@ class Store:
             previous=self.get(audit_source)
             if previous['status']!='completed' or previous['owner']!=owner or previous.get('forecast_source')!=forecast_source or previous.get('audit_source'):raise ValueError('Use a completed owned forecast from the same model')
             run.update(audit_source=audit_source)
+        if fresh_triage:
+            if forecast_source is None or audit_source is not None or triage:raise ValueError('Fresh triage requires only a frozen source model')
+            run.update(fresh_triage=True,triage=True)
         if triage:
             if audit_source is None:raise ValueError('Triage requires retained forecast data')
             run.update(triage=True)

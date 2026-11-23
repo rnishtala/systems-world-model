@@ -66,3 +66,23 @@ savings. A later prospective experiment must measure actual probes and time save
 
 Code and reports stay in this repository; data, checkpoints and execution remain in
 `systems-world-model-lab`. Existing experiments and other namespaces are untouched.
+
+## Fresh triage confirmation
+
+The retained-data comparison found only small diagnosis differences: at six observations,
+Dreamer-assisted and telemetry-only diagnosis both scored 63/64, with zero versus one
+false pool accusation. The stronger window-specific forecasting baseline essentially
+tied Dreamer. These are exploratory findings, not established triage gains.
+
+The next run freezes all 15 diagnostic readouts (three feature sets at five prefixes)
+and the simple forecasting baseline before collecting 64 new balanced incidents.
+Selection and fitting use only the source 192 training incidents. Model weights stay
+unchanged. Stored hashes and timestamps verify that tests arrived after freezing and
+that evaluation did not alter model, baseline or readout artifacts.
+
+The primary comparison is exact fault-combination accuracy at six observations,
+with paired disagreement counts and an exact paired test against each control.
+False pool accusations are reported separately: fewer false alarms with unchanged
+accuracy is a tradeoff to examine, not automatically proof of improved diagnosis.
+Other observation counts are secondary. Report all outcomes, including ties or losses.
+No actual early stopping or reduction in incident collection time is claimed.
