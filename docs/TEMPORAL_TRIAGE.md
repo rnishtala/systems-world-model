@@ -27,11 +27,9 @@ flowchart LR
   G --> I
 ```
 
-These are hypotheses to reproduce, not behavior already demonstrated by the current
-lab. Its collector drains each request batch and resets measurement windows; its
-services do not implement a retry policy. Reordering the existing CPU and pool controls
-would test a scripted ordering label, not demonstrate a causal cascade. Do not use that
-shortcut as evidence for better real-system root-cause analysis.
+The lab now supports bounded retries and continuous telemetry. The first pilot
+reproduced database-triggered retries but did not overload the healthy database.
+Both mechanisms must work before this becomes a training benchmark.
 
 ## Build and validate the incident before training
 
@@ -91,12 +89,8 @@ review observability and ground truth rather than increasing model size by defau
 
 ## Current status
 
-**Retry and continuous-window instrumentation implemented; mechanism pilot prepared.**
-No further steady-fault repetitions or Dreamer training runs were started as part of
-this design reset. Next implementation milestone is a bounded continuous collector
-and retry instrumentation, followed by the scenario-validity pilot—not another model
-hyperparameter sweep. This document is the primary next-experiment plan.
-
+**First pilot complete; upstream burst needs calibration.** No new Dreamer training
+has started. Validate the scenario before collecting a randomized benchmark.
 
 ## Foundation implementation
 
@@ -130,7 +124,21 @@ The post-rollout healthy-chain check passed, continuous-window telemetry respond
 and default retries remained zero. All 100 tests passed, including a real HTTP
 retry/timeout test. The rollout is reproducible with `scripts/deploy_temporal_services.py`.
 
-Pilot `5a6a43c1a820` is queued through the normal lab controller. At this checkpoint,
-a registry connection reset left the worker in `ImagePullBackOff`; Kubernetes is
-retrying. No pilot incidents or new Dreamer training have run yet. This checkpoint
-records deployment status, not evidence that the benchmark mechanisms are valid.
+Pilot `5a6a43c1a820` completed all nine incidents and restored the lab.
+
+| Mechanism | Incident checkout latency* | Payment timeouts | Relief outcome |
+|---|---:|---:|---|
+| Healthy | 47–48 ms | 0 | Remained healthy |
+| Database slowdown | 216 ms | 16–18 | Database relief restored 47 ms and zero timeouts |
+| Upstream burst | 48 ms | 0 | No congestion to relieve |
+
+*Mean of window p95 values; timeout counts cover the interior sampled interval.
+Disabling retries in the degraded-database case reduced latency to 104 ms but left
+timeouts: faster failure is not recovery.
+
+The original burst target was 40 requests/s, below the approximate 50 requests/s
+capacity of two connections held for 40 ms. The revised pilot targets 120 requests/s
+with the same eight-request concurrency cap, one retry, leases and drain checks.
+Its scheduler sleeps 2 ms instead of 10 ms; actual arrivals remain bounded and can
+fall below the target. Record submitted/dropped requests and failures as well as
+latency. This calibration is not evidence of improved diagnosis.

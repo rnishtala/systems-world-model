@@ -37,7 +37,7 @@ def incident(mechanism,relief):
             now=time.monotonic();elapsed=now-start
             if stage==0 and elapsed>=3:configure(mechanism);stage=1
             if stage==1 and elapsed>=9:configure(mechanism,relief);stage=2
-            rate=40 if mechanism=='upstream' and stage>=1 and not(stage==2 and relief=='upstream') else 2
+            rate=120 if mechanism=='upstream' and stage>=1 and not(stage==2 and relief=='upstream') else 2
             if now>=next_request:
                 next_request=now+1/rate
                 if len(pending)<8:
@@ -53,7 +53,7 @@ def incident(mechanism,relief):
                 current=measure(previous)
                 windows.append(dict(elapsed=elapsed,metrics=current,client=dict(submitted=submitted,completed=completed,errors=errors,dropped=dropped,inflight=len(pending))))
                 previous=current;next_window=now+.5
-            time.sleep(.01)
+            time.sleep(.002)
     finally:
         executor.shutdown(wait=True,cancel_futures=True)
         # Client timeouts do not cancel server work. Verify all services are quiet.
@@ -65,7 +65,7 @@ def main():
     if os.environ.get('POD_NAMESPACE')!='systems-world-model-lab':raise ValueError('Wrong namespace')
     out=Path(a.out);out.mkdir(parents=True,exist_ok=False)
     cases=[(m,r) for m in ('healthy','database','upstream') for r in ('none','database','upstream')];random.Random(a.seed).shuffle(cases)
-    protocol=dict(seed=a.seed,cases=cases,scope='Nine-incident mechanism feasibility pilot; no training or accuracy claim',onset_seconds=3,relief_seconds=9,load_seconds=12,max_client_inflight=8,max_retries=1)
+    protocol=dict(seed=a.seed,cases=cases,scope='Nine-incident mechanism feasibility pilot; no training or accuracy claim',onset_seconds=3,relief_seconds=9,load_seconds=12,max_client_inflight=8,max_retries=1,baseline_requests_per_second=2,burst_requests_per_second=120)
     (out/'protocol.json').write_text(json.dumps(protocol,indent=2))
     summaries=[]
     for i,(mechanism,relief) in enumerate(cases):
@@ -74,8 +74,8 @@ def main():
         stages={}
         for name,low,high in [('baseline',0,3),('incident',4,9),('relief',10,12)]:
             rows=[w for w in result['windows'] if low<=w['elapsed']<high]
-            stages[name]={s:dict(mean_window_latency=sum(w['metrics'][s]['latency_p95'] for w in rows)/max(1,len(rows)),max_active=max((w['metrics'][s]['counters'].get('active_requests',0) for w in rows),default=0),max_pool_waiters=max((w['metrics'][s]['counters'].get('pool_waiters',0) for w in rows),default=0),attempt_delta=(rows[-1]['metrics'][s]['counters'].get('downstream_attempts',0)-rows[0]['metrics'][s]['counters'].get('downstream_attempts',0)) if len(rows)>1 else 0,timeout_delta=(rows[-1]['metrics'][s]['counters'].get('downstream_timeouts',0)-rows[0]['metrics'][s]['counters'].get('downstream_timeouts',0)) if len(rows)>1 else 0) for s in live.SERVICES}
-        summaries.append(dict(mechanism=mechanism,relief=relief,stages=stages,restored=result['restored']))
+            stages[name]={s:dict(failed_delta=(rows[-1]['metrics'][s]['counters'].get('failed_requests',0)-rows[0]['metrics'][s]['counters'].get('failed_requests',0)) if len(rows)>1 else 0,mean_window_latency=sum(w['metrics'][s]['latency_p95'] for w in rows)/max(1,len(rows)),max_active=max((w['metrics'][s]['counters'].get('active_requests',0) for w in rows),default=0),max_pool_waiters=max((w['metrics'][s]['counters'].get('pool_waiters',0) for w in rows),default=0),attempt_delta=(rows[-1]['metrics'][s]['counters'].get('downstream_attempts',0)-rows[0]['metrics'][s]['counters'].get('downstream_attempts',0)) if len(rows)>1 else 0,timeout_delta=(rows[-1]['metrics'][s]['counters'].get('downstream_timeouts',0)-rows[0]['metrics'][s]['counters'].get('downstream_timeouts',0)) if len(rows)>1 else 0) for s in live.SERVICES}
+        summaries.append(dict(mechanism=mechanism,relief=relief,stages=stages,client=result['windows'][-1]['client'],restored=result['restored']))
         print('TEMPORAL_PILOT_PROGRESS',i+1,'/9',flush=True)
     (out/'summary.json').write_text(json.dumps(dict(scope=protocol['scope'],incidents=summaries),indent=2))
     print('TEMPORAL_PILOT_COMPLETE',flush=True)
