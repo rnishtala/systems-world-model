@@ -61,7 +61,7 @@ class Controller:
             if run['cancel']:
                 run.update(status='restoring',outcome='cancelled',release_after=time.time()+45)
             elif job is None:
-                complete=(self.root/'runs'/uid/('forecast-diagnostic' if run.get('audit_source') or run.get('fresh_triage') else 'forecast-evaluation' if run.get('mode')=='forecast' else 'evaluation')/'summary.json').exists()
+                complete=(self.root/'runs'/uid/('temporal-pilot' if run.get('temporal_pilot') else 'forecast-diagnostic' if run.get('audit_source') or run.get('fresh_triage') else 'forecast-evaluation' if run.get('mode')=='forecast' else 'evaluation')/'summary.json').exists()
                 run.update(status='restoring',outcome='completed' if complete else 'failed',error=None if complete else 'Worker disappeared before completion',release_after=time.time()+45)
             elif job.get('status',{}).get('succeeded'):
                 run.update(status='restoring',outcome='completed',release_after=time.time())

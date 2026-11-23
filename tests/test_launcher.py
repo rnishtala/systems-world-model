@@ -241,3 +241,13 @@ def test_fresh_triage_cannot_reuse_retained_tests(tmp_path):
     assert '--fresh-triage' in cmd and '--audit-source' not in cmd
     with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'v',forecast_source=source['id'],fresh_triage=True,triage=True)
     with pytest.raises(ValueError):validate_request(dict(ARGS,fresh_triage=True))
+
+
+def test_temporal_pilot_is_separate_and_namespace_bounded(tmp_path):
+    s=Store(str(tmp_path/'temporal.db'))
+    run=s.create(ADMIN,ARGS,IMAGE,'v',temporal_pilot=True)
+    job=job_manifest(run,IMAGE)
+    assert job['metadata']['namespace']=='systems-world-model-lab'
+    assert job['spec']['template']['spec']['containers'][0]['command'][2]=='launcher.temporal_pipeline'
+    with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'v',temporal_pilot=True,fresh_triage=True)
+    with pytest.raises(ValueError):validate_request(dict(ARGS,temporal_pilot=True))

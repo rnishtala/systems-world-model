@@ -7,7 +7,7 @@ from launcher.common import ADMIN,ORIGIN,DATASETS,STEPS,identity
 from launcher.store import Store
 from launcher.datasets import Catalog
 
-PUBLIC=('id','name','owner','created','status','phase','dataset','seed','test_seed','steps','started','finished','error','version','restored','dataset_name','dataset_sha256','training_seeds','expansion_seed','baseline_run','mode','evaluate_run','training_source','probe_schedule','probe_training_seeds','forecast_source','audit_source','triage','fresh_triage')
+PUBLIC=('id','name','owner','created','status','phase','dataset','seed','test_seed','steps','started','finished','error','version','restored','dataset_name','dataset_sha256','training_seeds','expansion_seed','baseline_run','mode','evaluate_run','training_source','probe_schedule','probe_training_seeds','forecast_source','audit_source','triage','fresh_triage','temporal_pilot')
 
 def create_app(store,root,key,origin=ORIGIN):
     root=Path(root);catalog=Catalog(root)
@@ -54,6 +54,10 @@ def create_app(store,root,key,origin=ORIGIN):
         if summary.exists():
             try:result['summary']=json.loads(summary.read_text())
             except ValueError:pass
+        temporal=path/'temporal-pilot/summary.json'
+        if temporal.exists():
+            try:result['temporal_summary']=json.loads(temporal.read_text())
+            except (ValueError,OSError):pass
         diagnostic=path/'forecast-diagnostic/summary.json'
         if diagnostic.exists():
             try:result['diagnostic_summary']=json.loads(diagnostic.read_text())

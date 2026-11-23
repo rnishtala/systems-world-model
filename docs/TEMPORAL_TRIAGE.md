@@ -91,8 +91,34 @@ review observability and ground truth rather than increasing model size by defau
 
 ## Current status
 
-**Design fixed; live retry/cascade instrumentation is not implemented or deployed.**
+**Retry and continuous-window instrumentation implemented; mechanism pilot prepared.**
 No further steady-fault repetitions or Dreamer training runs were started as part of
 this design reset. Next implementation milestone is a bounded continuous collector
 and retry instrumentation, followed by the scenario-validity pilot—not another model
 hyperparameter sweep. This document is the primary next-experiment plan.
+
+
+## Foundation implementation
+
+Retries are disabled by default. Opt-in controls permit at most two retries, bounded
+per-attempt timeouts, backoff and a total downstream deadline. The pilot uses just one
+retry. A timeout does not cancel work already running downstream; active-request and
+pool-wait counters expose that backlog. Retired pools close returning connections.
+
+`/metrics/window?after=<sequence>` reads completed-request windows without resetting
+faults, connection pools or counters. Boot identifiers and missing-window checks reject
+restarts or gaps. Changing delay/hold parameters preserves the existing pool. The legacy
+explicit measurement-reset endpoint remains available to the steady-fault collector.
+
+The first pilot has nine incidents: healthy, database slowdown, or upstream load burst,
+each with no relief, database relief, or upstream load/retry relief. Each has 3 seconds
+of baseline, onset at second 3, relief at second 9, and 12 seconds of bounded traffic.
+At most eight client requests are in flight. Controls have 45-second leases. After
+stopping arrivals, wait for client calls and verify all services and pool waiters are
+quiet before resetting; fail rather than reset over undrained work.
+
+This is an instrumentation/mechanism check, **not** the final randomized benchmark.
+Severity and onset are deliberately fixed for this pilot; one case per intervention
+cannot establish generalization or causal efficacy statistically. Inspect baseline,
+incident and relief telemetry before designing the larger validity dataset. Do not
+train Dreamer on these nine incidents or report diagnosis accuracy from them.
