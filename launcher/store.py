@@ -13,7 +13,7 @@ class Store:
         return json.loads(row[0])
     def save(self,run):
         self.db.execute('INSERT OR REPLACE INTO runs VALUES (?,?,?)',(run['id'],run['created'],json.dumps(run)));self.db.commit()
-    def create(self,owner,body,image,version,dataset=None,expansion=None,evaluation=None,training_source=None,probe_training_seeds=None,forecast_source=None,audit_source=None,triage=False,fresh_triage=False,temporal_pilot=False,snapshot_calibration=False,action_outcomes=False,action_source=None,action_validation_source=None):
+    def create(self,owner,body,image,version,dataset=None,expansion=None,evaluation=None,training_source=None,probe_training_seeds=None,forecast_source=None,audit_source=None,triage=False,fresh_triage=False,temporal_pilot=False,snapshot_calibration=False,action_outcomes=False,action_source=None,action_validation_source=None,action_balanced=False):
         args=validate_request(body,{dataset['id']:dataset} if dataset else None);existing=self.all();pending=[r for r in existing if r['status'] not in TERMINAL]
         if len(pending)>=20 or sum(r['owner']==owner for r in pending)>=3:raise ValueError('Queue limit reached; wait for an existing run')
         used={r['test_seed'] for r in existing}|set(dataset['seeds'] if dataset else []);seed=1000000000+secrets.randbelow(1000000000)
@@ -21,6 +21,9 @@ class Store:
         run=dict(**args,id=uuid.uuid4().hex[:12],owner=owner,created=time.time(),status='queued',phase='queued',test_seed=seed,image=image,version=version,cancel=False,error=None)
         if action_outcomes and (not temporal_pilot or snapshot_calibration):raise ValueError('Action outcomes requires a separate temporal pilot')
         if action_outcomes:run['action_outcomes']=True
+        if action_balanced:
+            if not action_outcomes or action_source is not None or action_validation_source is not None:raise ValueError('Balanced collection requires fresh action outcomes')
+            run['action_balanced']=True
         if action_source is not None:
             validate_retest(run['id'],action_source)
             previous=self.get(action_source)

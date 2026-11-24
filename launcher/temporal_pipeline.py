@@ -8,9 +8,12 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('run','dataset'):p.add_argument('--'+name,required=True)
     for name in ('seed','steps','test-seed'):p.add_argument('--'+name,type=int,required=True)
-    p.add_argument('--dataset-sha256');p.add_argument('--action-source');p.add_argument('--action-validation-source');modes=p.add_mutually_exclusive_group();modes.add_argument('--snapshot-calibration',action='store_true');modes.add_argument('--action-outcomes',action='store_true');a=p.parse_args()
+    p.add_argument('--dataset-sha256');p.add_argument('--action-balanced',action='store_true');p.add_argument('--action-source');p.add_argument('--action-validation-source');modes=p.add_mutually_exclusive_group();modes.add_argument('--snapshot-calibration',action='store_true');modes.add_argument('--action-outcomes',action='store_true');a=p.parse_args()
     if os.environ.get('POD_NAMESPACE')!=NAMESPACE:raise ValueError('Wrong namespace')
     resume=[]
+    if a.action_balanced:
+        if not a.action_outcomes or a.action_source or a.action_validation_source:raise ValueError('Balanced collection requires fresh action outcomes')
+        resume=['--balanced']
     if a.action_source:
         from launcher.common import validate_retest
         validate_retest(a.run,a.action_source)

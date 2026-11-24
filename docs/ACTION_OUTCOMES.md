@@ -224,3 +224,46 @@ comparisons on fresh data. The completed screening and validation batches now in
 experiment design and must not serve as untouched tests for new candidates.
 
 This analysis did not start another training run or change runtime services.
+
+## Balanced coverage protocol (prepared, not yet run)
+
+This experiment tests the coverage explanation above. It trains simple baselines;
+it does not train DreamerV3. The fixed budget is **120 trials**:
+
+| Partition | Independent profiles | Trials | Use |
+|---|---:|---:|---|
+| Training | 16 | 64 | Fit and select baselines with whole-profile CV |
+| Fresh test | 10 | 40 | Compare frozen methods once |
+| Diagnostic repeats | 2 previously trained profiles, each repeated twice | 16 | Measure variability, excluded from fitting and test scores |
+
+Database profiles cross three delay bands (80–90, 97–103, and 110–120 ms) with two
+offered-load regimes: 35–55% or 130–160% of nominal two-slot capacity (`2 / delay`).
+There are two independent training profiles and one test profile per combination.
+Healthy and upstream-overload controls each contribute two profiles per split.
+All profiles run under all four actions, shuffled within each partition. Training
+and testing use distinct random draws. Diagnostic repeats use fixed below/above
+boundary, high-load training profiles and run after testing. Controls, telemetry
+input exclusions, prediction timing, and cleanup rules remain unchanged.
+
+Nominal capacity is a scheduling reference, not measured effective capacity: retries,
+timeouts, and the eight-client admission limit can alter realized traffic. The new
+load distribution differs from the earlier screening, so absolute scores are not a
+like-for-like comparison with its 17.00/17.78 pp errors.
+
+Primary comparison: history versus current-window error-fraction MAE on all 40 fresh
+test trials. Report all outcomes, per-regime results, and paired profile differences.
+Each database test regime has only one independent profile; those subgroups are
+exploratory. Diagnostic repeat differences reveal variability but do not estimate a
+precise noise floor from two repeats. Preserve and disclose any invalid trials;
+do not drop hard cases or relax telemetry validation to finish the batch.
+
+The runner has a two-hour deadline for this larger batch; CPU, memory, concurrency,
+and namespace permissions are unchanged. Minimum observation time alone is 32 minutes,
+with startup, draining, and restoration adding overhead. Results will appear in the
+existing experiment UI with diagnostic repeats explicitly excluded from the test count.
+
+A useful result is improved coverage of both successful and failed intervention
+outcomes and a stable comparison on fresh profiles. Persistent repair errors or large
+repeat differences require investigating the measurements and recovery dynamics before
+scaling model capacity. Any later Dreamer candidate needs separate training and a new,
+jointly frozen evaluation against these simple baselines.

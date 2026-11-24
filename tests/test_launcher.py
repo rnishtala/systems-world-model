@@ -289,3 +289,13 @@ def test_action_validation_requires_completed_source_and_fresh_seed(tmp_path):
     assert command[-2:]==['--action-validation-source',source['id']]
     with pytest.raises(ValueError):s.create('other@example.com',ARGS,IMAGE,'v2',**kwargs)
     with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'v2',action_source=source['id'],**kwargs)
+
+
+def test_balanced_action_collection_is_exclusive_and_bounded(tmp_path):
+    s=Store(tmp_path/'queue.sqlite')
+    with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'v',action_balanced=True)
+    run=s.create(ADMIN,ARGS,IMAGE,'v',temporal_pilot=True,action_outcomes=True,action_balanced=True)
+    manifest=job_manifest(run,IMAGE)
+    assert '--action-balanced' in manifest['spec']['template']['spec']['containers'][0]['command']
+    assert manifest['spec']['activeDeadlineSeconds']==7200
+    with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'v',temporal_pilot=True,action_outcomes=True,action_balanced=True,action_validation_source=run['id'])

@@ -1,6 +1,6 @@
 # Improving world-model triage
 
-**Current result:** fresh action-outcome validation did not reproduce the history advantage: error-fraction MAE was **17.78 pp for history vs 17.00 pp for the current window**, across nine new profiles. The audit found a training coverage gap around the 100 ms request timeout. Next: balance training and fresh testing across that boundary, then reassess before investing in action-conditioned Dreamer. See [results, diagnosis, and next experiment](ACTION_OUTCOMES.md#fresh-validation-and-diagnosis--24-november-2026). Earlier snapshot diagnosis reached 17/18; no dependable Dreamer triage advantage is established.
+**Current result:** fresh action-outcome validation did not reproduce the history advantage: error-fraction MAE was **17.78 pp for history vs 17.00 pp for the current window**, across nine new profiles. The audit found a training coverage gap around the 100 ms request timeout. Next: the prepared 120-trial balanced protocol covers both sides of that boundary with separate training, testing, and diagnostic repeats; it has not run yet. Reassess before investing in action-conditioned Dreamer. See [results, diagnosis, and next experiment](ACTION_OUTCOMES.md#fresh-validation-and-diagnosis--24-november-2026). Earlier snapshot diagnosis reached 17/18; no dependable Dreamer triage advantage is established.
 
 The goal is to identify system faults reliably with fewer useful measurements.
 Better latency prediction is evidence that the model learned some system behavior;

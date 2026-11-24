@@ -147,13 +147,19 @@ def load_validation(source,out,seed):
     return cases,json.loads(data)
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--out',required=True);p.add_argument('--seed',required=True,type=int);sources=p.add_mutually_exclusive_group();sources.add_argument('--resume-from');sources.add_argument('--validate-from');a=p.parse_args()
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--out',required=True);p.add_argument('--seed',required=True,type=int);sources=p.add_mutually_exclusive_group();sources.add_argument('--resume-from');sources.add_argument('--validate-from');sources.add_argument('--balanced',action='store_true');a=p.parse_args()
     if os.environ.get('POD_NAMESPACE')!='systems-world-model-lab':raise ValueError('Wrong namespace')
     out=Path(a.out);out.mkdir(parents=True,exist_ok=False);cases=schedule(a.seed)
     protocol=dict(seed=a.seed,scope='Action-outcome feasibility screening; no Dreamer training or causal policy claim',cases=cases,features=FEATURES,actions=ACTIONS,targets=TARGETS,action_seconds=6,outcome_seconds=[12,16],primary='Mean absolute error in post-action request error fraction',penalties=PENALTIES,selection='Leave-profile-out training CV; freeze before all test trials',limits='24 training trials from 6 profiles; 12 test trials from only 3 profiles. Actions recreate profiles, not identical initial states.')
+    if a.balanced:
+        from microservice.action_balanced import schedule as balanced_schedule
+        cases=balanced_schedule(a.seed)
+        protocol.update(cases=cases,balanced=True,limits='64 training trials / 16 profiles; 40 test trials / 10 profiles; 16 diagnostic repeats excluded from fitting and test scores. Nominal load uses two-slot capacity; retries and timeouts can change effective capacity.')
+    training_count=sum(c['split']=='train' for c in cases)
     rows=[];frozen=None
     if a.validate_from:
         cases,frozen=load_validation(a.validate_from,out,a.seed)
+        training_count=0
         protocol.update(cases=cases,validation=dict(source_run=Path(a.validate_from).parent.name,new_profiles=9,training_trials=0),limits='36 test trials from 9 independent profiles; unchanged frozen predictors; same workload ranges as screening.')
     if a.resume_from:
         rows,frozen=restore_completed(a.resume_from,out,cases)
@@ -164,18 +170,21 @@ def main():
         row={k:case[k] for k in ('split','group','action')}
         def before_action(windows):
             row['observations']=observations(windows)
-            if case['split']=='test':
+            if case['split']!='train':
                 row['predictions']=predictions(frozen,row)
                 (out/f'prediction-{i}.json').write_text(json.dumps(row))
         result=incident(case['mechanism'],case['action'],case['profile'],before_action=before_action)
         (out/f'incident-{i}.json').write_text(json.dumps(result))
         row.update(outcome=outcome(result['windows']),restored=result['restored']);rows.append(row)
-        if i==23 and not a.validate_from:
+        if training_count and i==training_count-1:
             frozen=prepare(rows);(out/'frozen-baselines.json').write_text(json.dumps(frozen))
-        print('ACTION_OUTCOMES_PROGRESS',i+1,'/36',flush=True)
+        print('ACTION_OUTCOMES_PROGRESS',i+1,'/'+str(len(cases)),flush=True)
     (out/'examples.json').write_text(json.dumps(rows))
     scores=evaluate([r for r in rows if r['split']=='test'],frozen)
-    summary=dict(scope=protocol['scope'],incidents=[],action_outcomes=dict(**scores,training_trials=0 if a.validate_from else 24,validation=protocol.get('validation'),recovery=protocol.get('recovery'),all_restored=all(r['restored'] for r in rows),frozen_sha256=hashlib.sha256((out/'frozen-baselines.json').read_bytes()).hexdigest()))
+    if a.balanced:
+        from microservice.action_balanced import report
+        scores['balanced']=report(rows,cases,frozen)
+    summary=dict(scope=protocol['scope'],incidents=[],action_outcomes=dict(**scores,training_trials=training_count,validation=protocol.get('validation'),recovery=protocol.get('recovery'),all_restored=all(r['restored'] for r in rows),frozen_sha256=hashlib.sha256((out/'frozen-baselines.json').read_bytes()).hexdigest()))
     (out/'summary.json').write_text(json.dumps(summary,indent=2));print('ACTION_OUTCOMES_COMPLETE',flush=True)
 
 if __name__=='__main__':main()
