@@ -276,3 +276,16 @@ def test_action_recovery_requires_restored_source_and_preserves_schedule(tmp_pat
     assert resumed['test_seed']==original['test_seed']
     command=job_manifest(resumed,IMAGE)['spec']['template']['spec']['containers'][0]['command']
     assert command[-2:]==['--action-source',original['id']]
+
+
+def test_action_validation_requires_completed_source_and_fresh_seed(tmp_path):
+    s=Store(tmp_path/'queue.sqlite');source=s.create(ADMIN,ARGS,IMAGE,'v',temporal_pilot=True,action_outcomes=True)
+    kwargs=dict(temporal_pilot=True,action_outcomes=True,action_validation_source=source['id'])
+    with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'v2',**kwargs)
+    source.update(status='completed',restored=True);s.save(source)
+    run=s.create(ADMIN,ARGS,IMAGE,'v2',**kwargs)
+    assert run['test_seed']!=source['test_seed']
+    command=job_manifest(run,IMAGE)['spec']['template']['spec']['containers'][0]['command']
+    assert command[-2:]==['--action-validation-source',source['id']]
+    with pytest.raises(ValueError):s.create('other@example.com',ARGS,IMAGE,'v2',**kwargs)
+    with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'v2',action_source=source['id'],**kwargs)

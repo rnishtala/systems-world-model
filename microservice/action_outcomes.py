@@ -125,12 +125,36 @@ def restore_completed(source,out,cases):
     shutil.copyfile(source/'frozen-baselines.json',out/'frozen-baselines.json')
     return rows,frozen
 
+def validation_schedule(seed,source_cases):
+    cases=[]
+    for batch in range(3):
+        for case in schedule(seed+batch*1009)[24:]:
+            case['group']=f"validation-{batch}-"+case['group']
+            cases.append(case)
+    known={json.dumps(c['profile'],sort_keys=True) for c in source_cases}
+    if any(json.dumps(c['profile'],sort_keys=True) in known for c in cases):raise ValueError('Validation profile overlaps source')
+    return cases
+
+def load_validation(source,out,seed):
+    source=Path(source);out=Path(out)
+    summary=json.loads((source/'summary.json').read_text())['action_outcomes']
+    protocol=json.loads((source/'protocol.json').read_text())
+    data=(source/'frozen-baselines.json').read_bytes()
+    if not summary['all_restored'] or hashlib.sha256(data).hexdigest()!=summary['frozen_sha256']:raise ValueError('Invalid frozen validation source')
+    if seed==protocol['seed']:raise ValueError('Use a fresh validation seed')
+    cases=validation_schedule(seed,protocol['cases'])
+    (out/'frozen-baselines.json').write_bytes(data)
+    return cases,json.loads(data)
+
 def main():
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--out',required=True);p.add_argument('--seed',required=True,type=int);p.add_argument('--resume-from');a=p.parse_args()
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--out',required=True);p.add_argument('--seed',required=True,type=int);sources=p.add_mutually_exclusive_group();sources.add_argument('--resume-from');sources.add_argument('--validate-from');a=p.parse_args()
     if os.environ.get('POD_NAMESPACE')!='systems-world-model-lab':raise ValueError('Wrong namespace')
     out=Path(a.out);out.mkdir(parents=True,exist_ok=False);cases=schedule(a.seed)
     protocol=dict(seed=a.seed,scope='Action-outcome feasibility screening; no Dreamer training or causal policy claim',cases=cases,features=FEATURES,actions=ACTIONS,targets=TARGETS,action_seconds=6,outcome_seconds=[12,16],primary='Mean absolute error in post-action request error fraction',penalties=PENALTIES,selection='Leave-profile-out training CV; freeze before all test trials',limits='24 training trials from 6 profiles; 12 test trials from only 3 profiles. Actions recreate profiles, not identical initial states.')
     rows=[];frozen=None
+    if a.validate_from:
+        cases,frozen=load_validation(a.validate_from,out,a.seed)
+        protocol.update(cases=cases,validation=dict(source_run=Path(a.validate_from).parent.name,new_profiles=9,training_trials=0),limits='36 test trials from 9 independent profiles; unchanged frozen predictors; same workload ranges as screening.')
     if a.resume_from:
         rows,frozen=restore_completed(a.resume_from,out,cases)
         protocol['recovery']=dict(source_run=Path(a.resume_from).parent.name,preserved_trials=len(rows),frozen_sha256=hashlib.sha256((out/'frozen-baselines.json').read_bytes()).hexdigest())
@@ -146,12 +170,12 @@ def main():
         result=incident(case['mechanism'],case['action'],case['profile'],before_action=before_action)
         (out/f'incident-{i}.json').write_text(json.dumps(result))
         row.update(outcome=outcome(result['windows']),restored=result['restored']);rows.append(row)
-        if i==23:
+        if i==23 and not a.validate_from:
             frozen=prepare(rows);(out/'frozen-baselines.json').write_text(json.dumps(frozen))
         print('ACTION_OUTCOMES_PROGRESS',i+1,'/36',flush=True)
     (out/'examples.json').write_text(json.dumps(rows))
     scores=evaluate([r for r in rows if r['split']=='test'],frozen)
-    summary=dict(scope=protocol['scope'],incidents=[],action_outcomes=dict(**scores,training_trials=24,recovery=protocol.get('recovery'),all_restored=all(r['restored'] for r in rows),frozen_sha256=hashlib.sha256((out/'frozen-baselines.json').read_bytes()).hexdigest()))
+    summary=dict(scope=protocol['scope'],incidents=[],action_outcomes=dict(**scores,training_trials=0 if a.validate_from else 24,validation=protocol.get('validation'),recovery=protocol.get('recovery'),all_restored=all(r['restored'] for r in rows),frozen_sha256=hashlib.sha256((out/'frozen-baselines.json').read_bytes()).hexdigest()))
     (out/'summary.json').write_text(json.dumps(summary,indent=2));print('ACTION_OUTCOMES_COMPLETE',flush=True)
 
 if __name__=='__main__':main()

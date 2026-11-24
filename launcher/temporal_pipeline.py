@@ -8,7 +8,7 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('run','dataset'):p.add_argument('--'+name,required=True)
     for name in ('seed','steps','test-seed'):p.add_argument('--'+name,type=int,required=True)
-    p.add_argument('--dataset-sha256');p.add_argument('--action-source');modes=p.add_mutually_exclusive_group();modes.add_argument('--snapshot-calibration',action='store_true');modes.add_argument('--action-outcomes',action='store_true');a=p.parse_args()
+    p.add_argument('--dataset-sha256');p.add_argument('--action-source');p.add_argument('--action-validation-source');modes=p.add_mutually_exclusive_group();modes.add_argument('--snapshot-calibration',action='store_true');modes.add_argument('--action-outcomes',action='store_true');a=p.parse_args()
     if os.environ.get('POD_NAMESPACE')!=NAMESPACE:raise ValueError('Wrong namespace')
     resume=[]
     if a.action_source:
@@ -16,6 +16,11 @@ def main():
         validate_retest(a.run,a.action_source)
         if not a.action_outcomes:raise ValueError('Recovery requires action outcomes')
         resume=['--resume-from',str(Path('/results/experiments/runs')/a.action_source/'temporal-pilot')]
+    if a.action_validation_source:
+        from launcher.common import validate_retest
+        validate_retest(a.run,a.action_validation_source)
+        if not a.action_outcomes or a.action_source:raise ValueError('Validation requires action outcomes without recovery')
+        resume=['--validate-from',str(Path('/results/experiments/runs')/a.action_validation_source/'temporal-pilot')]
     root=Path('/results/experiments/runs')/a.run;root.mkdir(parents=True,exist_ok=True)
     if (root/'protocol.json').exists():raise ValueError('Use a fresh pilot run')
     (root/'protocol.json').write_text(json.dumps(dict(mode='temporal-pilot',seed=a.test_seed,scope='Mechanism feasibility only; no Dreamer training',utc=time.time())))

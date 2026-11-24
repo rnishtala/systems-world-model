@@ -115,3 +115,27 @@ without retuning on these results. If the temporal benefit persists, collect a
 larger training-only transition dataset for an action-conditioned Dreamer candidate;
 compare it against the history baseline on a fresh, jointly frozen evaluation.
 The current screen remains exploratory and must not become that final test set.
+
+## Next validation: frozen models, new workloads
+
+**Goal:** establish whether recent history improves repair-outcome prediction on
+new workloads before training an action-conditioned DreamerV3 candidate.
+
+The next batch uses nine new independent profiles (three per condition), each
+recreated under all four actions: 36 trials. It copies the exact frozen predictors
+from `cf9ad6cbed1c`, uses a fresh random seed, retains the original workload ranges,
+and performs no training or tuning. Predictions are saved before each action;
+telemetry timing and cleanup checks remain unchanged. Source artifacts are retained.
+
+The primary comparison remains mean absolute error in post-action error fraction:
+history versus current-window ridge. Report all four outcome errors and profile-level
+paired differences for the complete batch, including failures; do not stop early for
+a favorable score. Lower error on the primary measure is the immediate success
+criterion, with per-profile consistency and the other outcomes qualifying the result.
+This is validation within the existing workload ranges, not new-fault generalization.
+
+If the benefit persists, the next milestone is an action-conditioned DreamerV3 model
+trained on a separate, larger transition dataset, evaluated against the frozen
+history baseline on fresh workloads. The ultimate goal is better diagnosis and
+repair recommendations; this experiment measures a prerequisite—predicting repair
+outcomes—and does not yet establish reliable root-cause diagnosis or action choice.

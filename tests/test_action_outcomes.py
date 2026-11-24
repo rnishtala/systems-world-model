@@ -74,3 +74,36 @@ def test_recovery_preserves_frozen_models_and_saved_predictions(tmp_path):
     saved['observations'][0][0]+=1;(source/'prediction-24.json').write_text(json.dumps(saved))
     other=tmp_path/'bad';other.mkdir()
     with pytest.raises(ValueError,match='inputs mismatch'):restore_completed(source,other,cases)
+
+
+def test_fresh_validation_uses_frozen_models_without_training(tmp_path,monkeypatch):
+    import json,hashlib,sys
+    import microservice.action_outcomes as m
+    source=tmp_path/'source';source.mkdir();out=tmp_path/'out'
+    data=json.dumps(prepare(training_rows())).encode()
+    (source/'frozen-baselines.json').write_bytes(data)
+    (source/'summary.json').write_text(json.dumps({'action_outcomes':{'all_restored':True,'frozen_sha256':hashlib.sha256(data).hexdigest()}}))
+    (source/'protocol.json').write_text(json.dumps({'seed':123,'cases':schedule(123)}))
+    cases=m.validation_schedule(456,schedule(123))
+    assert len(cases)==36 and len({c['group'] for c in cases})==9
+    assert all(c['split']=='test' for c in cases)
+    for group in {c['group'] for c in cases}:
+        assert {c['action'] for c in cases if c['group']==group}==set(ACTIONS)
+    def fake_incident(mechanism,action,profile,before_action):
+        windows=[window(3+j*.5,j+1) for j in range(6)]
+        before_action(windows)
+        assert len(list(out.glob('prediction-*.json')))==len(list(out.glob('incident-*.json')))+1
+        windows.extend(window(12+j*.5,20+j*2) for j in range(5))
+        return dict(mechanism=mechanism,relief=action,windows=windows,restored=True)
+    def forbidden(*args):raise AssertionError('Validation must not refit')
+    monkeypatch.setattr(m,'incident',fake_incident);monkeypatch.setattr(m,'prepare',forbidden)
+    monkeypatch.setenv('POD_NAMESPACE','systems-world-model-lab')
+    monkeypatch.setattr(sys,'argv',['action_outcomes','--out',str(out),'--seed','456','--validate-from',str(source)])
+    m.main()
+    result=json.loads((out/'summary.json').read_text())['action_outcomes']
+    assert result['training_trials']==0 and result['test_trials']==36 and result['independent_test_profiles']==9
+    assert (out/'frozen-baselines.json').read_bytes()==data
+    with pytest.raises(ValueError,match='overlaps'):m.validation_schedule(456,cases)
+    bad=tmp_path/'bad';bad.mkdir()
+    (source/'frozen-baselines.json').write_bytes(data+b' ')
+    with pytest.raises(ValueError,match='Invalid frozen'):m.load_validation(source,bad,456)

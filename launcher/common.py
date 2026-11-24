@@ -37,6 +37,7 @@ def job_manifest(run,image):
     if run.get('snapshot_calibration'):command+=['--snapshot-calibration']
     if run.get('action_outcomes'):command+=['--action-outcomes']
     if run.get('action_source'):command+=['--action-source',run['action_source']]
+    if run.get('action_validation_source'):command+=['--action-validation-source',run['action_validation_source']]
     if run.get('forecast_source'):
         validate_retest(uid,run['forecast_source'])
         if any(run.get(k) for k in ('training_source','probe_training_seeds','evaluate_run','expansion_seed')):raise ValueError('Forecast experiment must run alone')
