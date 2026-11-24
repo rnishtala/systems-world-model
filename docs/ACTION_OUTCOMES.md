@@ -139,3 +139,88 @@ trained on a separate, larger transition dataset, evaluated against the frozen
 history baseline on fresh workloads. The ultimate goal is better diagnosis and
 repair recommendations; this experiment measures a prerequisite—predicting repair
 outcomes—and does not yet establish reliable root-cause diagnosis or action choice.
+
+
+## Fresh validation and diagnosis — 24 November 2026
+
+Run `15999a239bf1` completed all 36 trials across nine new profiles. All cleanup
+checks passed and the controller restored the lab. The predictors were verified
+byte-identical to the source screening run; no training or retuning occurred.
+
+| Held-out MAE | Current window | Four-window history |
+|---|---:|---:|
+| Error fraction (percentage points) | **17.00** | 17.78 |
+| Successful requests/s | 3.80 | **3.41** |
+| Latency (ms) | **27.83** | 33.25 |
+| Queue depth | **1.41** | 1.64 |
+
+The earlier primary-metric gain did not replicate. History won on five of nine
+profiles, but its mean paired error was 0.78 percentage points worse. An exploratory
+paired profile bootstrap (20,000 resamples, seed 20261124) gave a 95% percentile
+interval of -1.69 to +3.18 points for history minus snapshot. Nine profiles are too
+few for a strong inference; this does not establish superiority or equivalence.
+
+### Where it helped and hurt
+
+| Condition (12 trials each) | Current-window error MAE (pp) | History error MAE (pp) |
+|---|---:|---:|
+| Healthy | 2.27 | **1.80** |
+| Database degradation | **44.16** | 44.31 |
+| Upstream overload | **4.57** | 7.24 |
+
+Across conditions, disabling retries favored history (7.41 vs 13.38 pp), while
+removing database degradation favored the current window (20.67 vs 30.14 pp).
+These post-hoc subgroups are diagnostic, not separate confirmed wins. Both methods
+were poor on database degradation followed by load reduction: 73.66/74.67 pp error.
+
+### A concrete training coverage gap
+
+The request attempt timeout is fixed at **100 ms**. Although training and validation
+sampled the same configured 80–120 ms database-delay range, their few realized
+profiles landed on opposite sides of that boundary:
+
+| Database profiles | Training | Fresh validation |
+|---|---:|---:|
+| Independent profiles | 2 | 3 |
+| Injected delay range | 105.93–109.40 ms | 83.22–93.07 ms |
+| Profiles below 100 ms | 0 | 3 |
+| Observed errors after reducing load | 100% in both | 0% in all three |
+
+At low load, a delay longer than the attempt timeout can still fail every request;
+a shorter delay can complete once queueing is relieved. This is a plausible
+mechanistic explanation for the load-reduction prediction failure, supported by the
+observed coverage and outcomes. It is not a controlled causal test, and it does not
+fully explain the variable database-repair outcomes (some still had 100% errors).
+Injected settings were used only for this diagnostic audit, never as predictor inputs.
+
+### Decision and next experiment
+
+Keep the current-window predictor as the simpler reference; retain history as a
+challenger. Do not claim a Dreamer benefit or scale up Dreamer training on this evidence.
+The immediate issue to address is sparse coverage of different system behaviors.
+
+```mermaid
+flowchart LR
+  A[Cover both sides of the timeout boundary] --> B[Collect separate training profiles]
+  B --> C[Fit snapshot and history baselines]
+  C --> D[Freeze predictors]
+  D --> E[Test fresh profiles on both sides]
+  E --> F[Measure repair outcomes and remaining errors]
+  F --> G[Decide whether to train action-conditioned Dreamer]
+```
+
+For the next collection, stratify database delays below, near, and above 100 ms;
+cover offered loads below and above pool capacity, with all four actions for each
+profile. Use distinct profiles in training and testing, balancing these regimes in
+both. Include repeated trials of a few fixed profiles to measure outcome variability
+and investigate the database-repair failures. Keep these diagnostic repeats separate
+from the held-out score. Preserve input exclusions, pre-action prediction timing,
+resource limits, and cleanup checks. Do not add fault settings as model features.
+
+Choose the exact sample budget and freeze the protocol before collection. Fit and
+select models only with grouped training folds. Report overall and regime-specific
+error-fraction MAE, throughput, latency, queue errors, and profile-level paired
+comparisons on fresh data. The completed screening and validation batches now inform
+experiment design and must not serve as untouched tests for new candidates.
+
+This analysis did not start another training run or change runtime services.

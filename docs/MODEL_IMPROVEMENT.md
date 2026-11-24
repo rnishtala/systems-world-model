@@ -1,6 +1,6 @@
 # Improving world-model triage
 
-**Current result:** a simple snapshot decision tree diagnosed **17/18 held-out varied incidents** using request count and latency. No new Dreamer training is justified by this scenario yet. The next experiment is [predicting action outcomes](ACTION_OUTCOMES.md), beginning with strong simple baselines. See [the temporal experiment results and decision](TEMPORAL_TRIAGE.md).
+**Current result:** fresh action-outcome validation did not reproduce the history advantage: error-fraction MAE was **17.78 pp for history vs 17.00 pp for the current window**, across nine new profiles. The audit found a training coverage gap around the 100 ms request timeout. Next: balance training and fresh testing across that boundary, then reassess before investing in action-conditioned Dreamer. See [results, diagnosis, and next experiment](ACTION_OUTCOMES.md#fresh-validation-and-diagnosis--24-november-2026). Earlier snapshot diagnosis reached 17/18; no dependable Dreamer triage advantage is established.
 
 The goal is to identify system faults reliably with fewer useful measurements.
 Better latency prediction is evidence that the model learned some system behavior;
