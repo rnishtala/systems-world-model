@@ -86,3 +86,32 @@ its completed trials and frozen models, verifies saved test predictions against 
 models, and retries only the missing trial using the same scheduled profile/action.
 It does not relax sampling checks or retune predictors. The replacement trial is a
 new physical realization and is disclosed as such in the final result.
+
+## First screening result — 24 November 2026
+
+Run `cf9ad6cbed1c` completed the dataset from source run `3269c31c2b54`
+using recovery code `16d9b47`. The original 35 trials, 11 saved test predictions,
+and frozen model file were verified byte-identical (47 files). Only the final
+trial was recreated; all 12 test predictions were saved before their interventions.
+All 36 trial cleanup checks passed.
+
+The history predictor was selected using training CV before testing. Held-out
+mean absolute errors across 12 trials from three independent profiles were:
+
+| Predictor | Error fraction (percentage points) | Successful requests/s | Latency (ms) | Queue depth |
+|---|---:|---:|---:|---:|
+| Action-specific average | 48.32 | 7.47 | 52.67 | 5.43 |
+| Current-window ridge | 10.43 | 4.56 | 28.85 | 1.00 |
+| Four-window history ridge | **5.33** | **3.99** | **21.90** | **0.55** |
+
+History reduced error-fraction MAE by about 49% relative to the current-window
+baseline in this screen, and had lower errors on all four measured outcomes.
+This supports testing temporal information for intervention prediction. It does
+not establish a Dreamer advantage: no Dreamer model was trained or evaluated here.
+Three independent test profiles are too few to establish reliable generalization.
+
+Next, repeat the frozen-baseline comparison on more independently sampled profiles
+without retuning on these results. If the temporal benefit persists, collect a
+larger training-only transition dataset for an action-conditioned Dreamer candidate;
+compare it against the history baseline on a fresh, jointly frozen evaluation.
+The current screen remains exploratory and must not become that final test set.
