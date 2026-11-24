@@ -266,3 +266,13 @@ def test_action_outcomes_requires_exclusive_temporal_mode(tmp_path):
     with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'v',temporal_pilot=True,snapshot_calibration=True,action_outcomes=True)
     run=s.create(ADMIN,ARGS,IMAGE,'v',temporal_pilot=True,action_outcomes=True)
     assert '--action-outcomes' in job_manifest(run,IMAGE)['spec']['template']['spec']['containers'][0]['command']
+
+
+def test_action_recovery_requires_restored_source_and_preserves_schedule(tmp_path):
+    s=Store(tmp_path/'queue.sqlite');original=s.create(ADMIN,ARGS,IMAGE,'v',temporal_pilot=True,action_outcomes=True)
+    with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'v2',temporal_pilot=True,action_outcomes=True,action_source=original['id'])
+    original.update(status='failed',restored=True);s.save(original)
+    resumed=s.create(ADMIN,ARGS,IMAGE,'v2',temporal_pilot=True,action_outcomes=True,action_source=original['id'])
+    assert resumed['test_seed']==original['test_seed']
+    command=job_manifest(resumed,IMAGE)['spec']['template']['spec']['containers'][0]['command']
+    assert command[-2:]==['--action-source',original['id']]

@@ -88,6 +88,7 @@ function renderTemporal(r){
  if(r.temporal_summary.action_outcomes){
   const c=r.temporal_summary.action_outcomes;
   el('interpretation').textContent='Action-outcome screening: predictions saved before intervention. '+c.test_trials+' test trials across only '+c.independent_test_profiles+' independent workload profiles. No Dreamer comparison or reliable action-selection claim yet.';
+  if(c.recovery)el('interpretation').textContent+=' Recovery preserved '+c.recovery.preserved_trials+' completed trials and the original frozen models.';
   for(const [name,m] of Object.entries(c.methods)){
    const cell=text('div','','metric');
    cell.append(text('span',name+(name===c.selected?' · selected using training data':'')),text('strong',(100*m.mae.error_fraction).toFixed(1)+' pp error-rate MAE'),text('span','Successful throughput MAE: '+m.mae.successful_requests_per_second.toFixed(2)+' req/s'),text('span','Latency MAE: '+(1000*m.mae.latency_seconds).toFixed(0)+' ms'),text('span','Queue MAE: '+m.mae.ledger_queue.toFixed(2)));

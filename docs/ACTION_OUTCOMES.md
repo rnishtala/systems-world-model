@@ -76,3 +76,13 @@ flowchart LR
 All execution stays in `systems-world-model-lab`. Full telemetry and model artifacts
 remain on its results volume. The UI displays aggregate baseline errors and cleanup
 status; no new Dreamer result is claimed by this first step.
+
+## Interrupted-run recovery
+
+The initial run stopped after 35 trials because the final trial failed the sampling
+interval check before its prediction/action. All completed trial cleanup passed, and
+the controller restored the lab. Recovery preserves the original failed run, copies
+its completed trials and frozen models, verifies saved test predictions against those
+models, and retries only the missing trial using the same scheduled profile/action.
+It does not relax sampling checks or retune predictors. The replacement trial is a
+new physical realization and is disclosed as such in the final result.

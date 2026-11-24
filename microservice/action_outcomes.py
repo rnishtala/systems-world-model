@@ -1,5 +1,5 @@
 """Bounded action-outcome screening: grouped splits and predictions before intervention."""
-import argparse,json,os,random,hashlib
+import argparse,json,os,random,hashlib,shutil
 from pathlib import Path
 import numpy as np
 from microservice import live
@@ -101,13 +101,42 @@ def evaluate(rows,frozen):
         metrics[name]=dict(mae=dict(zip(TARGETS,errors.mean(0).tolist())),by_action={a:dict(zip(TARGETS,errors[[r['action']==a for r in rows]].mean(0).tolist())) for a in ACTIONS})
     return dict(test_trials=len(rows),independent_test_profiles=len({r['group'] for r in rows}),selected=frozen['selected'],cv=frozen['cv'],methods=metrics)
 
+def restore_completed(source,out,cases):
+    """Resume only after training froze; preserve completed trials and original predictions."""
+    source=Path(source);out=Path(out)
+    original=json.loads((source/'protocol.json').read_text())
+    if original['cases']!=cases or (source/'summary.json').exists():raise ValueError('Recovery source protocol mismatch or already complete')
+    present=sorted(int(p.stem.split('-')[1]) for p in source.glob('incident-*.json'))
+    if not 24<=len(present)<36 or present!=list(range(len(present))):raise ValueError('Recovery requires a contiguous completed training prefix')
+    frozen=json.loads((source/'frozen-baselines.json').read_text());rows=[]
+    for i in present:
+        case=cases[i];result=json.loads((source/f'incident-{i}.json').read_text())
+        if not result['restored'] or result['mechanism']!=case['mechanism'] or result['relief']!=case['action']:raise ValueError('Invalid restored trial')
+        row={k:case[k] for k in ('split','group','action')};row['observations']=observations(result['windows'])
+        if case['split']=='test':
+            saved=json.loads((source/f'prediction-{i}.json').read_text())
+            if any(saved[k]!=row[k] for k in row):raise ValueError('Saved prediction inputs mismatch')
+            expected=predictions(frozen,row)
+            if set(saved['predictions'])!=set(expected) or any(not np.allclose(saved['predictions'][k],expected[k],rtol=1e-10,atol=1e-10) for k in expected):raise ValueError('Saved prediction model mismatch')
+            row['predictions']=saved['predictions']
+            shutil.copyfile(source/f'prediction-{i}.json',out/f'prediction-{i}.json')
+        row.update(outcome=outcome(result['windows']),restored=True);rows.append(row)
+        shutil.copyfile(source/f'incident-{i}.json',out/f'incident-{i}.json')
+    shutil.copyfile(source/'frozen-baselines.json',out/'frozen-baselines.json')
+    return rows,frozen
+
 def main():
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--out',required=True);p.add_argument('--seed',required=True,type=int);a=p.parse_args()
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--out',required=True);p.add_argument('--seed',required=True,type=int);p.add_argument('--resume-from');a=p.parse_args()
     if os.environ.get('POD_NAMESPACE')!='systems-world-model-lab':raise ValueError('Wrong namespace')
     out=Path(a.out);out.mkdir(parents=True,exist_ok=False);cases=schedule(a.seed)
     protocol=dict(seed=a.seed,scope='Action-outcome feasibility screening; no Dreamer training or causal policy claim',cases=cases,features=FEATURES,actions=ACTIONS,targets=TARGETS,action_seconds=6,outcome_seconds=[12,16],primary='Mean absolute error in post-action request error fraction',penalties=PENALTIES,selection='Leave-profile-out training CV; freeze before all test trials',limits='24 training trials from 6 profiles; 12 test trials from only 3 profiles. Actions recreate profiles, not identical initial states.')
-    (out/'protocol.json').write_text(json.dumps(protocol,indent=2));rows=[];frozen=None
+    rows=[];frozen=None
+    if a.resume_from:
+        rows,frozen=restore_completed(a.resume_from,out,cases)
+        protocol['recovery']=dict(source_run=Path(a.resume_from).parent.name,preserved_trials=len(rows),frozen_sha256=hashlib.sha256((out/'frozen-baselines.json').read_bytes()).hexdigest())
+    (out/'protocol.json').write_text(json.dumps(protocol,indent=2))
     for i,case in enumerate(cases):
+        if i<len(rows):continue
         row={k:case[k] for k in ('split','group','action')}
         def before_action(windows):
             row['observations']=observations(windows)
@@ -122,7 +151,7 @@ def main():
         print('ACTION_OUTCOMES_PROGRESS',i+1,'/36',flush=True)
     (out/'examples.json').write_text(json.dumps(rows))
     scores=evaluate([r for r in rows if r['split']=='test'],frozen)
-    summary=dict(scope=protocol['scope'],incidents=[],action_outcomes=dict(**scores,training_trials=24,all_restored=all(r['restored'] for r in rows),frozen_sha256=hashlib.sha256((out/'frozen-baselines.json').read_bytes()).hexdigest()))
+    summary=dict(scope=protocol['scope'],incidents=[],action_outcomes=dict(**scores,training_trials=24,recovery=protocol.get('recovery'),all_restored=all(r['restored'] for r in rows),frozen_sha256=hashlib.sha256((out/'frozen-baselines.json').read_bytes()).hexdigest()))
     (out/'summary.json').write_text(json.dumps(summary,indent=2));print('ACTION_OUTCOMES_COMPLETE',flush=True)
 
 if __name__=='__main__':main()

@@ -49,3 +49,28 @@ def test_baselines_freeze_and_reject_test_data_for_fitting():
     assert set(result['methods'])=={'action_mean','snapshot_ridge','history_ridge'}
     assert all(np.isfinite(list(v['mae'].values())).all() for v in result['methods'].values())
     with pytest.raises(ValueError):prepare(test)
+
+
+def test_recovery_preserves_frozen_models_and_saved_predictions(tmp_path):
+    import json
+    from microservice.action_outcomes import restore_completed
+    source=tmp_path/'source';source.mkdir();out=tmp_path/'out';out.mkdir();cases=schedule(321);rows=[]
+    (source/'protocol.json').write_text(json.dumps({'cases':cases}))
+    for i,case in enumerate(cases[:25]):
+        windows=[window(3+j*.5,j+1) for j in range(6)]+[window(12+j*.5,20+j*2) for j in range(5)]
+        result=dict(mechanism=case['mechanism'],relief=case['action'],windows=windows,restored=True)
+        (source/f'incident-{i}.json').write_text(json.dumps(result))
+        row={k:case[k] for k in ('split','group','action')};row.update(observations=observations(windows),outcome=outcome(windows),restored=True)
+        if i==24:
+            saved={k:row[k] for k in ('split','group','action','observations')};saved['predictions']=predictions(frozen,row)
+            (source/f'prediction-{i}.json').write_text(json.dumps(saved))
+        else:rows.append(row)
+        if i==23:
+            frozen=prepare(rows);(source/'frozen-baselines.json').write_text(json.dumps(frozen))
+    restored,model=restore_completed(source,out,cases)
+    assert len(restored)==25 and model==frozen
+    assert (out/'frozen-baselines.json').read_bytes()==(source/'frozen-baselines.json').read_bytes()
+    assert (out/'prediction-24.json').read_bytes()==(source/'prediction-24.json').read_bytes()
+    saved['observations'][0][0]+=1;(source/'prediction-24.json').write_text(json.dumps(saved))
+    other=tmp_path/'bad';other.mkdir()
+    with pytest.raises(ValueError,match='inputs mismatch'):restore_completed(source,other,cases)
