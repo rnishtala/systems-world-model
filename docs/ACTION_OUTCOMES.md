@@ -462,3 +462,40 @@ actions produced 16 finite forecasts; repeated predictions matched within the
 prespecified tolerance; checkpoint and training-file hashes stayed unchanged.
 There were no runtime tracebacks. No measured outcome was supplied to inference,
 and no accuracy was scored. The fresh outcome comparison is the next experiment.
+
+## Fresh frozen comparison protocol
+
+Freeze checkpoint `45ae19ddd400` and the existing baselines from `a7ca3846c2c7`.
+Collect 40 fresh trials across 10 profiles using a new queue-generated seed: six
+database delay/load regimes, two healthy profiles, and two upstream profiles, each
+with all four actions. Reject profiles overlapping the source collection. No fitting
+or model selection uses this batch. Keep 16 inference particles and seed 777.
+
+```mermaid
+flowchart LR
+  F[Hash checkpoint and baseline files] --> C[Collect 40 fresh trials]
+  C --> P[Save four pre-action telemetry frames]
+  P --> D[Frozen Dreamer: predict recorded action outcome]
+  P --> B[Frozen baseline predictions]
+  C --> O[Measure post-action outcomes]
+  D --> S[Paired error comparison by profile]
+  B --> S
+  O --> S
+```
+
+Dreamer runs offline after collection, using only saved prefixes and the recorded
+action. This avoids changing intervention timing with inference latency. Baseline
+predictions are saved before each intervention. Hash checks reject source changes.
+The test measures prediction quality, not online serving latency or repair selection.
+
+Primary metric: request error-fraction MAE. Compare Dreamer to the baseline selected
+by the original training-only cross-validation; report all three baselines, other
+outcome metrics, and regime breakdowns. Define substantial improvement beforehand
+as at least **5 percentage points lower MAE** with the upper bound of a paired
+profile-bootstrap 95% interval below zero (10,000 resamples, seed 777). Only 10
+independent profiles are available: uncertainty is exploratory, and a positive
+result needs replication. This does not establish root-cause diagnosis accuracy.
+
+The initial 1,000-step checkpoint is evaluated unchanged. If it fails, use separate
+training/development profiles to adjust training, then collect another fresh test;
+do not tune against this batch and describe it as untouched.

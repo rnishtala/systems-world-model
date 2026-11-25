@@ -13,7 +13,7 @@ class Store:
         return json.loads(row[0])
     def save(self,run):
         self.db.execute('INSERT OR REPLACE INTO runs VALUES (?,?,?)',(run['id'],run['created'],json.dumps(run)));self.db.commit()
-    def create(self,owner,body,image,version,dataset=None,expansion=None,evaluation=None,training_source=None,probe_training_seeds=None,forecast_source=None,audit_source=None,triage=False,fresh_triage=False,temporal_pilot=False,snapshot_calibration=False,action_outcomes=False,action_source=None,action_validation_source=None,action_balanced=False,action_dreamer_source=None,action_inference_source=None):
+    def create(self,owner,body,image,version,dataset=None,expansion=None,evaluation=None,training_source=None,probe_training_seeds=None,forecast_source=None,audit_source=None,triage=False,fresh_triage=False,temporal_pilot=False,snapshot_calibration=False,action_outcomes=False,action_source=None,action_validation_source=None,action_balanced=False,action_dreamer_source=None,action_inference_source=None,action_comparison_source=None):
         args=validate_request(body,{dataset['id']:dataset} if dataset else None);existing=self.all();pending=[r for r in existing if r['status'] not in TERMINAL]
         if len(pending)>=20 or sum(r['owner']==owner for r in pending)>=3:raise ValueError('Queue limit reached; wait for an existing run')
         used={r['test_seed'] for r in existing}|set(dataset['seeds'] if dataset else []);seed=1000000000+secrets.randbelow(1000000000)
@@ -36,6 +36,13 @@ class Store:
             if action_source is not None or not action_outcomes or previous['owner']!=owner or previous['status']!='completed' or not previous.get('restored') or not previous.get('action_outcomes'):raise ValueError('Use a completed, restored, owned action-outcome source for validation')
             if any(previous[k]!=args[k] for k in ('dataset','seed','steps')):raise ValueError('Preserve source settings')
             run['action_validation_source']=action_validation_source
+        if action_comparison_source is not None:
+            validate_retest(run['id'],action_comparison_source)
+            source=self.get(action_comparison_source)
+            if not temporal_pilot or action_outcomes or snapshot_calibration or action_source or action_validation_source or action_balanced or action_dreamer_source or action_inference_source:raise ValueError('Action inference requires its own temporal run')
+            if source['owner']!=owner or source['status']!='completed' or not source.get('restored') or not source.get('action_dreamer_source'):raise ValueError('Use a completed, restored, owned action Dreamer checkpoint')
+            if any(source[k]!=args[k] for k in ('dataset','seed','steps')):raise ValueError('Preserve source settings')
+            run['action_comparison_source']=action_comparison_source
         if action_inference_source is not None:
             validate_retest(run['id'],action_inference_source)
             source=self.get(action_inference_source)

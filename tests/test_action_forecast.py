@@ -59,3 +59,67 @@ def test_source_identity_and_checkpoint_change_detection(tmp_path):
     (tmp_path/'final'/'checkpoint').write_bytes(b'b');assert checkpoint_hash(tmp_path)!=first
     (tmp_path/'train.jsonl').write_bytes(b'changed')
     with pytest.raises(ValueError,match='identity'):verify_source(tmp_path)
+
+
+def test_fresh_comparison_schedule_and_grouped_scores():
+    from microservice.action_compare import fresh_cases,paired_report
+    from microservice.action_balanced import schedule
+    cases=fresh_cases(12345,schedule(112))
+    assert len(cases)==40 and len({c['group'] for c in cases})==10
+    assert all(c['split']=='test' for c in cases)
+    with pytest.raises(ValueError,match='overlap'):fresh_cases(112,schedule(112))
+    rows=[dict(c,outcome=[0,0,0,0],predictions={'dreamer':[.1,0,0,0],'history_ridge':[.2,0,0,0]}) for c in cases]
+    r=paired_report(rows,'history_ridge')
+    assert r['profiles']==10 and r['wins']==10 and r['substantial_improvement']
+    assert r['dreamer_minus_baseline']==pytest.approx(-.1)
+
+
+def test_comparison_queue_requires_owned_restored_checkpoint(tmp_path):
+    from launcher.store import Store
+    from launcher.common import job_manifest
+    from tests.test_launcher import ARGS,IMAGE
+    s=Store(tmp_path/'queue');old=s.create('a@example.com',ARGS,IMAGE,'test')
+    old.update(status='completed',restored=True,action_dreamer_source='b'*12);s.save(old)
+    r=s.create('a@example.com',ARGS,IMAGE,'test',temporal_pilot=True,action_comparison_source=old['id'])
+    command=job_manifest(r,IMAGE)['spec']['template']['spec']['containers'][0]['command']
+    assert command[command.index('--action-comparison-source')+1]==old['id']
+    with pytest.raises(ValueError):s.create('b@example.com',ARGS,IMAGE,'test',temporal_pilot=True,action_comparison_source=old['id'])
+    with pytest.raises(ValueError):s.create('a@example.com',ARGS,IMAGE,'test',temporal_pilot=True,action_comparison_source=old['id'],action_inference_source=old['id'])
+
+
+def test_comparison_collects_before_offline_inference_without_outcome_input(tmp_path,monkeypatch):
+    from microservice import action_compare as m
+    from microservice.action_balanced import schedule
+    from tests.test_action_outcomes import window
+    import sys
+    original=tmp_path/'aaaaaaaaaaaa'/'temporal-pilot'
+    original.mkdir(parents=True);source=tmp_path/'bbbbbbbbbbbb'/'temporal-pilot';source.mkdir(parents=True)
+    out=tmp_path/'cccccccccccc'/'temporal-pilot'
+    raw=json.dumps({'models':{'history_ridge':{}},'selected':'history_ridge','cv':{}}).encode()
+    (original/'frozen-baselines.json').write_bytes(raw);(original/'examples.json').write_bytes(b'[]')
+    (original/'protocol.json').write_text(json.dumps(dict(seed=112,balanced=True,cases=schedule(112))))
+    (original/'summary.json').write_text(json.dumps({'action_outcomes':dict(all_restored=True,frozen_sha256=hashlib.sha256(raw).hexdigest())}))
+    monkeypatch.setattr(m,'verify_source',lambda _:dict(source_run='aaaaaaaaaaaa',source_examples_sha256=hashlib.sha256(b'[]').hexdigest(),training_sha256='training'))
+    monkeypatch.setattr(m,'checkpoint_hash',lambda _:'checkpoint')
+    calls=[]
+    class Model:
+        def __init__(self,source):pass
+        def __call__(self,h,action):
+            assert np.asarray(h).shape==(4,len(FEATURES))
+            assert len(calls) in (0,40)
+            return [0,1,.1,0]
+    monkeypatch.setattr(m,'Forecaster',Model)
+    monkeypatch.setattr(m.a,'predictions',lambda frozen,row:{'history_ridge':[0,1,.1,0]})
+    def incident(mechanism,action,profile,before_action):
+        i=len(calls);windows=[window(3+j*.5,j+1) for j in range(6)]
+        before_action(windows)
+        saved=json.loads((out/f'prediction-{i}.json').read_text())
+        assert 'outcome' not in saved and 'dreamer' not in saved['predictions']
+        assert (out/'protocol.json').exists()
+        calls.append(i);windows.extend(window(12+j*.5,20+j*2,0) for j in range(5))
+        return dict(windows=windows,restored=True)
+    monkeypatch.setattr(m.a,'incident',incident);monkeypatch.setenv('POD_NAMESPACE','systems-world-model-lab')
+    monkeypatch.setattr(sys,'argv',['compare','--source',str(source),'--out',str(out),'--seed','12345'])
+    m.main();result=json.loads((out/'summary.json').read_text())['action_comparison']
+    assert result['test_trials']==40 and result['training_trials']==0
+    assert set(result['methods'])=={'history_ridge','dreamer'} and result['checkpoint_unchanged']
