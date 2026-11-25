@@ -225,7 +225,7 @@ experiment design and must not serve as untouched tests for new candidates.
 
 This analysis did not start another training run or change runtime services.
 
-## Balanced coverage protocol (prepared, not yet run)
+## Balanced coverage protocol
 
 This experiment tests the coverage explanation above. It trains simple baselines;
 it does not train DreamerV3. The fixed budget is **120 trials**:
@@ -259,7 +259,7 @@ do not drop hard cases or relax telemetry validation to finish the batch.
 
 The runner has a two-hour deadline for this larger batch; CPU, memory, concurrency,
 and namespace permissions are unchanged. Minimum observation time alone is 32 minutes,
-with startup, draining, and restoration adding overhead. Results will appear in the
+with startup, draining, and restoration adding overhead. Results appear in the
 existing experiment UI with diagnostic repeats explicitly excluded from the test count.
 
 A useful result is improved coverage of both successful and failed intervention
@@ -267,3 +267,67 @@ outcomes and a stable comparison on fresh profiles. Persistent repair errors or 
 repeat differences require investigating the measurements and recovery dynamics before
 scaling model capacity. Any later Dreamer candidate needs separate training and a new,
 jointly frozen evaluation against these simple baselines.
+
+
+## Balanced batch result — reviewed 25 November 2026
+
+Run `a7ca3846c2c7`, code `0af542f`, completed all **120 trials**: 64 training,
+40 held-out tests across 10 independent profiles, and 16 separate diagnostic repeats.
+Every trial cleanup passed and the controller restored the lab. No Dreamer model
+was trained. Training CV selected the history predictor before testing.
+
+| Held-out MAE | Current window | Four-window history |
+|---|---:|---:|
+| Error fraction (percentage points) | 15.72 | **12.64** |
+| Successful requests/s | 3.17 | **3.02** |
+| Latency (ms) | **26.41** | 28.31 |
+| Queue depth | 1.42 | **1.28** |
+
+History reduced error-fraction MAE by **19.6%** within this batch: a 3.08 percentage
+point improvement. It won on 8/10 profiles, tied on one, and lost on one. An
+exploratory paired profile bootstrap (20,000 resamples, seed 20261125) gave a 95%
+percentile interval of -5.52 to -0.82 points for history minus snapshot. This is a
+small, deliberately stratified sample, not proof of broad generalization. Better
+scores than the earlier batch cannot be attributed solely to training coverage:
+the training size and evaluation load distribution also changed.
+
+### Remaining weaknesses
+
+| Database test regime | Current-window error MAE (pp) | History error MAE (pp) |
+|---|---:|---:|
+| Below timeout, low load | 0.60 | **0.00** |
+| Below timeout, high load | 31.49 | **28.29** |
+| Near timeout, low load | 54.87 | **46.07** |
+| Near timeout, high load | **5.44** | 8.04 |
+| Above timeout, low load | 0.00 | 0.00 |
+| Above timeout, high load | 28.28 | **28.14** |
+
+Each database row contains one independent test profile under four actions. The
+near-timeout/low-load profile remains difficult despite balanced coverage. History
+also helped upstream overload (7.33 vs 15.63 pp over two profiles), so its gain is
+not restricted to database faults.
+
+For the eight fixed profile/action repeat pairs, six had identical error fractions;
+the other two differed by 1.94 and 0.94 percentage points. Queue depth differed by
+as much as 2.59. These repeats used only below/above-timeout, high-load profiles:
+they do not explain or bound variability near the timeout boundary. Similar repeat
+outcomes also do not establish that a repair succeeded; this measures consistency.
+
+### Research decision
+
+There is now enough evidence to justify preparing an **action-conditioned DreamerV3
+candidate**, with history ridge as the stronger reference. There is still no measured
+Dreamer advantage, reliable repair policy, or demonstrated improvement in root-cause
+diagnosis from this experiment.
+
+The next model experiment should encode telemetry windows and actual intervention
+transitions as sequences, train Dreamer's dynamics on a separate training-only
+collection, and predict the same four post-action outcomes. The existing diagnosis
+checkpoint cannot simply be relabelled as a repair-outcome model. Fit any new baseline
+and tune model settings only on grouped training/development profiles. Freeze all
+methods before collecting a fresh, balanced comparison. Include near-boundary
+repeatability checks separately, since that regime was absent from these repeats.
+Do not reuse the now-inspected test cases as untouched confirmation.
+
+This results review changes documentation only; no additional collection, training,
+or runtime changes were made.
