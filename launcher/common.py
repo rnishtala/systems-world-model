@@ -36,6 +36,7 @@ def job_manifest(run,image):
     if run.get('temporal_pilot'):command[2]='launcher.temporal_pipeline'
     if run.get('snapshot_calibration'):command+=['--snapshot-calibration']
     if run.get('action_outcomes'):command+=['--action-outcomes']
+    if run.get('action_inference_source'):command+=['--action-inference-source',run['action_inference_source']]
     if run.get('action_dreamer_source'):command+=['--action-dreamer-source',run['action_dreamer_source']]
     if run.get('action_balanced'):command+=['--action-balanced']
     if run.get('action_source'):command+=['--action-source',run['action_source']]

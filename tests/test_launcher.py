@@ -313,3 +313,15 @@ def test_action_dreamer_source_and_smoke_budget(tmp_path):
     with pytest.raises(ValueError):s.create(ADMIN,dict(args,steps=10000),IMAGE,'v',**kw)
     with pytest.raises(ValueError):s.create('other@example.com',args,IMAGE,'v',**kw)
     with pytest.raises(ValueError):s.create(ADMIN,args,IMAGE,'v',action_outcomes=True,**kw)
+
+
+def test_action_inference_requires_owned_completed_training_source(tmp_path):
+    s=Store(tmp_path/'queue.sqlite');source=s.create(ADMIN,dict(ARGS,steps=1000),IMAGE,'v',temporal_pilot=True)
+    kwargs=dict(temporal_pilot=True,action_inference_source=source['id'])
+    with pytest.raises(ValueError):s.create(ADMIN,dict(ARGS,steps=1000),IMAGE,'v',**kwargs)
+    source.update(status='completed',restored=True,action_dreamer_source='abcdef012345');s.save(source)
+    run=s.create(ADMIN,dict(ARGS,steps=1000),IMAGE,'v',**kwargs)
+    cmd=job_manifest(run,IMAGE)['spec']['template']['spec']['containers'][0]['command']
+    assert '--action-inference-source' in cmd
+    with pytest.raises(ValueError):s.create('other@example.com',dict(ARGS,steps=1000),IMAGE,'v',**kwargs)
+    with pytest.raises(ValueError):s.create(ADMIN,dict(ARGS,steps=1000),IMAGE,'v',action_outcomes=True,**kwargs)

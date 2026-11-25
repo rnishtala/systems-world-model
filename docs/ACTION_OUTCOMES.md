@@ -421,3 +421,38 @@ and decode without supplying the measured outcome. Check numerical transforms an
 input exclusions before collecting a fresh evaluation. Preserve this smoke model
 and the original failed run; do not reuse previously inspected test results as an
 untouched test for the new candidate.
+
+## Prior-only inference smoke (prepared, not yet run)
+
+Source checkpoint: `45ae19ddd400`. Load its saved configuration and matching
+`repair-macro-v1` agent, then restore the final checkpoint. Verify the training-data
+hash and feature/action schema before inference. The source checkpoint is retained
+and hashed before and after the smoke.
+
+```mermaid
+flowchart LR
+  H[Four telemetry frames] --> O[Observe prefix into Dreamer state]
+  A[Proposed repair action] --> P[One prior dynamics step]
+  O --> P
+  P --> D[Decode outcome channels]
+  D --> U[Invert symlog then log1p transforms]
+  U --> R[Errors, throughput, latency, queue]
+```
+
+Use the first training row for each recorded action, in saved file order: four
+prefixes, each queried with all four proposed actions (16 forecasts). Do not read
+measured outcomes into the predictor or score these examples. Keep the particle
+budget at 16 and random seed at 777; average decoded physical outcomes across
+particles, then apply the same physical bounds as the baselines (nonnegative values,
+error fraction at most one). Reject nonfinite particle outputs before clipping.
+
+Check repeatability by recomputing each selected row's recorded action. Require
+finite outputs, unchanged checkpoint bytes, and an unchanged training-file identity.
+The inference code observes only the prefix: no outcome frame enters the encoder
+before predicting. It uses the normal Dreamer action channel after the prefix.
+
+Success establishes checkpoint reload and functioning prior-only inference, not
+prediction quality or causal validity of the alternative-action forecasts. This run
+is training-data-only, performs no fitting, and injects no new service faults. Its
+results are displayed as inference smoke in the UI. A fresh, jointly frozen outcome
+comparison remains necessary before any accuracy or improvement claim.

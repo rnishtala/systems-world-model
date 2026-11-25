@@ -85,6 +85,11 @@ function renderTemporal(r){
  el('interpretation').textContent='Mechanism feasibility pilot: checks retries, backlog and recovery. No model training or accuracy claim.';
  if(!r.temporal_summary)return;
  el('metrics').replaceChildren();
+ if(r.temporal_summary.action_inference){
+  const c=r.temporal_summary.action_inference;
+  el('interpretation').textContent='Dreamer checkpoint reload and prior-only inference smoke completed. Training prefixes only; no accuracy result.';
+  const cell=text('div','','metric');cell.append(text('span','Action-conditioned inference'),text('strong',c.forecasts+' finite forecasts'),text('span','Repeatable: '+c.repeatable+' · Checkpoint unchanged: '+c.checkpoint_unchanged));el('metrics').append(cell);return;
+ }
  if(r.temporal_summary.action_dreamer){
   const c=r.temporal_summary.action_dreamer;
   el('interpretation').textContent='Action-conditioned Dreamer training smoke completed. '+c.training_trials+' training trials; '+c.excluded_trials+' test/diagnostic trials excluded. No held-out performance result or repair policy claim.';
