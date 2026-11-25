@@ -1,6 +1,6 @@
 # Improving world-model triage
 
-**Current result:** the action-conditioned Dreamer training smoke succeeded: **1,000 environment steps, 108 optimizer updates**, and a finite checkpoint from 64 training trials. Prediction accuracy is not yet evaluated. The stronger baseline remains history ridge (12.64 vs 15.72 pp error-fraction MAE for the current-window model in the balanced batch). Checkpoint reload and prior-only outcome inference are now implemented and unit-tested, awaiting their namespace smoke run; fresh evaluation follows only after that passes. See [training smoke results](ACTION_OUTCOMES.md#training-smoke-retry-succeeded--25-november-2026).
+**Current result:** the action-conditioned Dreamer training smoke succeeded: **1,000 environment steps, 108 optimizer updates**, and a finite checkpoint from 64 training trials. Prediction accuracy is not yet evaluated. The stronger baseline remains history ridge (12.64 vs 15.72 pp error-fraction MAE for the current-window model in the balanced batch). Checkpoint reload and prior-only outcome inference also passed in run `54d1ed6db8d8`: 16 finite, repeatable forecasts with unchanged checkpoint bytes. Next: freeze the comparison protocol and evaluate on fresh incidents. See [training smoke results](ACTION_OUTCOMES.md#training-smoke-retry-succeeded--25-november-2026).
 
 The goal is to identify system faults reliably with fewer useful measurements.
 Better latency prediction is evidence that the model learned some system behavior;

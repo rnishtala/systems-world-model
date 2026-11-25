@@ -422,7 +422,7 @@ input exclusions before collecting a fresh evaluation. Preserve this smoke model
 and the original failed run; do not reuse previously inspected test results as an
 untouched test for the new candidate.
 
-## Prior-only inference smoke (prepared, not yet run)
+## Prior-only inference smoke (passed — 25 November 2026)
 
 Source checkpoint: `45ae19ddd400`. Load its saved configuration and matching
 `repair-macro-v1` agent, then restore the final checkpoint. Verify the training-data
@@ -456,3 +456,9 @@ prediction quality or causal validity of the alternative-action forecasts. This 
 is training-data-only, performs no fitting, and injects no new service faults. Its
 results are displayed as inference smoke in the UI. A fresh, jointly frozen outcome
 comparison remains necessary before any accuracy or improvement claim.
+
+Run `54d1ed6db8d8` (`396b9b7`) passed all checks: four training prefixes × four
+actions produced 16 finite forecasts; repeated predictions matched within the
+prespecified tolerance; checkpoint and training-file hashes stayed unchanged.
+There were no runtime tracebacks. No measured outcome was supplied to inference,
+and no accuracy was scored. The fresh outcome comparison is the next experiment.
