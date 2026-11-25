@@ -85,6 +85,11 @@ function renderTemporal(r){
  el('interpretation').textContent='Mechanism feasibility pilot: checks retries, backlog and recovery. No model training or accuracy claim.';
  if(!r.temporal_summary)return;
  el('metrics').replaceChildren();
+ if(r.temporal_summary.action_dreamer){
+  const c=r.temporal_summary.action_dreamer;
+  el('interpretation').textContent='Action-conditioned Dreamer training smoke completed. '+c.training_trials+' training trials; '+c.excluded_trials+' test/diagnostic trials excluded. No held-out performance result or repair policy claim.';
+  const cell=text('div','','metric');cell.append(text('span','DreamerV3 macro-transition checkpoint'),text('strong',c.steps+' training environment steps'),text('span','Source: '+c.source_run));el('metrics').append(cell);return;
+ }
  if(r.temporal_summary.action_outcomes){
   const c=r.temporal_summary.action_outcomes;
   el('interpretation').textContent='Action-outcome screening: predictions saved before intervention. '+c.test_trials+' test trials across only '+c.independent_test_profiles+' independent workload profiles. No Dreamer comparison or reliable action-selection claim yet.';

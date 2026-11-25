@@ -1,6 +1,6 @@
 # Improving world-model triage
 
-**Current result:** the completed 120-trial balanced batch gave **12.64 pp error-fraction MAE for history vs 15.72 pp for the current window**, with history winning on 8/10 held-out profiles. This supports preparing an action-conditioned Dreamer candidate against the stronger history baseline, but is not a Dreamer result. Near-timeout cases remain difficult. See [balanced results and research decision](ACTION_OUTCOMES.md#balanced-batch-result--reviewed-25-november-2026).
+**Current result:** the completed 120-trial balanced batch gave **12.64 pp error-fraction MAE for history vs 15.72 pp for the current window**, with history winning on 8/10 held-out profiles. A training-only, 1,000-step action-conditioned Dreamer smoke implementation is now prepared against this stronger history baseline, but has not run; this remains a simple-baseline result. Near-timeout cases remain difficult. See [balanced results and research decision](ACTION_OUTCOMES.md#balanced-batch-result--reviewed-25-november-2026).
 
 The goal is to identify system faults reliably with fewer useful measurements.
 Better latency prediction is evidence that the model learned some system behavior;

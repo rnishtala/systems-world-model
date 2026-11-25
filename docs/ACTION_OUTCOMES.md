@@ -331,3 +331,51 @@ Do not reuse the now-inspected test cases as untouched confirmation.
 
 This results review changes documentation only; no additional collection, training,
 or runtime changes were made.
+
+## First action-conditioned Dreamer implementation (prepared)
+
+Use the pinned upstream DreamerV3 encoder, RSSM dynamics, decoder and training loop
+with a new **repair-macro-v1** adapter. This trains fresh weights; the probe-diagnosis
+checkpoint has incompatible observations/actions and is not reused.
+
+```mermaid
+flowchart LR
+  A[Balanced source: training partition only] --> B[Four pre-action telemetry frames]
+  B --> C[Recorded repair action]
+  C --> D[Measured outcome frame]
+  B & C & D --> E[Train upstream DreamerV3]
+  E --> F[Save separate macro-transition checkpoint]
+  F --> G[Future: compare prior outcome predictions on fresh workloads]
+```
+
+The initial smoke uses the existing **64 training trials**, excluding all 40 test
+trials and 16 diagnostic repeats. It is not a new, larger training collection and
+is not sufficient to claim model quality. Export records the source identity and
+training file hash; it excludes fault labels, injected settings, and test examples.
+
+An episode has four telemetry frames (51 measured features) followed by one outcome
+frame (error fraction, successful requests/s, latency, queue). Features use log1p;
+separate validity flags identify telemetry and outcome frames. Pre-action frames
+contain no outcome values. Three transitions use no intervention; the fourth uses
+the recorded action. The last transition spans the intervention-to-outcome period,
+rather than a single telemetry sampling interval. This is deliberately a coarse
+transition model, not a simulation of every intermediate system state.
+
+Replay follows only the recorded actions and rejects alternatives. A scheduling
+field reaches the replay controller but is excluded from agent observation spaces
+and policy inputs; the model receives the action through its normal action channel.
+Rewards are zero and actor outputs are overridden. No learned repair-policy claim
+is made. The old auxiliary fault-classification head is not used.
+
+The first run is fixed at **1,000 environment steps**, with the existing small
+Dreamer configuration, a two-hour deadline and unchanged resource limits. The UI
+will identify this as training smoke, not a held-out accuracy result. Success means
+training completes and a separately identified checkpoint is saved. Runtime/JAX
+integration still needs verification in the lab; unit tests alone do not establish it.
+
+After smoke success, implement and verify checkpoint reload and prior-only outcome
+forecasting: observe the four prefix frames, apply the proposed action, then decode
+without assimilating the measured outcome. Invert both Dreamer's decoder transform
+and the adapter's log1p transform. Validate shape, timing, and leakage controls before
+any score. Subsequent training-budget selection uses training/development profiles
+only, followed by a fresh jointly frozen comparison with snapshot/history baselines.

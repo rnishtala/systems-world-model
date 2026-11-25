@@ -299,3 +299,17 @@ def test_balanced_action_collection_is_exclusive_and_bounded(tmp_path):
     assert '--action-balanced' in manifest['spec']['template']['spec']['containers'][0]['command']
     assert manifest['spec']['activeDeadlineSeconds']==7200
     with pytest.raises(ValueError):s.create(ADMIN,ARGS,IMAGE,'v',temporal_pilot=True,action_outcomes=True,action_balanced=True,action_validation_source=run['id'])
+
+
+def test_action_dreamer_source_and_smoke_budget(tmp_path):
+    s=Store(tmp_path/'queue.sqlite');source=s.create(ADMIN,ARGS,IMAGE,'v',temporal_pilot=True,action_outcomes=True,action_balanced=True)
+    args=dict(ARGS,steps=1000)
+    kw=dict(temporal_pilot=True,action_dreamer_source=source['id'])
+    with pytest.raises(ValueError):s.create(ADMIN,args,IMAGE,'v',**kw)
+    source.update(status='completed',restored=True);s.save(source)
+    run=s.create(ADMIN,args,IMAGE,'v',**kw)
+    command=job_manifest(run,IMAGE)['spec']['template']['spec']['containers'][0]['command']
+    assert '--action-dreamer-source' in command
+    with pytest.raises(ValueError):s.create(ADMIN,dict(args,steps=10000),IMAGE,'v',**kw)
+    with pytest.raises(ValueError):s.create('other@example.com',args,IMAGE,'v',**kw)
+    with pytest.raises(ValueError):s.create(ADMIN,args,IMAGE,'v',action_outcomes=True,**kw)
