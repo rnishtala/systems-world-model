@@ -46,3 +46,13 @@ def test_replay_rejects_unmeasured_actions_and_resets_at_outcome(tmp_path,monkey
         assert obs['is_last']==(t==3)
     obs=env.step({'reset':True,'action':np.zeros(4)})
     assert obs['is_first'] and not obs['is_last']
+
+
+def test_replay_metadata_removed_before_upstream_learning():
+    from microservice.action_model import measured_stream
+    vector=np.zeros((8,16,WIDTH));action=np.zeros((8,16,4))
+    batch={'vector':vector,'action':action,'scheduled_action':np.ones((8,16,4)),'stepid':np.arange(16)}
+    clean=next(measured_stream(iter([batch])))
+    assert set(clean)=={'vector','action','stepid'}
+    assert clean['vector'] is vector and clean['action'] is action
+    assert 'scheduled_action' in batch  # Collector remains intact.

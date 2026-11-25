@@ -64,11 +64,19 @@ class ActionEnv:
         return dict(vector=frame(self.row,self.t),reward=np.float32(0),is_first=first,is_last=self.done,is_terminal=self.done,**{'scheduled_action':next_action(self.row,self.t)})
     def close(self):pass
 
+def learning_batch(batch):
+    # Driver replay retains scheduling metadata; upstream training requires exactly
+    # its declared observation/action keys. Keep this field at the collector only.
+    return {k:v for k,v in batch.items() if k!='scheduled_action'}
+
+def measured_stream(stream):
+    for batch in stream:yield learning_batch(batch)
+
 class MeasuredActions:
     def __init__(self,policy):self.policy=policy;self.steps=0
     def __call__(self,carry,obs,mode='train'):
         import jax
-        clean={k:v for k,v in obs.items() if k!='scheduled_action'}
+        clean=learning_batch(obs)
         carry,acts,outs=self.policy(carry,clean,mode=mode)
         actions=2*np.asarray(obs['scheduled_action'],np.float32)-1
         self.steps+=len(actions)

@@ -379,3 +379,18 @@ without assimilating the measured outcome. Invert both Dreamer's decoder transfo
 and the adapter's log1p transform. Validate shape, timing, and leakage controls before
 any score. Subsequent training-budget selection uses training/development profiles
 only, followed by a fresh jointly frozen comparison with snapshot/history baselines.
+
+### First training smoke: replay-schema failure
+
+Run `f9fa5102cb7c` (code `88c61e1`) successfully exported 64 training trials from
+16 profiles and excluded 56 test/diagnostic trials. The training loop started but
+failed at the first learner update: upstream Dreamer requires exact input keys,
+and the replay batch still included `scheduled_action`. This field was already
+excluded from encoder/policy inputs, but also needed removal at the learner-stream
+boundary. No completed trained checkpoint or accuracy result was produced.
+
+The local fix filters only this collector metadata before upstream stream processing
+for both learning and reports, preserving the actual action channel and all measured
+observations. A regression test checks the exact retained keys and confirms that the
+original collector batch remains intact. Runtime verification requires a fresh smoke
+run; the failed run and its artifacts are retained for provenance.
