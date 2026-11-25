@@ -332,7 +332,7 @@ Do not reuse the now-inspected test cases as untouched confirmation.
 This results review changes documentation only; no additional collection, training,
 or runtime changes were made.
 
-## First action-conditioned Dreamer implementation (prepared)
+## First action-conditioned Dreamer implementation
 
 Use the pinned upstream DreamerV3 encoder, RSSM dynamics, decoder and training loop
 with a new **repair-macro-v1** adapter. This trains fresh weights; the probe-diagnosis
@@ -394,3 +394,30 @@ for both learning and reports, preserving the actual action channel and all meas
 observations. A regression test checks the exact retained keys and confirms that the
 original collector batch remains intact. Runtime verification requires a fresh smoke
 run; the failed run and its artifacts are retained for provenance.
+
+
+### Training smoke retry succeeded — 25 November 2026
+
+Run `45ae19ddd400` with code `99495ed` completed all **1,000 environment steps**
+and the controller restored the lab. Training consumed only the 64 training trials
+from 16 balanced profiles; all 56 test/diagnostic trials were excluded. The exported
+training file hash was verified against its manifest.
+
+The final checkpoint is stored inside the results volume at
+`/results/experiments/runs/45ae19ddd400/temporal-pilot/final` (three files,
+8,018,807 bytes). Read-only inspection confirmed that the optimizer counter advanced
+from **0 to 108** and all 261 saved parameter/state arrays were finite. The training
+process took 22.66 seconds; this excludes image build, deployment, image-pull retries,
+and controller restoration. The image download initially backed off before succeeding.
+
+The run was shorter than the periodic training-metric logging interval; the JSONL
+log contains episode metrics, not a loss curve. Therefore no convergence claim is
+made. This validates actual learning updates and checkpoint creation, not held-out
+accuracy, counterfactual repair reliability, or improvement over the simple baselines.
+
+Next: load the checkpoint into the matching upstream agent and verify prior-only
+macro-outcome inference. Observe only the four prefix frames, apply a proposed action,
+and decode without supplying the measured outcome. Check numerical transforms and
+input exclusions before collecting a fresh evaluation. Preserve this smoke model
+and the original failed run; do not reuse previously inspected test results as an
+untouched test for the new candidate.
