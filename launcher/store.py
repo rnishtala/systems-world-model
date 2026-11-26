@@ -62,7 +62,7 @@ class Store:
             source=self.get(action_dreamer_source)
             if not temporal_pilot or action_outcomes or snapshot_calibration or action_source or action_validation_source or action_balanced:raise ValueError('Action Dreamer requires its own temporal run')
             if source['owner']!=owner or source['status']!='completed' or not source.get('restored') or not source.get('action_balanced'):raise ValueError('Use a completed, restored, owned balanced source')
-            if args['steps']!=1000 or any(source[k]!=args[k] for k in ('dataset','seed')):raise ValueError('Initial action Dreamer smoke uses matching source settings and 1000 steps')
+            if args['steps'] not in (1000,25000) or any(source[k]!=args[k] for k in ('dataset','seed')):raise ValueError('Action Dreamer uses matching source settings and a fixed 1000 or 25000 step budget')
             run['action_dreamer_source']=action_dreamer_source
         if snapshot_calibration and not temporal_pilot:raise ValueError('Calibration requires temporal pilot')
         if snapshot_calibration:run['snapshot_calibration']=True

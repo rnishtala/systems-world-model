@@ -598,3 +598,37 @@ log-scaled reconstruction loss, then run a fixed-budget training diagnostic with
 frequent loss logging. Use profile-disjoint development folds from the original
 training partition for budget selection; retain current runs unchanged. Require
 reconstruction progress before spending time on another fresh test.
+
+## Loss audit and fixed training-budget diagnostic — 26 November 2026
+
+The saved checkpoint configuration confirms `lr=4e-5`, linear optimizer warmup
+of **1,000 updates**, and training ratio 16. The smoke achieved just 108 optimizer
+updates: about 10.8% through warmup, reaching roughly 4.3e-6 learning rate. This is
+strong reason to test adequate optimization before changing model capacity or loss.
+It does not prove that extra training will solve the observed failure.
+
+The pinned upstream `MSE.pred()` returns the transformed prediction; its loss
+applies symlog to the target. Thus the existing inverse-symlog followed by inverse
+log1p is consistent with the adapter. This double exponential inverse is sensitive
+to decoder errors, as the unbounded reconstruction diagnostics show.
+
+The validity bits are ordinary vector features, not loss masks. Each five-frame
+57-channel episode contains 204 measured telemetry slots, four measured outcome
+slots, ten validity flags, and 67 zero padding slots. Outcome channels are trained
+toward zero in four prefix frames. The four measured outcomes occupy 4/285 scalar
+slots (1.4%); this is a count, NOT a measured gradient/loss contribution. Padding
+and unequal channel counts are plausible concerns, not established causes.
+
+Prepare one fixed **25,000-environment-step** run from the same 64 training trials,
+seed 113, fresh initialization, and unchanged 1,000-update warmup/model/loss. Change
+only training duration and log interval (5 seconds). Keep the two-hour runtime
+limit and existing namespace/resource restrictions. Expected optimizer updates are
+roughly 3,100 at the existing ratio; verify the actual counter and loss logs rather
+than assuming this. Preserve the earlier checkpoint.
+
+Automatically repeat the training-only prior/reconstruction diagnostic after saving
+the new checkpoint. Its outputs appear in the run UI. No new service faults, no
+held-out scoring, and no checkpoint selection using the inspected test batch. A
+completed training checkpoint is retained if the diagnostic fails. This experiment
+can reveal optimization progress, not generalization. Profile-disjoint development
+folds are still required before selecting a final budget for a new fresh test.

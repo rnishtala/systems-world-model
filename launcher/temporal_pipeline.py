@@ -39,7 +39,7 @@ def main():
     if a.action_dreamer_source:
         from launcher.common import validate_retest
         validate_retest(a.run,a.action_dreamer_source)
-        if a.action_outcomes or a.snapshot_calibration or resume or a.steps!=1000:raise ValueError('Action Dreamer smoke must run alone with 1000 steps')
+        if a.action_outcomes or a.snapshot_calibration or resume or a.steps not in (1000,25000):raise ValueError('Action Dreamer must run alone with 1000 or 25000 steps')
     root=Path('/results/experiments/runs')/a.run;root.mkdir(parents=True,exist_ok=True)
     if (root/'protocol.json').exists():raise ValueError('Use a fresh pilot run')
     (root/'protocol.json').write_text(json.dumps(dict(mode='temporal-pilot',seed=a.seed if a.action_dreamer_source else a.test_seed,action_dreamer_source=a.action_dreamer_source,scope='Training-only reconstruction diagnostic' if a.action_diagnostic_source else 'Fresh frozen action outcome comparison' if a.action_comparison_source else 'Action Dreamer inference smoke only; no accuracy evaluation' if a.action_inference_source else 'Action Dreamer training smoke only; no evaluation' if a.action_dreamer_source else 'Mechanism feasibility only; no Dreamer training',utc=time.time())))

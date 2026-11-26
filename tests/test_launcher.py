@@ -311,6 +311,8 @@ def test_action_dreamer_source_and_smoke_budget(tmp_path):
     command=job_manifest(run,IMAGE)['spec']['template']['spec']['containers'][0]['command']
     assert '--action-dreamer-source' in command
     with pytest.raises(ValueError):s.create(ADMIN,dict(args,steps=10000),IMAGE,'v',**kw)
+    longer=s.create(ADMIN,dict(args,steps=25000),IMAGE,'v',**kw)
+    assert longer['steps']==25000 and job_manifest(longer,IMAGE)['spec']['activeDeadlineSeconds']==7200
     with pytest.raises(ValueError):s.create('other@example.com',args,IMAGE,'v',**kw)
     with pytest.raises(ValueError):s.create(ADMIN,args,IMAGE,'v',action_outcomes=True,**kw)
 

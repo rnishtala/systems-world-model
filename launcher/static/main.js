@@ -104,8 +104,8 @@ function renderTemporal(r){
  }
  if(r.temporal_summary.action_dreamer){
   const c=r.temporal_summary.action_dreamer;
-  el('interpretation').textContent='Action-conditioned Dreamer training smoke completed. '+c.training_trials+' training trials; '+c.excluded_trials+' test/diagnostic trials excluded. No held-out performance result or repair policy claim.';
-  const cell=text('div','','metric');cell.append(text('span','DreamerV3 macro-transition checkpoint'),text('strong',c.steps+' training environment steps'),text('span','Source: '+c.source_run));el('metrics').append(cell);return;
+  el('interpretation').textContent='Action-conditioned Dreamer training completed. '+c.training_trials+' training trials; '+c.excluded_trials+' test/diagnostic trials excluded. No held-out performance result or repair policy claim.';
+  const cell=text('div','','metric');cell.append(text('span','DreamerV3 macro-transition checkpoint'),text('strong',c.steps+' training environment steps'),text('span','Source: '+c.source_run));if(c.diagnostic)cell.append(text('span','Training-only prior / reconstruction MAE: '+(100*c.diagnostic.prior.error_fraction.mae).toFixed(2)+' / '+(100*c.diagnostic.reconstruction.error_fraction.mae).toFixed(2)+' pp; reconstruction sees outcome'));el('metrics').append(cell);return;
  }
  if(r.temporal_summary.action_outcomes){
   const c=r.temporal_summary.action_outcomes;
