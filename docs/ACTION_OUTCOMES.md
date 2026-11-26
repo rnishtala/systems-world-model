@@ -563,3 +563,38 @@ Hash the checkpoint and training data before/after. Poor reconstruction indicate
 that dynamics alone cannot explain the problem; good reconstruction with poor prior
 prediction points toward dynamics/action learning. Neither establishes that longer
 training alone will solve it. Results appear separately in the experiment UI.
+
+### Reconstruction diagnostic result — 25 November 2026
+
+Run `aa8fda9445c9` (`57b9e7c`) completed and restored the lab. All 64 training
+trials / 16 profiles were inspected, without fitting or fault injection. The
+checkpoint and training identity stayed unchanged. Diagnostic prior outputs
+matched the established forecaster within the specified tolerance.
+
+| Training diagnostic | Prior forecast | Outcome-visible reconstruction |
+|---|---:|---:|
+| Error-fraction MAE (pp, clipped) | 47.85 | 47.84 |
+| Throughput MAE (requests/s) | 6.40 | 6.60 |
+| Latency MAE (seconds) | 0.263 | 0.370 |
+| Queue MAE | 3.89 | 3.89 |
+| Queue forecasts requiring clipping | 87.5% | 100% |
+| Error-fraction forecasts requiring clipping | 15.6% | 79.7% |
+
+The reconstruction's unbounded mean error fraction was 5.72 despite an observed
+mean of 0.546; clipping hides large physical-scale errors. Its unbounded queue
+mean was -0.252 versus observed 3.885. Mean final-transition posterior-to-prior KL
+was 4.542 nats (approximately unchanged by free-nats flooring). These diagnostic
+forward values are not optimizer loss histories or held-out performance.
+
+**Interpretation:** poor prediction is not solely a prior-dynamics problem: the
+encoder/decoder path cannot yet reconstruct training outcomes reliably. The
+matching prior paths rule out a discrepancy between these two inference entry
+points, not every possible implementation or representation issue. Undertraining,
+loss allocation, and physical decoding sensitivity remain hypotheses.
+
+**Next bounded experiment:** inspect outcome-channel learning and the weighting
+of valid outcome frames versus zero-filled channels. Verify decoder semantics and
+log-scaled reconstruction loss, then run a fixed-budget training diagnostic with
+frequent loss logging. Use profile-disjoint development folds from the original
+training partition for budget selection; retain current runs unchanged. Require
+reconstruction progress before spending time on another fresh test.
