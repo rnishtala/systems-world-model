@@ -499,3 +499,48 @@ result needs replication. This does not establish root-cause diagnosis accuracy.
 The initial 1,000-step checkpoint is evaluated unchanged. If it fails, use separate
 training/development profiles to adjust training, then collect another fresh test;
 do not tune against this batch and describe it as untouched.
+
+## Fresh comparison result — 25 November 2026
+
+Run `824bb96d2700`, code `3025cc1`, seed `1498077667`: **completed, lab restored**.
+All 40 trials / 10 profiles completed without runtime exceptions. The source
+checkpoint and baseline identities remained unchanged; no fitting used this batch.
+
+| Predictor | Error-fraction MAE (percentage points) | Throughput MAE (requests/s) | Latency MAE (seconds) | Queue MAE |
+|---|---:|---:|---:|---:|
+| Action mean | 42.84 | 7.34 | 0.0512 | 4.60 |
+| Current-window ridge | 11.53 | 2.76 | 0.0197 | 1.33 |
+| History ridge (training-selected primary comparator) | 16.82 | 3.38 | 0.0253 | 1.64 |
+| Dreamer | 51.64 | 6.11 | 0.2628 | 4.55 |
+
+Dreamer minus the preselected baseline: **+34.82 pp MAE**; exploratory paired
+profile-bootstrap 95% interval **+18.29 to +50.53 pp**. Dreamer won on only 1/10
+profiles and failed the prespecified improvement criterion. The current-window
+baseline also beat history on this batch; history's earlier advantage did not
+replicate here. Do not change the primary comparator after seeing these results.
+
+Aggregate diagnostics show broad calibration failure: mean predicted error fraction
+0.101 versus observed 0.554; throughput 0.408 versus 6.164 requests/s; latency 0.383
+versus 0.121 seconds; queue 0.00048 versus 4.547. Queue forecasts clipped to zero in
+38/40 trials. These are post-clipping predictions, not raw decoder outputs.
+
+### Next diagnostic, before more fresh collection
+
+The 108 optimizer updates were a smoke budget, not a converged training run.
+Undertraining is a hypothesis, not established by this test. Preserve the failed
+candidate and this batch as inspected evidence. On training/development profiles:
+
+1. Check outcome reconstruction with the outcome frame observed, versus prior-only
+   prediction from the prefix and action. Record raw and transformed outputs,
+   clipping rates, outcome-channel reconstruction loss, and dynamics/KL losses.
+2. Use profile-disjoint development folds drawn from the original training
+   partition to compare fixed training budgets; keep the same splits and seeds
+   across candidates. Never use this fresh test batch to select a budget.
+3. If reconstruction remains poor, inspect learning and outcome weighting before
+   extending training. If reconstruction works but prior prediction fails, focus
+   on latent dynamics/action learning. Recheck decoding consistency as part of
+   either diagnosis; finite forecasts alone do not prove accuracy.
+4. Only after development evidence supports a candidate, freeze it, retrain using
+   the permitted training partition if appropriate, and collect a new fresh test.
+
+This result does not demonstrate improved root-cause diagnosis or repair selection.
