@@ -544,3 +544,22 @@ candidate and this batch as inspected evidence. On training/development profiles
    the permitted training partition if appropriate, and collect a new fresh test.
 
 This result does not demonstrate improved root-cause diagnosis or repair selection.
+
+## Training-only reconstruction diagnostic
+
+Use only the 64 saved training rows and checkpoint `45ae19ddd400`. No new faults,
+weight updates, development selection, or held-out scoring. For each row, assimilate
+four prefix frames and the recorded action, then compare:
+
+- **Prior forecast:** decode the imagined next latent state, without the outcome.
+- **Posterior reconstruction:** encode the measured outcome frame and decode its
+  posterior state. This deliberately sees the answer and is not forecast accuracy.
+
+Keep 16 particles and seed 777. Verify the prior agrees with the existing forecaster.
+Report decoder-space MSE, physical MAE before/after clipping, clipping fraction, and
+final-transition posterior-to-prior KL (with/without upstream free-nats flooring).
+These are diagnostic forward values, not the historical optimizer loss curve.
+Hash the checkpoint and training data before/after. Poor reconstruction indicates
+that dynamics alone cannot explain the problem; good reconstruction with poor prior
+prediction points toward dynamics/action learning. Neither establishes that longer
+training alone will solve it. Results appear separately in the experiment UI.
