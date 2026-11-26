@@ -1,6 +1,6 @@
 # Improving world-model triage
 
-**Current result:** Dreamer has not improved outcome prediction. Fresh-test error-fraction MAE was **51.64 pp**, versus **16.82 pp** for the preselected history baseline. The follow-up training-only diagnostic (`aa8fda9445c9`) also found poor reconstruction even with the outcome supplied: **47.84 pp MAE**, with all queue reconstructions clipped to zero. The checkpoint stayed unchanged and the lab restored. Next: inspect outcome reconstruction learning, loss allocation, and decoding sensitivity before longer training or another fresh test. See [diagnostic results](ACTION_OUTCOMES.md#reconstruction-diagnostic-result--25-november-2026).
+**Current result:** longer training improved the training-only diagnostic. Run `eef357dc429c` completed 25,000 environment steps / 3,108 optimizer updates, beyond the 1,000-update warmup. Prior error-fraction MAE fell **47.85 → 31.78 pp**, and outcome-visible reconstruction **47.84 → 29.02 pp**, on the same training rows. The lab restored and checkpoint checks passed. These are in-sample gains, not evidence of better generalization or triage. Next: compare reconstruction loss masking using profile-disjoint development data before another fresh test. See [results](ACTION_OUTCOMES.md#fixed-25000-step-diagnostic-result--26-november-2026).
 
 The goal is to identify system faults reliably with fewer useful measurements.
 Better latency prediction is evidence that the model learned some system behavior;

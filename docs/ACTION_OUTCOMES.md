@@ -632,3 +632,43 @@ held-out scoring, and no checkpoint selection using the inspected test batch. A
 completed training checkpoint is retained if the diagnostic fails. This experiment
 can reveal optimization progress, not generalization. Profile-disjoint development
 folds are still required before selecting a final budget for a new fresh test.
+
+### Fixed 25,000-step diagnostic result — 26 November 2026
+
+Run `eef357dc429c` (`a004cd1`) completed and restored the lab. Training took
+270.02 seconds (excluding deployment/startup and diagnostic), with **3,108 optimizer
+updates**, past the 1,000-update warmup. All 261 checkpoint arrays were finite.
+The 49 recorded vector-loss aggregates fell from 34.912 at step 640 to 0.384 at
+step 24,630. This vector loss includes telemetry, flags, and zero padding.
+
+Both checkpoints were diagnosed on the same 64 training trials / 16 profiles:
+
+| Metric | 1,000-step checkpoint | 25,000-step checkpoint |
+|---|---:|---:|
+| Prior error-fraction MAE (pp) | 47.85 | 31.78 |
+| Outcome-visible reconstruction MAE (pp) | 47.84 | 29.02 |
+| Prior throughput MAE (requests/s) | 6.40 | 5.53 |
+| Reconstruction throughput MAE (requests/s) | 6.60 | 5.08 |
+| Prior latency MAE (seconds) | 0.263 | 0.050 |
+| Reconstruction latency MAE (seconds) | 0.370 | 0.045 |
+| Prior queue MAE | 3.89 | 3.37 |
+| Reconstruction queue MAE | 3.89 | 3.29 |
+
+Error-fraction clipping disappeared in both branches. Reconstruction queue clipping
+fell from 100% to 12.5%; prior queue clipping fell from 87.5% to 3.125%. Mean raw
+posterior-to-prior KL fell to 0.945 nats (1.044 with free-nats flooring). The
+checkpoint remained unchanged during diagnosis and prior outputs matched the
+established forecaster. No runtime errors, fresh faults, or held-out scoring.
+
+**Interpretation:** more optimization improves in-sample reconstruction and prediction,
+supporting insufficient training as part of the earlier failure. It does not isolate
+warmup from total update count or establish generalization. Reconstruction remains
+poor, especially for throughput and queue; do not claim a useful triage model yet.
+
+**Next:** prepare a profile-disjoint development protocol within the original training
+partition. Compare the unchanged reconstruction objective against a version that
+excludes invalid zero-filled targets, with fixed identical budgets and seeds. Keep
+validity indicators as inputs, verify per-channel/per-frame loss normalization, and
+measure both reconstruction and prior forecasts. Preserve this checkpoint and all
+inspected tests; collect another fresh test only after development evidence supports
+a frozen candidate.
