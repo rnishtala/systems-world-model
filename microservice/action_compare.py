@@ -39,7 +39,7 @@ def main():
     if args.seed==protocol['seed']:raise ValueError('Fresh seed required')
     frozen=json.loads(raw);cases=fresh_cases(args.seed,protocol['cases'])
     out=Path(args.out);out.mkdir(parents=True,exist_ok=False)
-    plan=dict(seed=args.seed,cases=cases,checkpoint_sha256=before,baseline_sha256=digest,training_sha256=meta['training_sha256'],source_run=source.parent.name,particles=PARTICLES,rng_seed=RNG_SEED,primary='Error-fraction MAE',selected=frozen['selected'],success='At least 0.05 absolute MAE reduction versus training-selected baseline; paired profile bootstrap upper bound below zero',timing='Dreamer inference offline using saved pre-action prefix only; no refitting',limits='10 independent profiles; exploratory bootstrap; no root-cause or repair-policy claim')
+    plan=dict(objective=meta.get('objective','original'),seed=args.seed,cases=cases,checkpoint_sha256=before,baseline_sha256=digest,training_sha256=meta['training_sha256'],source_run=source.parent.name,particles=PARTICLES,rng_seed=RNG_SEED,primary='Error-fraction MAE',selected=frozen['selected'],success='At least 0.05 absolute MAE reduction versus training-selected baseline; paired profile bootstrap upper bound below zero',timing='Dreamer inference offline using saved pre-action prefix only; no refitting',limits='10 independent profiles; exploratory bootstrap; no root-cause or repair-policy claim')
     (out/'protocol.json').write_text(json.dumps(plan,indent=2));(out/'frozen-baselines.json').write_bytes(raw)
     model=Forecaster(source)
     # Compile before fault injection. No outcomes are passed to the predictor.

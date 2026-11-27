@@ -1,15 +1,26 @@
 """Train a fresh upstream Dreamer macro-transition checkpoint on measured training rows."""
 import argparse,json,os,time,subprocess,sys
+from contextlib import nullcontext
 from pathlib import Path
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--source',required=True);p.add_argument('--out',required=True);p.add_argument('--seed',required=True,type=int);p.add_argument('--steps',type=int,default=1000);a=p.parse_args()
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--source',required=True);p.add_argument('--out',required=True);p.add_argument('--seed',required=True,type=int);p.add_argument('--steps',type=int,default=1000);p.add_argument('--masked-training',action='store_true');a=p.parse_args()
     if os.environ.get('POD_NAMESPACE')!='systems-world-model-lab':raise ValueError('Wrong namespace')
     if a.steps not in (1000,25000):raise ValueError('Use the 1000-step smoke or fixed 25000-step training diagnostic')
     from microservice.action_model import export_training
     out=Path(a.out)
     meta=export_training(a.source,out)
-    result=train_partition(out,meta,a.seed,a.steps)
+    objective = nullcontext()
+    if a.masked_training:
+        if a.steps != 25000:
+            raise ValueError('Masked candidate requires 25000 steps')
+        from microservice.configuration import elements  # initialize pinned upstream path
+        from microservice.action_masking import masked_objective
+        objective = masked_objective()
+        meta['objective'] = 'valid-channel-mask'
+        (out/'manifest.json').write_text(json.dumps(meta, indent=2))
+    with objective:
+        result=train_partition(out,meta,a.seed,a.steps)
     if a.steps==25000:
         subprocess.run([sys.executable,'-m','microservice.action_diagnostic','--source',str(out),'--out',str(out/'diagnostic')],check=True)
         result['diagnostic']=json.loads((out/'diagnostic'/'summary.json').read_text())['action_diagnostic']

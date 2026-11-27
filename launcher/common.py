@@ -36,6 +36,7 @@ def job_manifest(run,image):
     if run.get('temporal_pilot'):command[2]='launcher.temporal_pipeline'
     if run.get('snapshot_calibration'):command+=['--snapshot-calibration']
     if run.get('action_outcomes'):command+=['--action-outcomes']
+    if run.get('masked_training'):command.append('--masked-training')
     if run.get('action_masking'):command.append('--action-masking')
     if run.get('action_diagnostic_source'):command+=['--action-diagnostic-source',run['action_diagnostic_source']]
     if run.get('action_comparison_source'):command+=['--action-comparison-source',run['action_comparison_source']]

@@ -8,10 +8,13 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('run','dataset'):p.add_argument('--'+name,required=True)
     for name in ('seed','steps','test-seed'):p.add_argument('--'+name,type=int,required=True)
+    p.add_argument('--masked-training',action='store_true')
     p.add_argument('--action-masking',action='store_true');p.add_argument('--action-diagnostic-source');p.add_argument('--action-comparison-source');p.add_argument('--dataset-sha256');p.add_argument('--action-inference-source');p.add_argument('--action-dreamer-source');p.add_argument('--action-balanced',action='store_true');p.add_argument('--action-source');p.add_argument('--action-validation-source');modes=p.add_mutually_exclusive_group();modes.add_argument('--snapshot-calibration',action='store_true');modes.add_argument('--action-outcomes',action='store_true');a=p.parse_args()
     if os.environ.get('POD_NAMESPACE')!=NAMESPACE:raise ValueError('Wrong namespace')
     if a.action_masking and (not a.action_diagnostic_source or a.steps != 25000):
         raise ValueError('Masking requires a 25000-step source')
+    if a.masked_training and (not a.action_dreamer_source or a.steps != 25000):
+        raise ValueError('Expected 25000-step masked training run')
     resume=[]
     if a.action_balanced:
         if not a.action_outcomes or a.action_source or a.action_validation_source:raise ValueError('Balanced collection requires fresh action outcomes')
@@ -57,6 +60,8 @@ def main():
             command = [sys.executable, '-m', 'microservice.action_masking', '--source',
                        str(root.parent / a.action_diagnostic_source / 'temporal-pilot'),
                        '--out', str(root / 'temporal-pilot'), '--seed', str(a.seed)]
+        if a.masked_training:
+            command.append('--masked-training')
         pipeline.child=subprocess.Popen(command,stdout=log,stderr=subprocess.STDOUT)
         if pipeline.child.wait():raise RuntimeError('Temporal pilot failed; inspect restoration status')
     if a.action_dreamer_source:
