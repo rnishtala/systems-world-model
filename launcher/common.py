@@ -36,6 +36,7 @@ def job_manifest(run,image):
     if run.get('temporal_pilot'):command[2]='launcher.temporal_pipeline'
     if run.get('snapshot_calibration'):command+=['--snapshot-calibration']
     if run.get('action_outcomes'):command+=['--action-outcomes']
+    if run.get('action_masking'):command.append('--action-masking')
     if run.get('action_diagnostic_source'):command+=['--action-diagnostic-source',run['action_diagnostic_source']]
     if run.get('action_comparison_source'):command+=['--action-comparison-source',run['action_comparison_source']]
     if run.get('action_inference_source'):command+=['--action-inference-source',run['action_inference_source']]
@@ -93,4 +94,4 @@ def validate_probe_seeds(seeds):
 
 
 def run_budget(run):
-    return 7200 if run.get('probe_training_seeds') or run.get('action_balanced') or run.get('action_dreamer_source') else 3600
+    return 7200 if run.get('action_masking') or run.get('probe_training_seeds') or run.get('action_balanced') or run.get('action_dreamer_source') else 3600

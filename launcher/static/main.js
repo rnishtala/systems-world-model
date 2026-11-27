@@ -85,6 +85,12 @@ function renderTemporal(r){
  el('interpretation').textContent='Mechanism feasibility pilot: checks retries, backlog and recovery. No model training or accuracy claim.';
  if(!r.temporal_summary)return;
  el('metrics').replaceChildren();
+ if(r.temporal_summary.action_masking){
+  const c=r.temporal_summary.action_masking;
+  el('interpretation').textContent='Held-out forecasts across '+c.profiles+' workload profiles. Masking improved '+c.improved_profiles+' profiles.';
+  for(const [name,m] of Object.entries(c.metrics)){const cell=text('div','','metric');cell.append(text('span',name),text('strong',(100*m.prior.error_fraction).toFixed(2)+' pp forecast MAE'));el('metrics').append(cell);}
+  return;
+ }
  if(r.temporal_summary.action_diagnostic){
   const c=r.temporal_summary.action_diagnostic;
   el('interpretation').textContent='Training-only diagnostic on '+c.training_trials+' examples. Reconstruction sees the outcome; it is not a forecast or held-out score.';

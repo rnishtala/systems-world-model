@@ -55,6 +55,14 @@ def main():
     rows=validate([json.loads(l) for l in (source/'train.jsonl').read_text().splitlines()])
     out=Path(args.out);out.mkdir(parents=True,exist_ok=False)
     (out/'protocol.json').write_text(json.dumps(dict(source_run=source.parent.name,training_sha256=meta['training_sha256'],checkpoint_sha256=before,rows=len(rows),particles=PARTICLES,rng_seed=RNG_SEED,scope='Training-only diagnostic; posterior sees outcome and is NOT a forecast; no fitting or fresh faults'),indent=2))
+    results=score_rows(source,rows)
+    scores=summarize(results,[r['outcome'] for r in rows])
+    if checkpoint_hash(source)!=before or verify_source(source)['training_sha256']!=meta['training_sha256']:raise ValueError('Source changed')
+    (out/'diagnostics.json').write_text(json.dumps(results))
+    summary=dict(**scores,training_trials=len(rows),training_profiles=len({r['group'] for r in rows}),checkpoint_unchanged=True,prior_matches_forecaster=True,scope='In-sample diagnostic; reconstruction sees the outcome; no held-out accuracy claim',kl_note='Final-transition posterior||prior KL; dyn/rep have equal forward values, different gradients; not a recorded training loss')
+    (out/'summary.json').write_text(json.dumps(dict(action_diagnostic=summary,incidents=[]),indent=2));print('ACTION_DIAGNOSTIC_COMPLETE',flush=True)
+
+def score_rows(source,rows):
     model=Forecaster(source)
     import jax,jax.numpy as jnp,ninjax as nj
     @nj.pure
@@ -70,10 +78,6 @@ def main():
         expected=model(row['observations'],row['action'])
         if not np.allclose(clip(np.array(result['prior']['physical_mean'])),expected,rtol=1e-5,atol=1e-6):raise ValueError('Prior path mismatch')
         results.append(result)
-    scores=summarize(results,[r['outcome'] for r in rows])
-    if checkpoint_hash(source)!=before or verify_source(source)['training_sha256']!=meta['training_sha256']:raise ValueError('Source changed')
-    (out/'diagnostics.json').write_text(json.dumps(results))
-    summary=dict(**scores,training_trials=len(rows),training_profiles=len({r['group'] for r in rows}),checkpoint_unchanged=True,prior_matches_forecaster=True,scope='In-sample diagnostic; reconstruction sees the outcome; no held-out accuracy claim',kl_note='Final-transition posterior||prior KL; dyn/rep have equal forward values, different gradients; not a recorded training loss')
-    (out/'summary.json').write_text(json.dumps(dict(action_diagnostic=summary,incidents=[]),indent=2));print('ACTION_DIAGNOSTIC_COMPLETE',flush=True)
+    return results
 
 if __name__=='__main__':main()
