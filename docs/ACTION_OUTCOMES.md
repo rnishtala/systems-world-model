@@ -672,3 +672,29 @@ validity indicators as inputs, verify per-channel/per-frame loss normalization, 
 measure both reconstruction and prior forecasts. Preserve this checkpoint and all
 inspected tests; collect another fresh test only after development evidence supports
 a frozen candidate.
+
+### Loss masking on held-out workload profiles — 26 November 2026
+
+Run `17ad74c6c23f` used code `f9f227e` and the original 64 training trials.
+Each of eight workload regimes contributed two profiles with four actions apiece.
+Two folds held out opposite replicates. Each of the four models trained from
+scratch for 25,000 steps on eight profiles with seed 113. Each scored the other
+eight profiles. The masked loss drops padded scalar errors before the upstream
+channel reduction. Valid coefficients, including those for measured zeros and
+the two validity indicators, retain their original weights.
+
+| Held-out metric (mean absolute error) | Control | Masked |
+|---|---:|---:|
+| Error-rate forecast, fold 1 (percentage points) | 28.62 | 19.50 |
+| Error-rate forecast, fold 2 (percentage points) | 31.78 | 15.87 |
+| Error-rate forecast, both folds (percentage points) | 30.20 | 17.69 |
+| Throughput forecast (successful requests/s) | 5.43 | 4.39 |
+| Latency forecast (ms) | 50.1 | 56.2 |
+| Queue forecast (requests) | 3.29 | 1.36 |
+| Outcome-visible error-rate reconstruction (percentage points) | 27.03 | 9.97 |
+
+Masking reduced forecast MAE by 12.52 percentage points on average and improved
+15 of 16 profiles. Latency was the exception among the four forecast targets.
+These development scores compare two Dreamer objectives with one seed and eight
+represented regimes. A fresh comparison against telemetry baselines would
+measure the value of the masked model for predicting repair outcomes.

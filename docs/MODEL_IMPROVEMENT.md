@@ -1,6 +1,11 @@
 # Improving world-model triage
 
-**Current result:** longer training improved the training-only diagnostic. Run `eef357dc429c` completed 25,000 environment steps / 3,108 optimizer updates, beyond the 1,000-update warmup. Prior error-fraction MAE fell **47.85 → 31.78 pp**, and outcome-visible reconstruction **47.84 → 29.02 pp**, on the same training rows. The lab restored and checkpoint checks passed. These are in-sample gains, not evidence of better generalization or triage. Next: compare reconstruction loss masking using profile-disjoint development data before another fresh test. See [results](ACTION_OUTCOMES.md#fixed-25000-step-diagnostic-result--26-november-2026).
+**Masking padded reconstruction targets improved held-out error-rate forecasts.**
+Across two folds and 16 workload profiles, Dreamer forecast MAE fell from 30.20
+to 17.69 percentage points. Fifteen profiles improved, and latency MAE rose
+from 50.1 to 56.2 ms. The comparison used one training seed. The next benchmark
+is a fresh trial against the simpler telemetry predictors.
+[Experiment details](ACTION_OUTCOMES.md#loss-masking-on-held-out-workload-profiles--26-november-2026).
 
 The goal is to identify system faults reliably with fewer useful measurements.
 Better latency prediction is evidence that the model learned some system behavior;
