@@ -950,3 +950,26 @@ for all arms. Report post-load and pooled MAE plus signed shifts and MAE on comp
 failures and successes. Advance the state term only if it beats both telemetry controls
 on load MAE in each outer fold, with no increase in pooled all-action or complete-load-
 failure MAE versus either control. Keep this inspected fresh batch diagnostic only.
+
+### Calibration with a frozen Dreamer state
+
+Run `07077f2ba39c` completed on the original two grouped development folds.
+Each held eight profiles and 32 incidents, including four complete load failures
+and four complete load successes. Both calibration arms selected full strength and
+ridge penalty 100 in each inner validation. The earlier correction reproduced.
+
+| Forecast MAE (pp) | Load fold 1 | Load fold 2 | Load pooled | Complete load failures | Complete load successes | All actions |
+|---|---:|---:|---:|---:|---:|---:|
+| Telemetry | 19.48 | 26.30 | 22.89 | 21.17 | 24.61 | 11.99 |
+| Recalibrated telemetry | 20.49 | 26.52 | 23.51 | 21.55 | 25.47 | 12.51 |
+| Recalibrated telemetry with Dreamer state | 17.66 | 22.16 | 19.91 | 17.81 | 22.01 | 10.17 |
+| Earlier Dreamer correction | 17.40 | 18.09 | 17.74 | 13.99 | 21.50 | 8.14 |
+
+On complete failures, the new arm raised the predicted failure rate versus
+telemetry by 2.55 and 4.19 pp on average in the two folds. On complete successes
+it lowered it by 1.08 and 4.10 pp. The candidate passed the preset criteria
+against both telemetry controls. Its forecast error exceeded the earlier
+correction in both folds and on complete failures. The same development profiles
+have informed multiple experiments. The next discriminating test is a single
+fresh batch scored by both frozen corrections and the telemetry controls, with
+post-load error and complete-failure error reported separately. The lab restored.
