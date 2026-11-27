@@ -724,3 +724,53 @@ absolute Dreamer error (33.14 pp). Each action was represented by ten trials.
 Masked Dreamer's 17.73 pp fresh score closely matched its 17.69 pp development
 score. Current-window telemetry gave the lowest error-rate MAE on this batch.
 This benchmark measured repair-outcome forecasts across ten profiles.
+
+### Why the load-reduction forecasts lagged
+
+In fresh run `d669f4d90654`, Dreamer exceeded history ridge's error-fraction
+MAE by 17.89 pp for load reduction, 3.56 pp for database repair, 2.84 pp for
+retry changes and 1.50 pp for no intervention. Equal action counts make load
+reduction responsible for about 69% of the overall 6.45 pp gap. Database repair
+still had the highest absolute Dreamer error.
+
+Load relief sets the offered rate to two requests/s. Each of the ten measured
+outcome fractions used only six or seven completed requests. Six trials saw zero
+failures and four saw every request fail. The table gives mean predicted error
+rates conditional on these observed outcomes.
+
+| Predictor | All succeeded (6 trials) | All failed (4 trials) | Load MAE |
+|---|---:|---:|---:|
+| Current-window ridge | 8.2% | 92.6% | 7.86 pp |
+| History ridge | 9.5% | 81.3% | 13.18 pp |
+| Masked Dreamer | 24.7% | 59.4% | 31.08 pp |
+
+Dreamer's fresh overall load mean (38.6%) was close to the observed 40%.
+Its conditional forecasts were compressed and its ranking lost information
+(pairwise AUC 0.875 versus 1.0 for each ridge control). Training showed the
+same pattern on 16 load trials, split evenly between observed endpoints.
+Load forecast MAE was 30.6 pp on training examples. The outcome-visible
+training reconstruction also had 21.7 pp MAE. Both endpoints occurred during
+training. Small outcome denominators and ten fresh profiles limit inference
+about true failure probabilities. Configured database delay alone also leaves
+ambiguity: two of four fresh database profiles below the nominal 100 ms timeout
+still saw every request fail after load relief.
+
+A retrospective diagnostic fixed the midpoint at 0.5 and multiplied the
+forecast log odds by a slope from {1, 2, 4, 8}, chosen by training load MAE.
+Slope 8 reduced fresh load MAE to 21.44 pp. This inspected-batch check shows
+that widening forecast separation recovers part of the gap. A monotone
+transformation preserves ranking, and the history control still scored 13.18 pp.
+
+**Selected experiment.** On the original two profile-disjoint development folds,
+freeze each masked checkpoint and fit a small action-conditioned ridge readout
+to predict observed error fraction from its pre-action imagined latent state.
+Compare against the native decoder, current-window ridge, and a combined
+telemetry-plus-latent ridge readout. Fit all readouts and feature scaling on the
+fit half only, select regularization with grouped inner validation, use the same
+actions and prior particle budget, and score paired forecast MAE on the outer
+profiles. Primary endpoint is load-reduction MAE; report all-action MAE as a
+guardrail. Advance a latent readout to fresh validation only if it beats
+current-window telemetry on load reduction in both folds and does not increase
+pooled all-action MAE. This probes whether outcome-relevant information survives
+in the imagined state and whether it adds value beyond telemetry. Independent
+fresh replication is needed after development selection.
