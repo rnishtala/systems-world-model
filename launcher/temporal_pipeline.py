@@ -8,6 +8,7 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('run','dataset'):p.add_argument('--'+name,required=True)
     for name in ('seed','steps','test-seed'):p.add_argument('--'+name,type=int,required=True)
+    p.add_argument('--readout-source')
     p.add_argument('--masked-training',action='store_true')
     p.add_argument('--action-masking',action='store_true');p.add_argument('--action-diagnostic-source');p.add_argument('--action-comparison-source');p.add_argument('--dataset-sha256');p.add_argument('--action-inference-source');p.add_argument('--action-dreamer-source');p.add_argument('--action-balanced',action='store_true');p.add_argument('--action-source');p.add_argument('--action-validation-source');modes=p.add_mutually_exclusive_group();modes.add_argument('--snapshot-calibration',action='store_true');modes.add_argument('--action-outcomes',action='store_true');a=p.parse_args()
     if os.environ.get('POD_NAMESPACE')!=NAMESPACE:raise ValueError('Wrong namespace')
@@ -47,8 +48,8 @@ def main():
         if a.action_outcomes or a.snapshot_calibration or resume or a.steps not in (1000,25000):raise ValueError('Action Dreamer must run alone with 1000 or 25000 steps')
     root=Path('/results/experiments/runs')/a.run;root.mkdir(parents=True,exist_ok=True)
     if (root/'protocol.json').exists():raise ValueError('Use a fresh pilot run')
-    (root/'protocol.json').write_text(json.dumps(dict(mode='temporal-pilot',seed=a.seed if a.action_dreamer_source else a.test_seed,action_dreamer_source=a.action_dreamer_source,scope='Held-out workload masking experiment' if a.action_masking else 'Training-only reconstruction diagnostic' if a.action_diagnostic_source else 'Fresh frozen action outcome comparison' if a.action_comparison_source else 'Action Dreamer inference smoke only; no accuracy evaluation' if a.action_inference_source else 'Action Dreamer training smoke only; no evaluation' if a.action_dreamer_source else 'Mechanism feasibility only; no Dreamer training',utc=time.time())))
-    (root/'progress.json').write_text(json.dumps(dict(phase='comparing losses on held-out workload profiles' if a.action_masking else 'diagnosing training reconstruction and prior' if a.action_diagnostic_source else 'comparing frozen Dreamer on fresh incidents' if a.action_comparison_source else 'verifying action-conditioned inference' if a.action_inference_source else 'training action-conditioned Dreamer' if a.action_dreamer_source else 'collecting temporal mechanism pilot',utc=time.time())))
+    (root/'protocol.json').write_text(json.dumps(dict(mode='temporal-pilot',seed=a.seed if a.action_dreamer_source else a.test_seed,action_dreamer_source=a.action_dreamer_source,scope='Frozen readout development comparison' if a.readout_source else 'Held-out workload masking experiment' if a.action_masking else 'Training-only reconstruction diagnostic' if a.action_diagnostic_source else 'Fresh frozen action outcome comparison' if a.action_comparison_source else 'Action Dreamer inference smoke only; no accuracy evaluation' if a.action_inference_source else 'Action Dreamer training smoke only; no evaluation' if a.action_dreamer_source else 'Mechanism feasibility only; no Dreamer training',utc=time.time())))
+    (root/'progress.json').write_text(json.dumps(dict(phase='fitting frozen state readouts' if a.readout_source else 'comparing losses on held-out workload profiles' if a.action_masking else 'diagnosing training reconstruction and prior' if a.action_diagnostic_source else 'comparing frozen Dreamer on fresh incidents' if a.action_comparison_source else 'verifying action-conditioned inference' if a.action_inference_source else 'training action-conditioned Dreamer' if a.action_dreamer_source else 'collecting temporal mechanism pilot',utc=time.time())))
     signal.signal(signal.SIGTERM,pipeline.stop);signal.signal(signal.SIGINT,pipeline.stop)
     with (root/'run.log').open('ab',buffering=0) as log:
         command=[sys.executable,'-m',('microservice.action_outcomes' if a.action_outcomes else 'microservice.temporal_calibration' if a.snapshot_calibration else 'microservice.temporal_pilot'),'--out',str(root/'temporal-pilot'),'--seed',str(a.test_seed)]+resume
@@ -60,6 +61,12 @@ def main():
             command = [sys.executable, '-m', 'microservice.action_masking', '--source',
                        str(root.parent / a.action_diagnostic_source / 'temporal-pilot'),
                        '--out', str(root / 'temporal-pilot'), '--seed', str(a.seed)]
+        if a.readout_source:
+            from launcher.common import validate_retest
+            validate_retest(a.run, a.readout_source)
+            command = [sys.executable, '-m', 'microservice.action_readout', '--source',
+                       str(root.parent / a.readout_source / 'temporal-pilot'),
+                       '--out', str(root / 'temporal-pilot')]
         if a.masked_training:
             command.append('--masked-training')
         pipeline.child=subprocess.Popen(command,stdout=log,stderr=subprocess.STDOUT)

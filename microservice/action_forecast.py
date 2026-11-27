@@ -36,7 +36,7 @@ def checkpoint_hash(root):
         h.update(str(p.relative_to(root)).encode()+b'\0');h.update(p.read_bytes())
     return h.hexdigest()
 
-def prior_outcomes(inner,h,action,xp):
+def prior_outcomes(inner,h,action,xp,include_state=False):
     enc,dyn,dec,prev=inner.init_policy(PARTICLES)
     noop=2*xp.eye(4,dtype=xp.float32)[0]-1
     for t in range(4):
@@ -52,7 +52,11 @@ def prior_outcomes(inner,h,action,xp):
     _,_,prediction=inner.dec(dec,prior,xp.zeros((PARTICLES,),bool),training=False,single=True)
     raw=prediction['vector'].pred()[:,len(FEATURES):len(FEATURES)+4]
     values=physical_outcomes(raw,inner.dec.symlog,xp)
-    return values.mean(0),xp.isfinite(values).all()
+    outputs = (values.mean(0), xp.isfinite(values).all())
+    if include_state:
+        state = inner.feat2tensor(prior).reshape((PARTICLES, -1)).mean(0)
+        return (*outputs, state)
+    return outputs
 
 class Forecaster:
     def __init__(self,root):
