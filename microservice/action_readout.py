@@ -82,6 +82,12 @@ def run_fold(source, out, fold):
     penalties = {}
     for name, x in features.items():
         estimates[name], penalties[name] = fit_predict(x[:n], y, train_groups, x[n:])
+    from microservice.action_residual import corrected_forecast
+    load_fit = np.array([r['action'] == 'load' for r in train])
+    state_features = features['state']
+    estimates['corrected'], selection = corrected_forecast(
+        telemetry[:n], state_features[:n], y, train_groups, load_fit,
+        state_features[n:], estimates['telemetry'])
     truth = np.array([r['outcome'][0] for r in held])
     load = np.array([r['action'] == 'load' for r in held])
     metrics = {}
@@ -92,7 +98,13 @@ def run_fold(source, out, fold):
     ref_mae = np.mean([r['prior']['error_fraction']['mae'] for r in reference.values()])
     if not np.isclose(metrics['native']['all'], ref_mae, atol=1e-6) or checkpoint_hash(arm) != model.checkpoint_sha256:
         raise ValueError('Native forecast parity or checkpoint integrity failed')
-    result = dict(metrics=metrics, penalties=penalties, profiles=sorted(held_groups),
+    adjustments = estimates['corrected'] - estimates['telemetry']
+    by_outcome = {}
+    for label, mask in [('all_failed', truth == 1), ('all_succeeded', truth == 0)]:
+        subset = load & mask
+        if subset.any():
+            by_outcome[label] = dict(n=int(subset.sum()), mean_adjustment=float(adjustments[subset].mean()))
+    result = dict(correction_selection=selection, load_adjustments=by_outcome, metrics=metrics, penalties=penalties, profiles=sorted(held_groups),
                   checkpoint_sha256=model.checkpoint_sha256)
     (out / f'fold-{fold}.json').write_text(json.dumps(result, allow_nan=False))
 
@@ -119,7 +131,7 @@ def main():
     pooled = {name: {key: float(np.mean([f['metrics'][name][key] for f in folds]))
                      for key in ('load', 'all')} for name in folds[0]['metrics']}
     passes = {name: all(f['metrics'][name]['load'] < f['metrics']['telemetry']['load'] for f in folds)
-              and pooled[name]['all'] <= pooled['telemetry']['all'] for name in ('state', 'combined')}
+              and pooled[name]['all'] <= pooled['telemetry']['all'] for name in ('state', 'combined', 'corrected')}
     summary = dict(folds=folds, pooled=pooled, passes=passes)
     (args.out / 'summary.json').write_text(json.dumps({'action_readout': summary, 'incidents': []}, indent=2))
 
