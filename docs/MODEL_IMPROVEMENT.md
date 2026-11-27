@@ -1,10 +1,10 @@
 # Improving world-model triage
 
-**Current-window telemetry gave the best fresh error-rate forecasts.** On 40
-trials across 10 new profiles, masked Dreamer scored 17.73 pp MAE, history
-ridge 11.28 pp and current-window ridge 8.77 pp. Dreamer beat the preselected
-history baseline on two profiles. Its fresh score tracked its 17.69 pp
-development score. [Fresh comparison](ACTION_OUTCOMES.md#masked-dreamer-against-frozen-telemetry-baselines-on-fresh-incidents).
+**Telemetry alone led the fresh combined-readout benchmark.** Across ten new
+load-reduction trials, telemetry scored 7.60 pp error-rate MAE and telemetry
+plus frozen Dreamer state scored 11.36 pp. Across all 40 trials the scores
+were 7.95 and 9.82 pp. The combined readout missed its preset criterion.
+[Fresh readout results](ACTION_OUTCOMES.md#combined-regression-on-fresh-incidents).
 
 The goal is to identify system faults reliably with fewer useful measurements.
 Better latency prediction is evidence that the model learned some system behavior;

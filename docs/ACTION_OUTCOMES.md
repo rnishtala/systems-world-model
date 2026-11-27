@@ -797,3 +797,27 @@ advantage was 0.68 pp on the first fold and 6.38 pp on the second. The state-onl
 readout failed the first fold. The experiment covered 16 load-reduction trials and
 64 total trials with one checkpoint seed. Select the combined readout for an
 independent fresh-incident comparison. The lab restored successfully.
+
+### Combined regression on fresh incidents
+
+Run `e2bf8c2ff724` evaluated the selected combined readout against current-window
+telemetry. Both ridge models were fitted on the same 64 training trials with
+grouped penalty selection and frozen before collection. The masked checkpoint
+came from `7efaa0c231f6`. The new seed 1028911228 yielded ten profiles distinct
+from the original collection and both earlier fresh batches. Each profile
+contributed four actions. Telemetry predictions matched the established snapshot
+ridge, and checkpoint and readout integrity checks passed.
+
+| Error-rate MAE, percentage points | Telemetry | Combined | Combined minus telemetry |
+|---|---:|---:|---:|
+| Load reduction (primary) | 7.60 | 11.36 | +3.76 |
+| All actions | 7.95 | 9.82 | +1.88 |
+| Database repair | 14.61 | 17.19 | +2.58 |
+| Retry change | 2.73 | 3.26 | +0.52 |
+| No intervention | 6.84 | 7.48 | +0.64 |
+
+The combined model had lower load error on four of ten profiles. The exploratory
+paired profile-bootstrap 95% interval for its excess load error was −1.64 to
++11.33 pp. The corresponding all-action interval was −0.88 to +5.06 pp.
+Both point estimates missed the preset decision rule. The 3.53 pp load gain
+seen in development did not replicate on this batch.
