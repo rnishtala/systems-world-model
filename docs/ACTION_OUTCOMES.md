@@ -973,3 +973,27 @@ correction in both folds and on complete failures. The same development profiles
 have informed multiple experiments. The next discriminating test is a single
 fresh batch scored by both frozen corrections and the telemetry controls, with
 post-load error and complete-failure error reported separately. The lab restored.
+
+### Paired fresh test of both frozen corrections
+
+Run `785f337004eb` completed 40 incidents on ten new profiles, one load reduction
+per profile. Fitting used 64 training incidents from 16 profiles. Frozen readouts
+and the checkpoint passed integrity checks. The earlier correction matched its
+previous fitted weights exactly. Training selected zero strength for telemetry-only
+recalibration and 0.25 for both Dreamer corrections. No collection retries were
+needed and the lab restored.
+
+| Error-rate MAE (pp) | All actions | Load | Load complete failures (4) | Load complete successes (6) |
+|---|---:|---:|---:|---:|
+| Telemetry | 8.74 | 11.43 | 13.29 | 10.20 |
+| Recalibrated telemetry | 8.74 | 11.43 | 13.29 | 10.20 |
+| Earlier Dreamer correction | 8.28 | 11.03 | 13.74 | 9.23 |
+| Forecast-conditioned Dreamer correction | 8.39 | 11.07 | 13.78 | 9.27 |
+
+Each Dreamer method improved five load forecasts, tied three and worsened two.
+The paired profile-bootstrap 95% intervals for load MAE differences versus
+telemetry were [−1.14, +0.39] and [−1.08, +0.42] pp respectively. Both missed
+the preset complete-failure guardrail. The earlier correction also increased
+complete-failure error on the previous independent batch. Keep telemetry as the
+post-load default. Adding the baseline forecast as a calibration input did not
+resolve the observed underprediction on complete failures.
