@@ -107,7 +107,7 @@ function renderTemporal(r){
   const c=r.temporal_summary.action_comparison;
   if(c.readouts){
    el('interpretation').textContent='Fresh paired error-rate forecasts across '+c.independent_test_profiles+' profiles.';
-   for(const name of ['telemetry','combined']){
+   for(const name of ['telemetry',c.readouts.candidate || 'combined']){
     const cell=text('div','','metric');
     cell.append(text('span',name),text('strong',(100*c.readouts.metrics.load[name]).toFixed(2)+' pp load MAE'),text('span',(100*c.readouts.metrics.all[name]).toFixed(2)+' pp across all actions'));
     el('metrics').append(cell);

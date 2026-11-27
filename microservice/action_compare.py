@@ -23,7 +23,7 @@ def paired_report(rows,baseline):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     for k in ('source','out'):p.add_argument('--'+k,required=True)
-    p.add_argument('--fresh-readout',action='store_true');p.add_argument('--seed',type=int,required=True);args=p.parse_args()
+    p.add_argument('--fresh-residual',action='store_true');p.add_argument('--fresh-readout',action='store_true');p.add_argument('--seed',type=int,required=True);args=p.parse_args()
     if os.environ.get('POD_NAMESPACE')!='systems-world-model-lab':raise ValueError('Wrong namespace')
     source=Path(args.source);meta=verify_source(source);before=checkpoint_hash(source)
     # Resolve only the original balanced source tied to this checkpoint.
@@ -45,7 +45,7 @@ def main():
         if meta.get('objective') != 'valid-channel-mask':
             raise ValueError('Expected full masked checkpoint')
         model = Forecaster(source)
-        plan['readouts'] = freeze(model, source, out)
+        plan['readouts'] = freeze(model, source, out, residual=args.fresh_residual)
         plan.update(primary=plan['readouts']['primary'], selected='snapshot_ridge',
                     success=plan['readouts']['decision'])
     (out/'protocol.json').write_text(json.dumps(plan,indent=2));(out/'frozen-baselines.json').write_bytes(raw)

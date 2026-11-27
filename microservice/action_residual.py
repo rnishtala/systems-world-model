@@ -16,7 +16,7 @@ def crossfit_errors(telemetry, y, groups):
     return residual
 
 
-def corrected_forecast(telemetry, state, y, groups, load, held_state, held_baseline):
+def fit_correction(telemetry, state, y, groups, load):
     from microservice.action_readout import fit_predict
 
     baseline = np.empty_like(y)
@@ -44,10 +44,20 @@ def corrected_forecast(telemetry, state, y, groups, load, held_state, held_basel
             if pooled <= all_mae:
                 candidates.append((primary, pooled, strength, penalty))
     primary, pooled, strength, penalty = min(candidates)
-    prediction = held_baseline.copy()
+    model = None
     if strength:
         residual = crossfit_errors(telemetry, y, groups)
         model = fit_ridge(state, residual, penalty)
-        prediction = np.clip(prediction + strength * ridge_predict(model, held_state), 0, 1)
-    return prediction, dict(strength=strength, penalty=penalty if strength else None,
+    return model, dict(strength=strength, penalty=penalty if strength else None,
                             inner_load_mae=primary, inner_all_mae=pooled)
+
+
+def apply_correction(model, strength, state, baseline):
+    if strength == 0:
+        return baseline.copy()
+    return np.clip(baseline + strength * ridge_predict(model, state), 0, 1)
+
+
+def corrected_forecast(telemetry, state, y, groups, load, held_state, held_baseline):
+    model, choice = fit_correction(telemetry, state, y, groups, load)
+    return apply_correction(model, choice['strength'], held_state, held_baseline), choice

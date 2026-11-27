@@ -8,6 +8,7 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('run','dataset'):p.add_argument('--'+name,required=True)
     for name in ('seed','steps','test-seed'):p.add_argument('--'+name,type=int,required=True)
+    p.add_argument('--fresh-residual',action='store_true')
     p.add_argument('--fresh-readout',action='store_true')
     p.add_argument('--readout-source')
     p.add_argument('--masked-training',action='store_true')
@@ -72,6 +73,8 @@ def main():
             if not a.action_comparison_source:
                 raise ValueError('Expected fresh comparison')
             command.append('--fresh-readout')
+            if a.fresh_residual:
+                command.append('--fresh-residual')
         if a.masked_training:
             command.append('--masked-training')
         pipeline.child=subprocess.Popen(command,stdout=log,stderr=subprocess.STDOUT)
