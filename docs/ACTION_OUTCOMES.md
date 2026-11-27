@@ -877,3 +877,24 @@ complete failures. Use regime labels only for reporting. Advance only on lower
 load MAE in both folds and no higher pooled all-action MAE versus telemetry.
 The inspected fresh batch is diagnostic evidence; use a new independent batch
 for confirmation if the development rule passes.
+
+### Frozen-state correction on held-out profiles
+
+Run `d1fc4c66a860` completed both development folds. The correction learned
+signed errors from grouped, cross-fitted telemetry forecasts. Inner grouped
+validation selected the penalty and correction strength with an all-action
+guardrail. Zero correction was eligible. Both folds selected full strength,
+with ridge penalties 100 and 1 respectively.
+
+| Error-rate MAE (percentage points) | Load fold 1 | Load fold 2 | Load pooled | All actions pooled |
+|---|---:|---:|---:|---:|
+| Telemetry | 19.48 | 26.30 | 22.89 | 11.99 |
+| Original joint ridge | 18.80 | 19.92 | 19.36 | 9.77 |
+| Telemetry with frozen-state correction | 17.40 | 18.09 | 17.74 | 8.14 |
+
+On the four complete load failures per fold, the mean corrections raised the
+predicted error rate by 2.96 and 11.41 pp respectively. On the four complete
+successes per fold, they lowered it by 1.20 and 5.02 pp. The preset development
+rule passed. The folds reuse the 16 development profiles and one training seed.
+A separately frozen full-data fit and independent fresh incidents are needed to
+assess transfer. The lab restored successfully.
