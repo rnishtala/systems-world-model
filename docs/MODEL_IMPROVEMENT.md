@@ -1,11 +1,10 @@
 # Improving world-model triage
 
-**Masking padded reconstruction targets improved held-out error-rate forecasts.**
-Across two folds and 16 workload profiles, Dreamer forecast MAE fell from 30.20
-to 17.69 percentage points. Fifteen profiles improved, and latency MAE rose
-from 50.1 to 56.2 ms. The comparison used one training seed. The next benchmark
-is a fresh trial against the simpler telemetry predictors.
-[Experiment details](ACTION_OUTCOMES.md#loss-masking-on-held-out-workload-profiles--26-november-2026).
+**Current-window telemetry gave the best fresh error-rate forecasts.** On 40
+trials across 10 new profiles, masked Dreamer scored 17.73 pp MAE, history
+ridge 11.28 pp and current-window ridge 8.77 pp. Dreamer beat the preselected
+history baseline on two profiles. Its fresh score tracked its 17.69 pp
+development score. [Fresh comparison](ACTION_OUTCOMES.md#masked-dreamer-against-frozen-telemetry-baselines-on-fresh-incidents).
 
 The goal is to identify system faults reliably with fewer useful measurements.
 Better latency prediction is evidence that the model learned some system behavior;

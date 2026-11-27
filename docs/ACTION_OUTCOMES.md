@@ -698,3 +698,29 @@ Masking reduced forecast MAE by 12.52 percentage points on average and improved
 These development scores compare two Dreamer objectives with one seed and eight
 represented regimes. A fresh comparison against telemetry baselines would
 measure the value of the masked model for predicting repair outcomes.
+
+### Masked Dreamer against frozen telemetry baselines on fresh incidents
+
+Training run `7efaa0c231f6` used seed 113, the valid-channel mask, all 64 training
+trials and 25,000 steps. Benchmark `d669f4d90654` used fresh seed 1647539100.
+Its 10 profiles had zero exact overlap with the source collection or the earlier
+fresh benchmark. All 40 trials completed and the lab restored. Checkpoint and
+baseline identities passed verification.
+
+| Predictor | Error-rate MAE (pp) | Throughput MAE (requests/s) | Latency MAE (ms) | Queue MAE |
+|---|---:|---:|---:|---:|
+| Current-window ridge | 8.77 | 2.85 | 23.1 | 1.48 |
+| History ridge | 11.28 | 2.78 | 24.0 | 1.85 |
+| Masked Dreamer | 17.73 | 4.50 | 59.5 | 1.63 |
+| Action average | 41.63 | 6.81 | 53.2 | 4.29 |
+
+Dreamer exceeded the preselected history baseline's error by 6.45 percentage
+points and won on two profiles. The exploratory paired profile-bootstrap 95%
+interval for Dreamer minus history was −1.41 to +14.35 points. The prespecified
+five-point improvement criterion failed. The largest action-specific gap versus
+history was load reduction (31.08 vs 13.18 pp). Database repair had the highest
+absolute Dreamer error (33.14 pp). Each action was represented by ten trials.
+
+Masked Dreamer's 17.73 pp fresh score closely matched its 17.69 pp development
+score. Current-window telemetry gave the lowest error-rate MAE on this batch.
+This benchmark measured repair-outcome forecasts across ten profiles.
