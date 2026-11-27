@@ -105,6 +105,15 @@ function renderTemporal(r){
  }
  if(r.temporal_summary.action_comparison){
   const c=r.temporal_summary.action_comparison;
+  if(c.readouts){
+   el('interpretation').textContent='Fresh paired error-rate forecasts across '+c.independent_test_profiles+' profiles.';
+   for(const name of ['telemetry','combined']){
+    const cell=text('div','','metric');
+    cell.append(text('span',name),text('strong',(100*c.readouts.metrics.load[name]).toFixed(2)+' pp load MAE'),text('span',(100*c.readouts.metrics.all[name]).toFixed(2)+' pp across all actions'));
+    el('metrics').append(cell);
+   }
+   return;
+  }
   el('interpretation').textContent='Fresh frozen-model comparison: '+c.test_trials+' trials / '+c.independent_test_profiles+' profiles. No retraining or root-cause accuracy claim.';
   for(const [name,m] of Object.entries(c.methods)){const cell=text('div','','metric');cell.append(text('span',name),text('strong',(100*m.mae.error_fraction).toFixed(2)+' pp MAE'));el('metrics').append(cell);}
   return;

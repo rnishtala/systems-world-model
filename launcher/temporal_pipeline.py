@@ -8,6 +8,7 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('run','dataset'):p.add_argument('--'+name,required=True)
     for name in ('seed','steps','test-seed'):p.add_argument('--'+name,type=int,required=True)
+    p.add_argument('--fresh-readout',action='store_true')
     p.add_argument('--readout-source')
     p.add_argument('--masked-training',action='store_true')
     p.add_argument('--action-masking',action='store_true');p.add_argument('--action-diagnostic-source');p.add_argument('--action-comparison-source');p.add_argument('--dataset-sha256');p.add_argument('--action-inference-source');p.add_argument('--action-dreamer-source');p.add_argument('--action-balanced',action='store_true');p.add_argument('--action-source');p.add_argument('--action-validation-source');modes=p.add_mutually_exclusive_group();modes.add_argument('--snapshot-calibration',action='store_true');modes.add_argument('--action-outcomes',action='store_true');a=p.parse_args()
@@ -67,6 +68,10 @@ def main():
             command = [sys.executable, '-m', 'microservice.action_readout', '--source',
                        str(root.parent / a.readout_source / 'temporal-pilot'),
                        '--out', str(root / 'temporal-pilot')]
+        if a.fresh_readout:
+            if not a.action_comparison_source:
+                raise ValueError('Expected fresh comparison')
+            command.append('--fresh-readout')
         if a.masked_training:
             command.append('--masked-training')
         pipeline.child=subprocess.Popen(command,stdout=log,stderr=subprocess.STDOUT)

@@ -13,7 +13,7 @@ from microservice.action_model import validate
 from microservice.action_outcomes import ACTIONS, PENALTIES, design, fit_ridge, ridge_predict
 
 
-def fit_predict(x, y, groups, held_x):
+def fit_readout(x, y, groups):
     scores = []
     for penalty in PENALTIES:
         predictions = np.empty_like(y)
@@ -23,7 +23,11 @@ def fit_predict(x, y, groups, held_x):
             predictions[~inner] = np.clip(ridge_predict(model, x[~inner]), 0, 1)
         scores.append(np.mean(abs(predictions - y)))
     penalty = PENALTIES[int(np.argmin(scores))]
-    model = fit_ridge(x, y, penalty)
+    return fit_ridge(x, y, penalty), penalty
+
+
+def fit_predict(x, y, groups, held_x):
+    model, penalty = fit_readout(x, y, groups)
     return np.clip(ridge_predict(model, held_x), 0, 1), penalty
 
 

@@ -23,7 +23,7 @@ def paired_report(rows,baseline):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     for k in ('source','out'):p.add_argument('--'+k,required=True)
-    p.add_argument('--seed',type=int,required=True);args=p.parse_args()
+    p.add_argument('--fresh-readout',action='store_true');p.add_argument('--seed',type=int,required=True);args=p.parse_args()
     if os.environ.get('POD_NAMESPACE')!='systems-world-model-lab':raise ValueError('Wrong namespace')
     source=Path(args.source);meta=verify_source(source);before=checkpoint_hash(source)
     # Resolve only the original balanced source tied to this checkpoint.
@@ -40,8 +40,16 @@ def main():
     frozen=json.loads(raw);cases=fresh_cases(args.seed,protocol['cases'])
     out=Path(args.out);out.mkdir(parents=True,exist_ok=False)
     plan=dict(objective=meta.get('objective','original'),seed=args.seed,cases=cases,checkpoint_sha256=before,baseline_sha256=digest,training_sha256=meta['training_sha256'],source_run=source.parent.name,particles=PARTICLES,rng_seed=RNG_SEED,primary='Error-fraction MAE',selected=frozen['selected'],success='At least 0.05 absolute MAE reduction versus training-selected baseline; paired profile bootstrap upper bound below zero',timing='Dreamer inference offline using saved pre-action prefix only; no refitting',limits='10 independent profiles; exploratory bootstrap; no root-cause or repair-policy claim')
+    if args.fresh_readout:
+        from microservice.action_fresh_readout import freeze, score
+        if meta.get('objective') != 'valid-channel-mask':
+            raise ValueError('Expected full masked checkpoint')
+        model = Forecaster(source)
+        plan['readouts'] = freeze(model, source, out)
+        plan.update(primary=plan['readouts']['primary'], selected='snapshot_ridge',
+                    success=plan['readouts']['decision'])
     (out/'protocol.json').write_text(json.dumps(plan,indent=2));(out/'frozen-baselines.json').write_bytes(raw)
-    model=Forecaster(source)
+    if not args.fresh_readout:model=Forecaster(source)
     # Compile before fault injection. No outcomes are passed to the predictor.
     model(np.zeros((4,len(a.FEATURES))),a.ACTIONS[0])
     rows=[]
@@ -62,6 +70,10 @@ def main():
     scoring=dict(frozen,models=dict(frozen['models'],dreamer={}))
     scores=a.evaluate(rows,scoring)
     scores.update(paired=paired_report(rows,frozen['selected']),by_regime={regime:a.evaluate([r for r in rows if r['regime']==regime],scoring) for regime in sorted({r['regime'] for r in rows})},all_restored=True,checkpoint_unchanged=True,training_trials=0,checkpoint_sha256=before,frozen_sha256=digest)
+    if args.fresh_readout:
+        scores['readouts'] = score(model, rows, out, plan['readouts'])
+        if checkpoint_hash(source) != before:
+            raise ValueError('Checkpoint changed during readout scoring')
     (out/'examples.json').write_text(json.dumps(rows))
     (out/'summary.json').write_text(json.dumps(dict(action_comparison=scores,incidents=[]),indent=2))
     print('ACTION_COMPARISON_COMPLETE',flush=True)
