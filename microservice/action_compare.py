@@ -58,10 +58,22 @@ def main():
         def before_action(windows):
             row['observations']=a.observations(windows);row['predictions']=a.predictions(frozen,row)
             (out/f'prediction-{i}.json').write_text(json.dumps(row))
-        result=a.incident(case['mechanism'],case['action'],case['profile'],before_action=before_action)
-        (out/f'incident-{i}.json').write_text(json.dumps(result))
-        if not result['restored']:raise ValueError('Incident restoration failed')
-        row.update(outcome=a.outcome(result['windows']),restored=True);rows.append(row)
+        for attempt in range(3):
+            result=a.incident(case['mechanism'],case['action'],case['profile'],before_action=before_action)
+            if not result['restored']:raise ValueError('Incident restoration failed')
+            try:
+                target=a.outcome(result['windows'])
+            except ValueError as exc:
+                if str(exc) != 'Insufficient outcome windows':
+                    raise
+                (out/f'incomplete-{i}-{attempt}.json').write_text(json.dumps(result))
+                if attempt == 2:
+                    raise
+                continue
+            (out/f'incident-{i}.json').write_text(json.dumps(result))
+            row.update(outcome=target,restored=True)
+            rows.append(row)
+            break
         print('ACTION_COMPARISON_PROGRESS',i+1,'/'+str(len(cases)),flush=True)
     for i,row in enumerate(rows):
         row['predictions']['dreamer']=model(row['observations'],row['action'])
