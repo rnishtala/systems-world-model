@@ -88,12 +88,20 @@ def run_fold(source, out, fold):
     estimates['corrected'], selection = corrected_forecast(
         telemetry[:n], state_features[:n], y, train_groups, load_fit,
         state_features[n:], estimates['telemetry'])
+    from microservice.action_calibration import calibrate
+    calibrated, calibration_settings = calibrate(telemetry, state, y, train_groups, load_fit, estimates['telemetry'])
+    estimates.update(calibrated)
     truth = np.array([r['outcome'][0] for r in held])
     load = np.array([r['action'] == 'load' for r in held])
     metrics = {}
     for name, prediction in estimates.items():
         errors = abs(prediction - truth)
         metrics[name] = {'load': float(errors[load].mean()), 'all': float(errors.mean())}
+        for key, endpoint in [('failure', 1), ('success', 0)]:
+            subset = load & (truth == endpoint)
+            metrics[name][key] = float(errors[subset].mean())
+            metrics[name][key + '_shift'] = float((prediction - estimates['telemetry'])[subset].mean())
+            metrics[name][key + '_n'] = int(subset.sum())
     reference = json.loads((arm / 'development-scores.json').read_text())
     ref_mae = np.mean([r['prior']['error_fraction']['mae'] for r in reference.values()])
     if not np.isclose(metrics['native']['all'], ref_mae, atol=1e-6) or checkpoint_hash(arm) != model.checkpoint_sha256:
@@ -104,7 +112,7 @@ def run_fold(source, out, fold):
         subset = load & mask
         if subset.any():
             by_outcome[label] = dict(n=int(subset.sum()), mean_adjustment=float(adjustments[subset].mean()))
-    result = dict(correction_selection=selection, load_adjustments=by_outcome, metrics=metrics, penalties=penalties, profiles=sorted(held_groups),
+    result = dict(calibration_settings=calibration_settings, correction_selection=selection, load_adjustments=by_outcome, metrics=metrics, penalties=penalties, profiles=sorted(held_groups),
                   checkpoint_sha256=model.checkpoint_sha256)
     (out / f'fold-{fold}.json').write_text(json.dumps(result, allow_nan=False))
 
@@ -132,6 +140,15 @@ def main():
                      for key in ('load', 'all')} for name in folds[0]['metrics']}
     passes = {name: all(f['metrics'][name]['load'] < f['metrics']['telemetry']['load'] for f in folds)
               and pooled[name]['all'] <= pooled['telemetry']['all'] for name in ('state', 'combined', 'corrected')}
+    candidate = 'recalibrated_state'
+    for name in pooled:
+        for key in ('failure', 'success'):
+            pooled[name][key] = float(np.average([f['metrics'][name][key] for f in folds],
+                weights=[f['metrics'][name][key + '_n'] for f in folds]))
+    passes[candidate] = all(
+        all(f['metrics'][candidate]['load'] < f['metrics'][control]['load'] for f in folds)
+        and all(pooled[candidate][key] <= pooled[control][key] for key in ('all', 'failure'))
+        for control in ('telemetry', 'recalibrated'))
     summary = dict(folds=folds, pooled=pooled, passes=passes)
     (args.out / 'summary.json').write_text(json.dumps({'action_readout': summary, 'incidents': []}, indent=2))
 
