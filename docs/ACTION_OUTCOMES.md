@@ -921,3 +921,32 @@ This batch provides little evidence of dependable post-load improvement.
 An earlier collection (`1f46879262f7`) stopped at incident 22 with insufficient
 outcome windows. It contributed no scores. The replacement used identical frozen
 model and readout hashes, a new seed and zero collection retries.
+
+### Why the frozen correction lowered some complete-failure forecasts
+
+In run `b96b30005987`, two of the four complete failures moved down
+(−1.70 and −1.30 percentage points), one moved up (+1.38), and one stayed
+at 100%. Both downward forecasts were strictly inside the allowed range before
+and after correction. Final clipping cannot explain those decreases.
+
+Reconstructing the grouped out-of-fold training targets gives a mean required
+load correction of +17.64 pp for eight complete failures and −23.84 pp for
+eight complete successes. The mean over load cases was −3.10 pp. Evaluating
+the fitted linear correction at the mean training load state, at the frozen
+0.25 strength, gives −0.77 pp. The pooled model bias alone contributed +0.008 pp.
+Relative to that load-specific starting point, the two downward failure states
+added another −0.93 and −0.52 pp. The ridge correction uses action and frozen
+state features. It learns telemetry errors but does not receive the telemetry
+forecast itself. These observations explain the arithmetic; four fresh failures
+cannot establish why particular latent states transferred poorly.
+
+Next experiment: test calibration conditional on the pre-action telemetry forecast
+in the original grouped development folds. Compare the unchanged telemetry baseline,
+action-specific linear recalibration of telemetry alone, the existing state correction,
+and the same recalibration with a frozen-state term. Build calibration inputs from
+grouped out-of-fold baseline forecasts within each fit partition. Select shrinkage
+inside inner profile folds with zero correction eligible. Use the same held forecasts
+for all arms. Report post-load and pooled MAE plus signed shifts and MAE on complete
+failures and successes. Advance the state term only if it beats both telemetry controls
+on load MAE in each outer fold, with no increase in pooled all-action or complete-load-
+failure MAE versus either control. Keep this inspected fresh batch diagnostic only.
