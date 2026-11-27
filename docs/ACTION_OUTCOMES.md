@@ -774,3 +774,26 @@ current-window telemetry on load reduction in both folds and does not increase
 pooled all-action MAE. This probes whether outcome-relevant information survives
 in the imagined state and whether it adds value beyond telemetry. Independent
 fresh replication is needed after development selection.
+
+### Frozen state readouts on held-out workload profiles
+
+Run `a1ba8dc4e514` used the two masked checkpoints from `17ad74c6c23f`.
+For each recorded action, the predictor assimilated four pre-action frames and
+imagined one transition. It averaged Dreamer's feature vector across 16 particles.
+Each ridge used action-specific features and a penalty chosen by leave-profile-out
+validation within the eight fit profiles, minimizing all-action error-rate MAE.
+The other eight profiles supplied the outer score. Both checkpoint hashes and
+both native forecast scores passed verification.
+
+| Error-rate MAE (percentage points) | Load fold 1 | Load fold 2 | Load pooled | All actions pooled |
+|---|---:|---:|---:|---:|
+| Current-window telemetry ridge | 19.48 | 26.30 | 22.89 | 11.99 |
+| Frozen-state ridge | 24.94 | 18.76 | 21.85 | 11.30 |
+| Telemetry plus frozen-state ridge | 18.80 | 19.92 | 19.36 | 9.77 |
+| Native masked Dreamer | 33.02 | 31.93 | 32.47 | 17.69 |
+
+The combined readout passed the prespecified development rule. Its load-reduction
+advantage was 0.68 pp on the first fold and 6.38 pp on the second. The state-only
+readout failed the first fold. The experiment covered 16 load-reduction trials and
+64 total trials with one checkpoint seed. Select the combined readout for an
+independent fresh-incident comparison. The lab restored successfully.
