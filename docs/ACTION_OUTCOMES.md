@@ -898,3 +898,26 @@ successes per fold, they lowered it by 1.20 and 5.02 pp. The preset development
 rule passed. The folds reuse the 16 development profiles and one training seed.
 A separately frozen full-data fit and independent fresh incidents are needed to
 assess transfer. The lab restored successfully.
+
+### Frozen correction on fresh incidents
+
+Run `b96b30005987` fit the telemetry baseline and residual correction on all 64
+training incidents from 16 profiles. Grouped validation selected correction
+strength 0.25 and ridge penalty 100. The model and readouts were frozen before
+collecting 40 incidents on ten new profiles. Each profile supplied one incident
+per action. The lab restored successfully.
+
+| Error-rate MAE (pp) | Telemetry | Corrected | Corrected minus telemetry (paired 95% bootstrap) | Profiles improved |
+|---|---:|---:|---:|---:|
+| Load reduction | 11.57 | 11.34 | −0.23 [−0.94, +0.47] | 4/10 |
+| All actions | 8.76 | 8.36 | −0.40 [−0.69, −0.10] | 7/10 |
+
+The preset decision rule passed. The load gain was small and its interval
+included zero. For the six load cases with no failed requests, mean error fell
+0.65 pp. For the four cases with all requests failing, mean error rose 0.40 pp.
+The correction lowered the predicted failure rate on average in both groups.
+This batch provides little evidence of dependable post-load improvement.
+
+An earlier collection (`1f46879262f7`) stopped at incident 22 with insufficient
+outcome windows. It contributed no scores. The replacement used identical frozen
+model and readout hashes, a new seed and zero collection retries.

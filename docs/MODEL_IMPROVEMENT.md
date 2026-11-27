@@ -92,3 +92,11 @@ False pool accusations are reported separately: fewer false alarms with unchange
 accuracy is a tradeoff to examine, not automatically proof of improved diagnosis.
 Other observation counts are secondary. Report all outcomes, including ties or losses.
 No actual early stopping or reduction in incident collection time is claimed.
+
+## Forecasting after load reduction
+
+A frozen correction trained on all 16 development profiles reduced fresh
+post-load forecast error by 0.23 percentage points across ten new profiles.
+The paired interval included zero and mean error increased on complete failures.
+Overall forecast error fell 0.40 points. These results measure intervention
+outcomes. Root-cause accuracy is a separate endpoint. [Experiment details](ACTION_OUTCOMES.md#frozen-correction-on-fresh-incidents)
