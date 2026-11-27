@@ -821,3 +821,59 @@ paired profile-bootstrap 95% interval for its excess load error was −1.64 to
 +11.33 pp. The corresponding all-action interval was −0.88 to +5.06 pp.
 Both point estimates missed the preset decision rule. The 3.53 pp load gain
 seen in development did not replicate on this batch.
+
+### Load-reduction transfer audit and selected experiment
+
+This retrospective audit uses saved runs `a1ba8dc4e514` and `e2bf8c2ff724`.
+The development improvement was 3.53 pp (22.89 to 19.36 pp load MAE), with
+gains of 0.68 and 6.38 pp across the two folds. On the fresh batch the combined
+readout increased load MAE by 3.76 pp (7.60 to 11.36). Both models had lower
+absolute errors on the fresh batch. Telemetry gained more.
+
+| Fresh load outcome | Profiles | Observed error | Mean telemetry forecast | Mean combined forecast |
+|---|---:|---:|---:|---:|
+| All measured requests succeeded | 6 | 0% | 7.30% | 6.75% |
+| All measured requests failed | 4 | 100% | 91.95% | 81.72% |
+| Above-timeout database subset of failures | 2 | 100% | 98.43% | 75.42% |
+
+The two above-timeout profiles contributed 46.02 pp of summed excess error
+across ten trials. The other eight profiles favored the combined model by
+1.05 pp on average. Removing only the largest miss (above-timeout, low load)
+reduced the overall disadvantage from 3.76 to 0.59 pp. The sign survived every
+single-profile omission. Near-timeout database profiles favored the combined
+model by 2.53 pp. Each fresh fraction measured six or seven requests. Each
+development fold had four complete successes and four complete failures.
+
+To separate training-set size from evaluation-set differences, replayed both
+eight-profile telemetry fits on the identical ten fresh load trials. Their MAEs
+were 12.45 and 10.97 pp, versus 7.60 for the full 16-profile fit. Each half fit
+also reproduced its saved development score; the full fit reproduced its saved
+fresh predictions. This shows a stronger full-data control and an easier batch
+for these telemetry fits. The combined arm also changed checkpoint and fit
+partition between development and fresh validation, so the contribution of its
+learned representation remains unresolved.
+
+The joint ridge had 2,768 action-specific design columns versus 208 for telemetry,
+with 64 training rows. Each fit chose one shared penalty using all-action MAE.
+Telemetry selected 1 and the combined fit selected 10. As a sensitivity check,
+telemetry alone at penalty 10 scored 13.67 pp on the same fresh load rows,
+compared with 7.60 at penalty 1. The combined model's 11.36 pp lies between them.
+The feature spaces differ, so this check supports investigating regularization
+and does not establish it as the sole cause.
+
+**Next experiment:** freeze the telemetry baseline and let the Dreamer state
+predict a correction to its error. Use the original two profile-disjoint
+development folds and their respective frozen checkpoints. Within each outer
+fit partition, generate out-of-fold telemetry residuals using grouped
+cross-fitting; fit a ridge on pre-action imagined state and recorded action to
+predict those residuals. Tune correction strength and regularization entirely
+inside grouped inner validation, including zero correction. Use nested fitting
+so inner validation labels never enter the baseline or correction learner that
+scores those profiles. Refit the baseline on the entire outer fit partition and
+apply the selected correction to its forecasts, clipping the final fraction to
+[0,1]. Compare against that same baseline and the original joint ridge on
+identical rows. Report load MAE, all-action MAE and signed corrections on
+complete failures. Use regime labels only for reporting. Advance only on lower
+load MAE in both folds and no higher pooled all-action MAE versus telemetry.
+The inspected fresh batch is diagnostic evidence; use a new independent batch
+for confirmation if the development rule passes.
