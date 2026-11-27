@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 import numpy as np
+from microservice.action_calibration import fit_calibrations, apply_calibrations
 from microservice.action_model import validate
 from microservice.action_residual import apply_correction, fit_correction
 from microservice.action_outcomes import ACTIONS, design, ridge_predict
@@ -32,6 +33,7 @@ def freeze(model, source, out, residual=False):
         load = np.array([r['action'] == 'load' for r in rows])
         models['correction'], choice = fit_correction(features['telemetry'], features['state'], y, groups, load)
         models['strength'] = choice['strength']
+        models['calibrations'] = fit_calibrations(features['telemetry'], features['state'][:, len(ACTIONS):], y, groups, load)
     else:
         for name, x in features.items():
             models[name], penalties[name] = fit_readout(x, y, groups)
@@ -39,7 +41,8 @@ def freeze(model, source, out, residual=False):
     (out / 'frozen-readouts.json').write_bytes(raw)
     return dict(sha256=hashlib.sha256(raw).hexdigest(), penalties=penalties, correction=choice,
                 primary='Post-load error-rate MAE', guardrail='All-action MAE',
-                decision='Lower load MAE and no higher all-action MAE versus telemetry',
+                decision=('Lower load MAE and no higher complete-load-failure or all-action MAE versus both telemetry controls'
+                          if residual else 'Lower load MAE and no higher all-action MAE versus telemetry'),
                 uncertainty='Paired bootstrap across ten workload profiles; 10000 draws, seed 777')
 
 
@@ -58,6 +61,9 @@ def score(model, rows, out, identity):
     else:
         prediction = np.clip(ridge_predict(models['combined'], features['combined']), 0, 1)
     forecasts = {'telemetry': telemetry, candidate: prediction}
+    if 'calibrations' in models:
+        forecasts.update(apply_calibrations(models['calibrations'], features['telemetry'][:, :len(ACTIONS)],
+                                            features['state'][:, len(ACTIONS):], telemetry))
     reference = [r['predictions']['snapshot_ridge'][0] for r in rows]
     np.testing.assert_allclose(forecasts['telemetry'], reference, rtol=1e-8, atol=1e-9)
     truth = np.array([r['outcome'][0] for r in rows])
@@ -73,7 +79,20 @@ def score(model, rows, out, identity):
         report[action] = {name:float(e[keep].mean()) for name,e in error.items()}
         report[action].update(delta=float(paired.mean()), wins=int((paired<0).sum()),
                               profiles=len(paired), interval=np.quantile(draws,[.025,.975]).tolist())
+    passed = report['load']['delta'] < 0 and report['all']['delta'] <= 0
+    comparisons = {}
+    if 'calibrations' in models:
+        for label, mask in [('load_failure', truth == 1), ('load_success', truth == 0)]:
+            keep = (actions == 'load') & mask
+            report[label] = {name:float(e[keep].mean()) for name,e in error.items()} if keep.any() else {}
+            report[label]['profiles'] = int(keep.sum())
+        for method in ('corrected', 'recalibrated_state'):
+            comparisons[method] = bool(report['load_failure']['profiles'] and all(
+                report['load'][method] < report['load'][control]
+                and all(report[key][method] <= report[key][control] for key in ('all','load_failure'))
+                for control in ('telemetry','recalibrated')))
+        passed = comparisons[candidate]
     for i,row in enumerate(rows):
         row['readout_predictions'] = {name:float(v[i]) for name,v in forecasts.items()}
-    return dict(candidate=candidate, metrics=report, passes=report['load']['delta']<0 and report['all']['delta']<=0,
+    return dict(candidate=candidate, metrics=report, passes=passed, comparisons=comparisons,
                 telemetry_parity=True, frozen_sha256=identity['sha256'])

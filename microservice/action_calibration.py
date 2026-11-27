@@ -13,7 +13,7 @@ def features(actions, baseline, state):
     return np.column_stack(columns)
 
 
-def calibrate(telemetry, state, y, groups, load, held_baseline):
+def fit_calibrations(telemetry, state, y, groups, load):
     n = len(y)
     actions = telemetry[:, :len(ACTIONS)]
     baseline = np.empty_like(y)
@@ -32,7 +32,7 @@ def calibrate(telemetry, state, y, groups, load, held_baseline):
                 shifts[mode][p][test] = ridge_predict(fit_ridge(x, residual, p), h)
 
     base_error = abs(y - baseline)
-    estimates, settings = {}, {}
+    models = {}
     for mode in modes:
         options = [(base_error[load].mean(), base_error.mean(), 0., PENALTIES[0])]
         for p in PENALTIES:
@@ -41,12 +41,27 @@ def calibrate(telemetry, state, y, groups, load, held_baseline):
                 if errors.mean() <= base_error.mean():
                     options.append((errors[load].mean(), errors.mean(), strength, p))
         _, _, strength, p = min(options)
-        settings[mode] = dict(strength=strength, penalty=p if strength else None)
-        estimates[mode] = held_baseline.copy()
+        models[mode] = dict(strength=strength, penalty=p if strength else None, ridge=None)
         if strength:
             use_state = mode == 'recalibrated_state'
             x = features(actions[:n], baseline, state[:n] if use_state else None)
-            h = features(actions[n:], held_baseline, state[n:] if use_state else None)
-            shift = ridge_predict(fit_ridge(x, y - baseline, p), h)
-            estimates[mode] = np.clip(held_baseline + strength * shift, 0, 1)
-    return estimates, settings
+            models[mode]['ridge'] = fit_ridge(x, y - baseline, p)
+    return models
+
+
+def apply_calibrations(models, actions, state, baseline):
+    estimates = {}
+    for mode, model in models.items():
+        estimates[mode] = baseline.copy()
+        if model['strength']:
+            h = features(actions, baseline, state if mode == 'recalibrated_state' else None)
+            shift = ridge_predict(model['ridge'], h)
+            estimates[mode] = np.clip(baseline + model['strength'] * shift, 0, 1)
+    return estimates
+
+
+def calibrate(telemetry, state, y, groups, load, held_baseline):
+    n = len(y)
+    models = fit_calibrations(telemetry[:n], state[:n], y, groups, load)
+    estimates = apply_calibrations(models, telemetry[n:, :len(ACTIONS)], state[n:], held_baseline)
+    return estimates, {name: {k:v for k,v in m.items() if k != 'ridge'} for name,m in models.items()}
