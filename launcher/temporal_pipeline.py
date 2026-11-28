@@ -8,6 +8,7 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('run','dataset'):p.add_argument('--'+name,required=True)
     for name in ('seed','steps','test-seed'):p.add_argument('--'+name,type=int,required=True)
+    p.add_argument('--queue-forecast-source')
     p.add_argument('--fresh-residual',action='store_true')
     p.add_argument('--fresh-readout',action='store_true')
     p.add_argument('--readout-source')
@@ -55,6 +56,11 @@ def main():
     signal.signal(signal.SIGTERM,pipeline.stop);signal.signal(signal.SIGINT,pipeline.stop)
     with (root/'run.log').open('ab',buffering=0) as log:
         command=[sys.executable,'-m',('microservice.queue_drain' if a.queue_drain else 'microservice.action_outcomes' if a.action_outcomes else 'microservice.temporal_calibration' if a.snapshot_calibration else 'microservice.temporal_pilot'),'--out',str(root/'temporal-pilot'),'--seed',str(a.test_seed)]+resume
+        if a.queue_forecast_source:
+            from launcher.common import validate_retest
+            validate_retest(a.run,a.queue_forecast_source)
+            if not a.queue_drain:raise ValueError('Expected queue-drain mode')
+            command=[sys.executable,'-m','microservice.queue_forecast','--source',str(root.parent/a.queue_forecast_source/'temporal-pilot'),'--out',str(root/'temporal-pilot'),'--seed',str(a.test_seed)]
         if a.action_dreamer_source:command=[sys.executable,'-m','microservice.action_train','--source',str(Path('/results/experiments/runs')/a.action_dreamer_source/'temporal-pilot'),'--out',str(root/'temporal-pilot'),'--seed',str(a.seed),'--steps',str(a.steps)]
         if a.action_inference_source:command=[sys.executable,'-m','microservice.action_forecast','--source',str(Path('/results/experiments/runs')/a.action_inference_source/'temporal-pilot'),'--out',str(root/'temporal-pilot')]
         if a.action_comparison_source:command=[sys.executable,'-m','microservice.action_compare','--source',str(Path('/results/experiments/runs')/a.action_comparison_source/'temporal-pilot'),'--out',str(root/'temporal-pilot'),'--seed',str(a.test_seed)]

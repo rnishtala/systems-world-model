@@ -20,12 +20,12 @@ def physical_outcomes(values,symlog=True,xp=np):
     logvalues=xp.sign(values)*xp.expm1(xp.abs(values)) if symlog else values
     return xp.expm1(logvalues)
 
-def verify_source(root):
+def verify_source(root, version=VERSION, targets=TARGETS):
     root=Path(root);m=json.loads((root/'manifest.json').read_text());s=json.loads((root/'summary.json').read_text());s=s.get('action_dreamer',s)
-    if m['version']!=VERSION or s.get('status')!='training_complete' or s.get('version')!=VERSION:raise ValueError('Expected completed repair macro checkpoint')
+    if m['version']!=version or s.get('status')!='training_complete' or s.get('version')!=version:raise ValueError('Expected completed repair macro checkpoint')
     digest=hashlib.sha256((root/'train.jsonl').read_bytes()).hexdigest()
     if digest!=m['training_sha256'] or digest!=s['training_sha256']:raise ValueError('Training identity mismatch')
-    if m['features']!=FEATURES or m['targets']!=list(TARGETS) or m['actions']!=list(ACTIONS):raise ValueError('Model schema mismatch')
+    if m['features']!=FEATURES or m['targets']!=list(targets) or m['actions']!=list(ACTIONS):raise ValueError('Model schema mismatch')
     return m
 
 def checkpoint_hash(root):
@@ -59,8 +59,8 @@ def prior_outcomes(inner,h,action,xp,include_state=False):
     return outputs
 
 class Forecaster:
-    def __init__(self,root):
-        root=Path(root);verify_source(root);self.checkpoint_sha256=checkpoint_hash(root)
+    def __init__(self,root,version=VERSION,targets=TARGETS):
+        root=Path(root);verify_source(root,version,targets);self.checkpoint_sha256=checkpoint_hash(root)
         from microservice.configuration import elements
         import jax,jax.numpy as jnp,ninjax as nj
         config=elements.Config.load(elements.Path(str(root/'train/config.yaml'))).update(logdir='/tmp/action-forecast')

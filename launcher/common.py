@@ -34,6 +34,7 @@ def job_manifest(run,image):
     command=['python','-m','launcher.pipeline','--run',uid,'--dataset',run['dataset'],'--seed',str(run['seed']),'--steps',str(run['steps']),'--test-seed',str(run['test_seed'])]
     if run.get('dataset_sha256'):command+=['--dataset-sha256',run['dataset_sha256']]
     if run.get('temporal_pilot'):command[2]='launcher.temporal_pipeline'
+    if run.get('queue_forecast_source'):command+=['--queue-forecast-source',run['queue_forecast_source']]
     if run.get('queue_drain'):command+=['--queue-drain']
     if run.get('snapshot_calibration'):command+=['--snapshot-calibration']
     if run.get('action_outcomes'):command+=['--action-outcomes']
