@@ -1040,3 +1040,36 @@ model given the same history, including backlog and arrival/completion trends.
 First verify paired histories actually yield different recovery trajectories;
 advance Dreamer only for lower held-out trajectory error than the history control
 without increased false recovery calls on persistent failures.
+
+### Matched queue-drain histories and fresh trajectory forecasts
+
+Feasibility run `8135f63eef08` measured 12 matched pairs at 90, 93, 95, 97, 99
+and 101 ms of database service time. Each pair reversed the order of 8 and 42
+offered requests/s, then reduced traffic to 2/s. Building queues had more ledger
+waiters in all 12 pairs. At 90 and 95 ms, recovery took six seconds versus four
+in both repeats. At 97–101 ms neither history reached confirmed recovery within
+eight seconds. The prespecified repeatability screen passed.
+
+Run `40443d020ad9` trained masked DreamerV3 for 25,000 replay steps on 24
+load reductions (271.4 s training). It predicted four consecutive two-second
+checkout error fractions together from four pre-action telemetry frames. The
+same-history ridge also received frame differences; the fixed query-time cutoff
+was 95.33 ms. All three forecasts were frozen before 16 fresh trials at 91,
+94, 96 and 100 ms. One training condition was recollected after a 2.52 s
+prefix gap. Two incomplete fresh attempts were repeated. The lab restored.
+
+| Frozen method | Four-window MAE (pp) | First window MAE (pp) | Correct recovery calls / 12 | False recovery calls / 4 |
+|---|---:|---:|---:|---:|
+| DreamerV3 | 36.93 | 22.44 | 0 | 0 |
+| Telemetry history ridge | 27.80 | 23.30 | 5 | 1 |
+| Query-time cutoff | 28.62 | 37.92 | 8 | 0 |
+
+Observed recovery required two consecutive windows with zero failures, each
+with at least two completions. A predicted recovery required two consecutive
+predicted error fractions below 10%. Dreamer forecast the first window slightly
+better but missed all 12 observed recoveries. Its errors in the three later
+windows were 40.72–42.66 pp. It missed the preset advancement criterion. The
+comparison covers one training seed, one intervention and four held-out service
+times. A focused follow-up is to test whether a temporal model that predicts one
+window at a time can learn backlog decay on a larger set of independent recovery
+trajectories, keeping both controls and reporting missed and false recoveries.
