@@ -997,3 +997,46 @@ the preset complete-failure guardrail. The earlier correction also increased
 complete-failure error on the previous independent batch. Keep telemetry as the
 post-load default. Adding the baseline forecast as a calibration input did not
 resolve the observed underprediction on complete failures.
+
+### What distinguished failed load reductions before intervention
+
+Across the two completed fresh comparisons, the four pre-action telemetry windows
+already separated the eight complete failures from the twelve complete successes.
+The query-count-weighted ledger database query time ranged from 99.87 to 118.45 ms
+on failures and 36.87 to 90.80 ms on successes. This measures query execution
+after pool acquisition. Payment had a 100 ms per-attempt timeout, and load reduction
+cut arrivals to two per second without changing that timeout or the database work.
+The distinction is consistent with queue relief helping when the underlying service
+time leaves enough deadline margin. A 100 ms threshold missed one failure at
+99.87 ms; the caller also pays overhead.
+
+For each signal below, a one-dimensional threshold was chosen on the 16 training
+load cases by minimizing endpoint classification errors, then applied unchanged.
+The inspected batches are retrospective. Every observed endpoint was zero or one.
+
+| Pre-action signal | Training correct / 16 | Fresh batch 1 / 10 | Fresh batch 2 / 10 |
+|---|---:|---:|---:|
+| Ledger query time, four-window weighted mean (95.33 ms cutoff) | 16 | 10 | 10 |
+| Ledger query time, final window only | 16 | 10 | 10 |
+| Checkout error fraction, weighted by request count | 14 | 9 | 8 |
+| Payment downstream timeouts per second | 12 | 7 | 7 |
+| Mean ledger pool waiters | 10 | 6 | 5 |
+
+The generator uses bands around a fixed timeout. The cutoff falls in an unsampled
+fresh gap and its precise value is unidentified. The last snapshot alone matched
+the whole prefix, so these data offer little opportunity to demonstrate an advantage
+from learning temporal dynamics.
+
+Next experiment: predict recovery time after reducing load in a paired queue-drain
+test. Sweep query durations densely near the deadline. Within the same service-time
+and final-load settings, vary the preceding burst's duration and direction to
+produce building versus draining queues. Record post-action error fractions in
+successive windows and time to sustained recovery, including nonrecoveries.
+Before collection, fix a recovery definition, minimum completions per window,
+follow-up horizon and treatment of censored cases. Train an action-conditioned
+Dreamer to forecast the outcome sequence from the pre-action history. Compare on
+the same held-out profile pairs against the query-duration cutoff and a telemetry
+model given the same history, including backlog and arrival/completion trends.
+First verify paired histories actually yield different recovery trajectories;
+advance Dreamer only for lower held-out trajectory error than the history control
+without increased false recovery calls on persistent failures.
