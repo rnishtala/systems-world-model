@@ -32,6 +32,7 @@ def incident(mechanism,relief,profile=None,before_action=None):
     profile=profile or {}
     if mechanism not in ('healthy','database','upstream') or relief not in ('none','database','load','retry'):raise ValueError('Unknown pilot case')
     drain();live.reset();configure('healthy',profile=profile);previous=drain()
+    action_boundary = None
     windows=[];pending=set();submitted=0;dropped=0;completed=0;errors=0
     start=time.monotonic();next_request=start;next_window=start+.5;stage=0
     executor=concurrent.futures.ThreadPoolExecutor(max_workers=8)
@@ -42,7 +43,15 @@ def incident(mechanism,relief,profile=None,before_action=None):
             if stage==1 and elapsed>=profile.get('relief_at',9):
                 if before_action is not None:before_action(windows)
                 configure(mechanism,relief,profile);stage=2
+                if 'burst_order' in profile:
+                    anchor = live.request('checkout', '/metrics')['counters']
+                    action_boundary = dict(elapsed=time.monotonic()-start, counters=anchor)
+                    next_window = action_boundary['elapsed'] + .5
+                    continue
             rate=2 if stage==2 and relief=='load' else (profile.get('burst_rate',96) if mechanism=='upstream' and stage>=1 else profile.get('base_rate',24))
+            if 'burst_order' in profile and stage == 1:
+                late = elapsed >= (profile['onset'] + profile['relief_at']) / 2
+                rate = 42 if late == (profile['burst_order'] == 'building') else 8
             if now>=next_request:
                 next_request=now+1/rate
                 if len(pending)<8:
@@ -67,7 +76,7 @@ def incident(mechanism,relief,profile=None,before_action=None):
             except Exception:errors+=1
         # Client timeouts do not cancel server work. Verify all services are quiet.
         drain();live.reset();restored=drain()
-    return dict(mechanism=mechanism,relief=relief,windows=windows,client=dict(submitted=submitted,completed=completed,errors=errors,dropped=dropped,inflight=0),seconds=time.monotonic()-start,restored=all(m['counters'].get('active_requests',0)==0 for m in restored.values()))
+    return dict(mechanism=mechanism,relief=relief,action_boundary=action_boundary,windows=windows,client=dict(submitted=submitted,completed=completed,errors=errors,dropped=dropped,inflight=0),seconds=time.monotonic()-start,restored=all(m['counters'].get('active_requests',0)==0 for m in restored.values()))
 
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--out',required=True);p.add_argument('--seed',type=int,required=True);a=p.parse_args()

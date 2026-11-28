@@ -13,7 +13,7 @@ class Store:
         return json.loads(row[0])
     def save(self,run):
         self.db.execute('INSERT OR REPLACE INTO runs VALUES (?,?,?)',(run['id'],run['created'],json.dumps(run)));self.db.commit()
-    def create(self,owner,body,image,version,dataset=None,expansion=None,evaluation=None,training_source=None,probe_training_seeds=None,forecast_source=None,audit_source=None,triage=False,fresh_triage=False,temporal_pilot=False,snapshot_calibration=False,action_outcomes=False,action_source=None,action_validation_source=None,action_balanced=False,action_dreamer_source=None,action_inference_source=None,action_comparison_source=None,action_diagnostic_source=None,action_masking=False,masked_training=False,readout_source=None,fresh_readout=False,fresh_residual=False):
+    def create(self,owner,body,image,version,dataset=None,expansion=None,evaluation=None,training_source=None,probe_training_seeds=None,forecast_source=None,audit_source=None,triage=False,fresh_triage=False,temporal_pilot=False,snapshot_calibration=False,action_outcomes=False,action_source=None,action_validation_source=None,action_balanced=False,action_dreamer_source=None,action_inference_source=None,action_comparison_source=None,action_diagnostic_source=None,action_masking=False,masked_training=False,readout_source=None,fresh_readout=False,fresh_residual=False,queue_drain=False):
         args=validate_request(body,{dataset['id']:dataset} if dataset else None);existing=self.all();pending=[r for r in existing if r['status'] not in TERMINAL]
         if len(pending)>=20 or sum(r['owner']==owner for r in pending)>=3:raise ValueError('Queue limit reached; wait for an existing run')
         used={r['test_seed'] for r in existing}|set(dataset['seeds'] if dataset else []);seed=1000000000+secrets.randbelow(1000000000)
@@ -92,6 +92,12 @@ class Store:
             if source['owner']!=owner or source['status']!='completed' or not source.get('restored') or not source.get('action_balanced'):raise ValueError('Use a completed, restored, owned balanced source')
             if args['steps'] not in (1000,25000) or any(source[k]!=args[k] for k in ('dataset','seed')):raise ValueError('Action Dreamer uses matching source settings and a fixed 1000 or 25000 step budget')
             run['action_dreamer_source']=action_dreamer_source
+        if queue_drain:
+            if not temporal_pilot or any((snapshot_calibration, action_outcomes, action_source,
+                    action_validation_source, action_balanced, action_dreamer_source, action_inference_source,
+                    action_comparison_source, action_diagnostic_source, readout_source)):
+                raise ValueError('Queue-drain requires a dedicated temporal run')
+            run['queue_drain'] = True
         if snapshot_calibration and not temporal_pilot:raise ValueError('Calibration requires temporal pilot')
         if snapshot_calibration:run['snapshot_calibration']=True
         if temporal_pilot:
