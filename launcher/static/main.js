@@ -85,6 +85,17 @@ function renderTemporal(r){
  el('interpretation').textContent='Mechanism feasibility pilot: checks retries, backlog and recovery. No model training or accuracy claim.';
  if(!r.temporal_summary)return;
  el('metrics').replaceChildren();
+ if(r.temporal_summary.queue_state_probe){
+  const q=r.temporal_summary.queue_state_probe;
+  el('interpretation').textContent='Frozen-state probes on fresh load reductions. Training selected '+q.primary+' for the primary comparison.';
+  for(const [stage,m] of Object.entries(q.metrics)){
+   const cell=text('div','','metric');
+   cell.append(text('span',stage.replaceAll('_',' ')),text('strong',m.true_recovery+'/'+q.recovered+' recoveries'),text('span',m.false_recovery+'/'+q.unrecovered+' false calls'));
+   if(m.query_mae_ms!==undefined)cell.append(text('span',m.query_mae_ms.toFixed(2)+' ms query-time error'));
+   el('metrics').append(cell);
+  }
+  return;
+ }
  if(r.temporal_summary.queue_forecast){
   el('interpretation').textContent='Fresh load reductions on four held-out service times. Error is averaged across the four recovery windows.';
   for(const [method,m] of Object.entries(r.temporal_summary.queue_forecast)){
