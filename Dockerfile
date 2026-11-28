@@ -7,6 +7,9 @@ ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
 USER 1000:1000
 CMD ["python", "-m", "launcher.server"]
 
+FROM control AS collector
+COPY microservice/__init__.py microservice/live.py microservice/temporal_pilot.py microservice/queue_drain.py /app/microservice/
+
 FROM python:3.11-slim AS runner
 WORKDIR /app
 COPY requirements-cpu.txt /app/requirements-cpu.txt

@@ -1,6 +1,12 @@
 name: Experiment images
 on:
   workflow_dispatch:
+    inputs:
+      target:
+        description: Runner build target
+        type: choice
+        options: [runner, collector]
+        default: runner
 permissions:
   contents: read
   packages: write
@@ -28,11 +34,11 @@ jobs:
         id: runner
         with:
           context: .
-          target: runner
+          target: ${{ inputs.target }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           push: true
-          tags: ghcr.io/rnishtala/systems-world-model-runner:${{ github.sha }}
+          tags: ghcr.io/rnishtala/systems-world-model-runner:${{ github.sha }}${{ inputs.target == 'collector' && '-collector' || '' }}
       - name: Record immutable image references
         env:
           CONTROL: ghcr.io/rnishtala/systems-world-model-control@${{ steps.control.outputs.digest }}
