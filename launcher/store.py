@@ -95,10 +95,11 @@ class Store:
         if queue_forecast_source is not None:
             validate_retest(run['id'],queue_forecast_source)
             source=self.get(queue_forecast_source)
-            if not queue_drain or not source.get('queue_drain') or source.get('sequence_probe') or source['owner']!=owner or source['status']!='completed' or not source['restored']:
+            if not queue_drain or not source.get('queue_drain') or source.get('step2_confirmation') or source['owner']!=owner or source['status']!='completed' or not source['restored']:
                 raise ValueError('Use a completed owned queue-drain collection')
             run['queue_forecast_source']=queue_forecast_source
-            if source.get('sequence_forecast'):run['sequence_probe']=True
+            if source.get('sequence_probe'):run['step2_confirmation']=True
+            elif source.get('sequence_forecast'):run['sequence_probe']=True
             elif source.get('queue_forecast_source'):run['sequence_forecast']=True
         if queue_drain:
             if not temporal_pilot or any((snapshot_calibration, action_outcomes, action_source,

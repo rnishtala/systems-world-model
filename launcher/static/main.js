@@ -87,7 +87,7 @@ function renderTemporal(r){
  el('metrics').replaceChildren();
  if(r.temporal_summary.queue_state_probe){
   const q=r.temporal_summary.queue_state_probe;
-  el('interpretation').textContent='Frozen-state probes on fresh load reductions. Training selected '+q.primary+' for the primary comparison.';
+  el('interpretation').textContent=q.confirmation?'Frozen step-2 confirmation against telemetry history and the query-time cutoff.':'Frozen-state probes on fresh load reductions. Training selected '+q.primary+' for the primary comparison.';
   for(const [stage,m] of Object.entries(q.metrics)){
    const cell=text('div','','metric');
    cell.append(text('span',stage.replaceAll('_',' ')),text('strong',m.true_recovery+'/'+q.recovered+' recoveries'),text('span',m.false_recovery+'/'+q.unrecovered+' false calls'));

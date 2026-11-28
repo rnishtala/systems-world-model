@@ -64,6 +64,8 @@ def main():
             module='microservice.queue_sequence' if (source_dir/'training-summary.json').exists() else 'microservice.queue_forecast'
             if (source_dir/'manifest.json').exists() and json.loads((source_dir/'manifest.json').read_text()).get('version')=='queue-drain-sequence-v1':
                 module='microservice.queue_state_probe'
+            if (source_dir/'frozen-probes.json').exists():
+                module='microservice.queue_step2_confirmation'
             command=[sys.executable,'-m',module,'--source',str(root.parent/a.queue_forecast_source/'temporal-pilot'),'--out',str(root/'temporal-pilot'),'--seed',str(a.test_seed)]
         if a.action_dreamer_source:command=[sys.executable,'-m','microservice.action_train','--source',str(Path('/results/experiments/runs')/a.action_dreamer_source/'temporal-pilot'),'--out',str(root/'temporal-pilot'),'--seed',str(a.seed),'--steps',str(a.steps)]
         if a.action_inference_source:command=[sys.executable,'-m','microservice.action_forecast','--source',str(Path('/results/experiments/runs')/a.action_inference_source/'temporal-pilot'),'--out',str(root/'temporal-pilot')]
