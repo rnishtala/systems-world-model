@@ -123,3 +123,32 @@ def test_comparison_collects_before_offline_inference_without_outcome_input(tmp_
     m.main();result=json.loads((out/'summary.json').read_text())['action_comparison']
     assert result['test_trials']==40 and result['training_trials']==0
     assert set(result['methods'])=={'history_ridge','dreamer'} and result['checkpoint_unchanged']
+
+
+def test_sequential_training_and_rollout_align_without_future_observations():
+    from microservice.action_model import frame, next_action
+
+    truth = np.array([.8,.5,.2,0.])
+    row = dict(observations=np.ones((4,len(FEATURES))),outcome=truth,action='load')
+    imagined = []
+    seen = []
+    def observe(carry,tokens,previous,reset,**kw):
+        seen.append(tokens)
+        return carry,None,0
+    def imagine(carry,controls,length,**kw):
+        imagined.append(controls['action'])
+        return carry+1,(carry+1,None)
+    class Decoder:
+        symlog=False
+        def __call__(self,carry,feature,reset,**kw):
+            raw=np.zeros((PARTICLES,WIDTH))
+            if feature:
+                raw[:,len(FEATURES)]=frame(row,3+feature,sequential=True)[len(FEATURES)]
+            return carry,None,{'vector':types.SimpleNamespace(pred=lambda:raw)}
+    inner=types.SimpleNamespace(init_policy=lambda n:(None,0,None,{}),
+        enc=lambda c,o,r,**kw:(c,None,o['vector']),dyn=types.SimpleNamespace(observe=observe,imagine=imagine),dec=Decoder())
+    values,finite=prior_outcomes(inner,prefix_frames(row['observations']),2*next_action(row,3)-1,np,sequential=True)
+    np.testing.assert_allclose(values,truth,atol=1e-6)
+    assert finite and len(seen)==4 and len(imagined)==4
+    for i,control in enumerate(imagined):
+        np.testing.assert_array_equal(control,np.tile(2*next_action(row,3+i)-1,(PARTICLES,1)))
