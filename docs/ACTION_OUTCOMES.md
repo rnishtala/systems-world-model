@@ -1073,3 +1073,26 @@ comparison covers one training seed, one intervention and four held-out service
 times. A focused follow-up is to test whether a temporal model that predicts one
 window at a time can learn backlog decay on a larger set of independent recovery
 trajectories, keeping both controls and reporting missed and false recoveries.
+
+### Sequential Dreamer recovery detection
+
+Run `19daefdcdadb` reused the exact 24 training trajectories, training seed and
+frozen telemetry ridge from `40443d020ad9`. Replay presented each of four measured
+post-action error fractions in its own step. The model trained for 25,000 steps
+(268 s). At inference it observed four pre-action frames, imagined load reduction,
+then advanced three more latent steps without another intervention or observation.
+The checkpoint was frozen before 16 fresh incidents on the same four held-out
+service-time settings. No incident required a retry and the lab restored.
+
+| Forecast | Recoveries detected / 12 | False recovery calls / 4 | Eight-second trajectory MAE (pp) |
+|---|---:|---:|---:|
+| Sequential Dreamer | 0 | 0 | 40.32 |
+| Frozen telemetry history | 6 | 0 | 14.57 |
+
+True recovery required two consecutive two-second bins with zero measured failures
+by eight seconds. Both predictors used the existing decision threshold of two
+consecutive predicted fractions below 0.10. Dreamer issued no recovery calls.
+Telemetry alone detected six; both missed the other six. Dreamer had higher error
+in every forecast window. The preset improvement criterion failed. This experiment
+covers one training seed and four test service times. Retain telemetry history
+as the recovery baseline.
