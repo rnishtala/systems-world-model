@@ -27,7 +27,7 @@ def main():
         (out/'summary.json').write_text(json.dumps(result,indent=2))
     print('ACTION_DREAMER_TRAINED',flush=True)
 
-def train_partition(out,meta,seed,steps):
+def train_partition(out,meta,seed,steps,sequential=False):
     from microservice.action_model import ActionEnv,MeasuredActions,make_agent,measured_stream
     from microservice.configuration import configuration,elements,upstream
     import embodied
@@ -35,7 +35,7 @@ def train_partition(out,meta,seed,steps):
     (out/'train').mkdir()
     c=configuration(seed,out/'train',steps)
     if steps==25000:c=c.update({'run.log_every':5})
-    upstream.make_env=lambda config,index,**kw:upstream.wrap_env(ActionEnv(data,config.seed*1000+index),config)
+    upstream.make_env=lambda config,index,**kw:upstream.wrap_env(ActionEnv(data,config.seed*1000+index,sequential),config)
     captured={}
     def build():
         agent=make_agent(c,data);original_stream=agent.stream;agent.stream=lambda stream:original_stream(measured_stream(stream));policy=MeasuredActions(agent.policy);agent.policy=policy;captured.update(agent=agent,policy=policy);return agent

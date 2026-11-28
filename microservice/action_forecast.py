@@ -36,7 +36,7 @@ def checkpoint_hash(root):
         h.update(str(p.relative_to(root)).encode()+b'\0');h.update(p.read_bytes())
     return h.hexdigest()
 
-def prior_outcomes(inner,h,action,xp,include_state=False):
+def prior_outcomes(inner,h,action,xp,include_state=False,sequential=False):
     enc,dyn,dec,prev=inner.init_policy(PARTICLES)
     noop=2*xp.eye(4,dtype=xp.float32)[0]-1
     for t in range(4):
@@ -48,10 +48,15 @@ def prior_outcomes(inner,h,action,xp,include_state=False):
         prev={'action':xp.repeat(noop[None],PARTICLES,axis=0)}
     # Encode the proposed intervention only after assimilating the prefix.
     proposed={'action':xp.repeat(action[None],PARTICLES,axis=0)}
-    _,(prior,_)=inner.dyn.imagine(dyn,proposed,1,training=False,single=True)
-    _,_,prediction=inner.dec(dec,prior,xp.zeros((PARTICLES,),bool),training=False,single=True)
-    raw=prediction['vector'].pred()[:,len(FEATURES):len(FEATURES)+4]
-    values=physical_outcomes(raw,inner.dec.symlog,xp)
+    forecasts = []
+    for step in range(4 if sequential else 1):
+        controls = proposed if step == 0 else {'action':xp.repeat(noop[None],PARTICLES,axis=0)}
+        dyn,(prior,_) = inner.dyn.imagine(dyn,controls,1,training=False,single=True)
+        dec,_,prediction = inner.dec(dec,prior,xp.zeros((PARTICLES,),bool),training=False,single=True)
+        width = 1 if sequential else 4
+        raw = prediction['vector'].pred()[:,len(FEATURES):len(FEATURES)+width]
+        forecasts.append(physical_outcomes(raw,inner.dec.symlog,xp))
+    values = xp.concatenate(forecasts,axis=1)
     outputs = (values.mean(0), xp.isfinite(values).all())
     if include_state:
         state = inner.feat2tensor(prior).reshape((PARTICLES, -1)).mean(0)
@@ -59,7 +64,7 @@ def prior_outcomes(inner,h,action,xp,include_state=False):
     return outputs
 
 class Forecaster:
-    def __init__(self,root,version=VERSION,targets=TARGETS):
+    def __init__(self,root,version=VERSION,targets=TARGETS,sequential=False):
         root=Path(root);verify_source(root,version,targets);self.checkpoint_sha256=checkpoint_hash(root)
         from microservice.configuration import elements
         import jax,jax.numpy as jnp,ninjax as nj
@@ -69,7 +74,7 @@ class Forecaster:
         inner=self.agent.model;self.params=self.agent.params;self.jax=jax
         @nj.pure
         def run(h,action):
-            return prior_outcomes(inner,h,action,jnp)
+            return prior_outcomes(inner,h,action,jnp,sequential=sequential)
         self.run=jax.jit(lambda params,h,action,key:run(params,h,action,seed=key,create=False,modify=False)[1])
     def __call__(self,observations,action):
         if action not in ACTIONS:raise ValueError('Unknown proposed action')

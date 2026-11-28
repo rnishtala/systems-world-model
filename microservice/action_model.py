@@ -36,10 +36,11 @@ def export_training(source,out):
     meta=dict(version=VERSION,source_run=source.parent.name,source_examples_sha256=hashlib.sha256(raw).hexdigest(),training_sha256=hashlib.sha256(data).hexdigest(),training_trials=len(train),training_profiles=len({r['group'] for r in train}),excluded_trials=len(rows)-len(train),features=FEATURES,targets=TARGETS,actions=ACTIONS,scope='Training smoke test; macro-transition model; no held-out performance claim')
     (out/'manifest.json').write_text(json.dumps(meta,indent=2));return meta
 
-def frame(row,t):
-    if not 0<=t<=4:raise ValueError('Invalid frame')
+def frame(row,t,sequential=False):
+    if not 0<=t<=(7 if sequential else 4):raise ValueError('Invalid frame')
     v=np.zeros(WIDTH,np.float32)
     if t<4:v[:len(FEATURES)]=np.log1p(row['observations'][t]);v[-2]=1
+    elif sequential:v[len(FEATURES)]=np.log1p(row['outcome'][t-4]);v[-1]=1
     else:v[len(FEATURES):len(FEATURES)+4]=np.log1p(row['outcome']);v[-1]=1
     return v
 
@@ -48,7 +49,8 @@ def next_action(row,t):
     return np.eye(4,dtype=np.float32)[ACTIONS.index(row['action']) if t==3 else 0]
 
 class ActionEnv:
-    def __init__(self,path,seed=0):
+    def __init__(self,path,seed=0,sequential=False):
+        self.sequential=sequential
         import elements
         self.rows=validate([json.loads(l) for l in Path(path).read_text().splitlines()]);self.rng=np.random.default_rng(seed);self.done=True;self.t=0
         self.obs_space=dict(vector=elements.Space(np.float32,(WIDTH,)),reward=elements.Space(np.float32),is_first=elements.Space(bool),is_last=elements.Space(bool),is_terminal=elements.Space(bool))
@@ -60,8 +62,8 @@ class ActionEnv:
         if first:self.row=self.rows[int(self.rng.integers(len(self.rows)))];self.t=0;self.done=False
         else:
             if np.asarray(action['action']).shape!=(4,) or not np.allclose(action['action'],next_action(self.row,self.t),atol=1e-6):raise ValueError('Unmeasured action; counterfactual replay forbidden')
-            self.t+=1;self.done=self.t==4
-        return dict(vector=frame(self.row,self.t),reward=np.float32(0),is_first=first,is_last=self.done,is_terminal=self.done,**{'scheduled_action':next_action(self.row,self.t)})
+            self.t+=1;self.done=self.t==(7 if self.sequential else 4)
+        return dict(vector=frame(self.row,self.t,self.sequential),reward=np.float32(0),is_first=first,is_last=self.done,is_terminal=self.done,**{'scheduled_action':next_action(self.row,self.t)})
     def close(self):pass
 
 def learning_batch(batch):
