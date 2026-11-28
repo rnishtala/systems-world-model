@@ -1096,3 +1096,40 @@ Telemetry alone detected six; both missed the other six. Dreamer had higher erro
 in every forecast window. The preset improvement criterion failed. This experiment
 covers one training seed and four test service times. Retain telemetry history
 as the recovery baseline.
+
+### Why sequential Dreamer missed recovery
+
+A retrospective audit of run `19daefdcdadb` grouped the 16 fresh incidents by
+observed recovery and the frozen telemetry call. Values below are mean predicted
+or observed checkout failure percentages in each consecutive two-second window.
+
+| Group | Observed | Sequential Dreamer | Telemetry history |
+|---|---|---|---|
+| Six recovered, telemetry detected | 23.8 / 0 / 0 / 0 | 57.7 / 45.0 / 33.8 / 38.3 | 14.0 / 1.5 / 0.8 / 3.7 |
+| Six recovered, telemetry missed | 55.2 / 0 / 0 / 0 | 64.6 / 44.6 / 32.3 / 36.8 | 49.1 / 36.6 / 40.3 / 38.8 |
+| Four persistent failures | 100 / 100 / 100 / 100 | 57.1 / 44.4 / 33.4 / 37.9 | 95.1 / 99.6 / 96.5 / 98.3 |
+
+For each incident, score the most favorable consecutive pair by its larger
+predicted failure fraction. The frozen recovery rule calls recovery below 10%.
+The lowest Dreamer score among recoveries was 33.89%, above the lowest score
+among persistent failures (33.79%). No shared threshold can detect even one
+recovery here without a false call. Telemetry's score ranges were 0–62.68%
+for recovery and 93.01–100% for persistent failure. These ranges describe this
+batch only. Observed pre-action mean ledger query times ranged from 91.79–96.86
+ms on recoveries versus 101.65–101.90 ms on persistent failures. Training
+contained 12 recoveries and 12 nonrecoveries. The outcome forecasts lose the
+separation visible in telemetry; output inspection cannot localize that loss
+to the encoder, dynamics, or decoder.
+
+Next experiment: freeze the sequential checkpoint. Fit simple regularized probes
+to predict pre-action ledger query time and eventual recovery from the last
+observed latent state and each of the four imagined states. Fit and select
+regularization and recovery thresholds only on training incidents with whole
+service-time groups held out. Compare against identical probes of raw telemetry
+and the existing telemetry-history baseline. Score all arms on one new paired
+batch. If outcome information is readable from imagined states, test a recovery
+readout; if it disappears across imagined steps, target dynamics; if already
+weak at the observed state, test input scaling or an auxiliary query-time
+objective. Treat a weak linear probe as evidence about linear readability.
+Keep the same advancement rule of more true recoveries and no additional false
+calls versus telemetry history.
