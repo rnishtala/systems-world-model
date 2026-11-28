@@ -40,6 +40,26 @@ def train(out, meta, seed):
         train_partition(out, meta, seed, 25000)
 
 
+def valid_measurement(result):
+    if not result['restored']:
+        raise RuntimeError('Lab restoration failed')
+    return observations(result['windows']), trajectory(result)
+
+
+def collect(ms, order, out, case):
+    for attempt in range(3):
+        result = incident('database', 'load', dict(fault_hold=ms/1000, healthy_hold=.04,
+                          onset=1, relief_at=6, duration=16, base_rate=8, burst_order=order))
+        try:
+            history, stats = valid_measurement(result)
+        except (ValueError, StopIteration):
+            (out/f'incomplete-{case}-{attempt}.json').write_text(json.dumps(result))
+            if attempt == 2:
+                raise
+            continue
+        return result, history, stats
+
+
 def main():
     p=argparse.ArgumentParser()
     p.add_argument('--source',type=Path,required=True)
@@ -56,15 +76,20 @@ def main():
     source_summary=json.loads((a.source/'summary.json').read_text())['queue_drain']
     if not source_summary['passes']:
         raise ValueError('Required recovery variation absent')
+    out.mkdir(parents=True,exist_ok=False)
     train_rows=[]
     for f in sorted(a.source.glob('incident-*.json')):
         r=json.loads(f.read_text())
         ms,repeat,order=r['case']
+        try:
+            history, stats = valid_measurement(r)
+        except (ValueError, StopIteration):
+            replacement, history, stats = collect(ms, order, out, 'train-'+f.stem)
+            (out/f'replacement-{f.name}').write_text(json.dumps(dict(case=r['case'], **replacement)))
         train_rows.append(dict(split='train',action='load',group=str(ms),restored=r['restored'],
-                observations=observations(r['windows']),outcome=trajectory(r)['fractions']))
+                observations=history,outcome=stats['fractions']))
     validate(train_rows)
     if len(train_rows)!=24:raise ValueError('Incomplete source')
-    out.mkdir(parents=True,exist_ok=False)
     data=''.join(json.dumps(r)+'\n' for r in train_rows).encode()
     (out/'train.jsonl').write_bytes(data)
     meta=dict(version=VERSION,training_sha256=hashlib.sha256(data).hexdigest(),features=FEATURES,
@@ -76,6 +101,8 @@ def main():
     subprocess.run([sys.executable,'-m','microservice.queue_forecast','--source',str(a.source),
                     '--out',str(out),'--seed',str(a.seed),'--train'],check=True)
     from microservice.action_forecast import Forecaster, checkpoint_hash
+    training_summary=json.loads((out/'summary.json').read_text())
+    (out/'training-summary.json').write_text(json.dumps(training_summary))
     model=Forecaster(out,version=VERSION,targets=TARGETS)
     checkpoint=checkpoint_hash(out)
     x=np.stack([encode(r['observations']) for r in train_rows])
@@ -93,22 +120,10 @@ def main():
     (out/'frozen.json').write_text(json.dumps(dict(checkpoint=checkpoint,ridge=ridge,penalty=penalty,cutoff=.0953273)))
     rows=[]
     for i,(ms,rep,order) in enumerate(cases):
-        def predict(prefix):
-            h=observations(prefix)
-            return dict(dreamer=np.clip(model(h,'load'),0,1).tolist(),
-                        telemetry=np.clip(ridge_predict(ridge,encode(h)),0,1).tolist(),
-                        cutoff=[float(time_rule(h)>=.0953273)]*4)
-        # Save the prefix before intervention and score offline to avoid delaying its timing.
-        for attempt in range(3):
-            result=incident('database','load',dict(fault_hold=ms/1000,healthy_hold=.04,onset=1,
-                            relief_at=6,duration=16,base_rate=8,burst_order=order))
-            if not result['restored']:raise ValueError('Restoration failed')
-            try: actual=trajectory(result)
-            except (ValueError,StopIteration):
-                if attempt==2:raise
-                continue
-            break
-        predictions=predict([w for w in result['windows'] if w['elapsed']<6])
+        result,h,actual = collect(ms, order, out, str(i))
+        predictions = dict(dreamer=np.clip(model(h,'load'),0,1).tolist(),
+                           telemetry=np.clip(ridge_predict(ridge,encode(h)),0,1).tolist(),
+                           cutoff=[float(time_rule(h)>=.0953273)]*4)
         rows.append(dict(case=cases[i],stats=actual,predictions=predictions))
         (out/f'incident-{i}.json').write_text(json.dumps(dict(**result,**rows[-1])))
     scores={}
@@ -120,6 +135,6 @@ def main():
             false+=int(r['stats']['recovery'] is None and any((pred[:-1]<.1)&(pred[1:]<.1)))
         scores[method]=dict(mae=float(np.mean(errors)),false_recovery=false)
     if checkpoint_hash(out)!=checkpoint:raise ValueError('Checkpoint changed')
-    (out/'summary.json').write_text(json.dumps(dict(queue_forecast=scores,incidents=[])))
+    (out/'summary.json').write_text(json.dumps(dict(queue_forecast=scores,action_dreamer=training_summary,incidents=[])))
 
 if __name__=='__main__':main()

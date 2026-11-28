@@ -85,6 +85,20 @@ function renderTemporal(r){
  el('interpretation').textContent='Mechanism feasibility pilot: checks retries, backlog and recovery. No model training or accuracy claim.';
  if(!r.temporal_summary)return;
  el('metrics').replaceChildren();
+ if(r.temporal_summary.queue_forecast){
+  el('interpretation').textContent='Fresh load reductions on four held-out service times. Error is averaged across the four recovery windows.';
+  for(const [method,m] of Object.entries(r.temporal_summary.queue_forecast)){
+   const cell=text('div','','metric');
+   cell.append(text('span',method),text('strong',(100*m.mae).toFixed(2)+' pp MAE'),text('span',m.false_recovery+' false recovery calls'));
+   el('metrics').append(cell);
+  }
+  return;
+ }
+ if(r.temporal_summary.queue_drain){
+  const q=r.temporal_summary.queue_drain;
+  el('interpretation').textContent=q.pairs.length+' matched pairs. Repeated recovery delays at '+(q.qualifying_ms.join(', ')||'no')+' ms.';
+  return;
+ }
  if(r.temporal_summary.action_readout){
   const c=r.temporal_summary.action_readout;
   el('interpretation').textContent='Error-rate forecasts on 16 held-out profiles across two folds.';
