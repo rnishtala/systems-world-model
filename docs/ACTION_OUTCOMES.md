@@ -1133,3 +1133,34 @@ weak at the observed state, test input scaling or an auxiliary query-time
 objective. Treat a weak linear probe as evidence about linear readability.
 Keep the same advancement rule of more true recoveries and no additional false
 calls versus telemetry history.
+
+### Linear probes across the frozen sequential rollout
+
+Run `0e6fe2e798fc` froze query-duration and eight-second recovery probes fitted on
+24 training incidents, grouping validation by database service time. Each probe
+used either raw telemetry history or the mean Dreamer representation across 16
+particles. No post-action observations entered the imagined states. The query
+target was the measured pre-action ledger query duration, weighted by query count.
+Training selected step 3 as the primary recovery probe before fresh collection.
+
+| Input or method | Query MAE (ms) | True recovery / 12 | False recovery / 4 | Recovery score AUC |
+|---|---:|---:|---:|---:|
+| Observed state | 2.28 | 8 | 1 | 0.75 |
+| Imagined step 1 | 2.39 | 6 | 0 | 0.92 |
+| Imagined step 2 | 2.06 | 10 | 0 | 0.92 |
+| Imagined step 3 (primary) | 2.39 | 5 | 0 | 0.67 |
+| Imagined step 4 | 2.85 | 4 | 0 | 0.71 |
+| Matched telemetry probe | 1.10 | 0 | 0 | 0.83 |
+| Existing telemetry-history forecast | — | 4 | 0 | — |
+
+All five states beat the constant training-median query estimate (3.46 ms MAE).
+The matched telemetry probe can access the channels used to calculate this target.
+The primary step-3 probe met the count criterion by one net recovery: both methods
+caught two, step 3 alone caught three and history alone caught two. As a secondary
+check, the previously fixed 95.33 ms query cutoff detected eight with zero false
+calls. Step 2 caught six additional recoveries over history and missed none of
+history's four. Its rank as best stage was discovered on this batch. Confirm the
+unchanged step-2 probe on independent data against both the fixed query cutoff
+and telemetry history before adopting it. These results describe linear readability
+on 16 fresh incidents at four service times and one checkpoint. All incidents and
+the lab restored; no incomplete measurements were retried.
