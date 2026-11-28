@@ -1185,3 +1185,37 @@ seven for step 2. The probe also made one false call at 100 ms. Its discovery
 advantage did not repeat. Retain the query-time cutoff as the stronger tested
 control for this setting. All 32 cases finished without collection retries and
 the namespace restored.
+
+### Why the step-2 discovery advantage did not transfer
+
+The service-time and burst-order mix was balanced in both batches. At 96 ms,
+step 2 detected 3/4 recoveries in discovery and 3/8 in confirmation. At 91–94 ms
+it fell from 7/8 to 7/16. The same frozen score threshold was 0.7596.
+On confirmation, all three detected 96 ms recoveries had building queues, with
+14 average ledger waiters in the four pre-action frames. The nine missed 91–94 ms
+recoveries included four building and five draining queues (4.25–14 waiters).
+Median observed query time was 96.86 versus 94.70 ms, and median probe score
+was 1.015 versus 0.383. Pre-action checkout errors were near saturation in both
+groups. Discovery had detected both draining 96 ms cases; confirmation missed
+all four. The sole false call was a building 100 ms case with 14 waiters,
+101.83 ms measured query time and a 0.967 probe score. These are associations;
+they do not identify the cause of individual latent scores.
+
+Recovery ranking AUC fell from 0.917 to 0.719. On confirmation, even a threshold
+chosen retrospectively to exclude all persistent failures could detect at most
+6/24 recoveries. Combining the existing cutoff and probe by accepting either
+would have detected 19/24 with one false call versus 16/24 and zero for the
+cutoff. Measured query time ranged from 91.83 to 97.17 ms on confirmation
+recoveries versus 101.67 to 102.06 ms on persistent failures. The intervening
+gap leaves the value of a state probe at the recovery boundary unresolved.
+
+Next experiment: vary service time densely around the recovery boundary with
+paired building/draining bursts and randomized repeats. First establish whether
+similar measured query times actually yield different eight-second outcomes.
+Fit a query-time-only recovery predictor on separate training profiles, then
+test whether adding the frozen step-2 score improves it. Use identical grouped
+selection and false-call constraints for both arms; retain the original 95.33 ms
+rule and telemetry history as controls. Freeze all fits and thresholds before
+scoring a new batch. Advance the state term only for strictly more confirmed
+recoveries with no increase in false calls versus each control. Keep endpoints
+and the two inspected batches out of threshold selection for that test.
