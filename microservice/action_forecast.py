@@ -36,7 +36,7 @@ def checkpoint_hash(root):
         h.update(str(p.relative_to(root)).encode()+b'\0');h.update(p.read_bytes())
     return h.hexdigest()
 
-def prior_outcomes(inner,h,action,xp,include_state=False,sequential=False):
+def prior_outcomes(inner,h,action,xp,include_state=False,sequential=False,state_path=False):
     enc,dyn,dec,prev=inner.init_policy(PARTICLES)
     noop=2*xp.eye(4,dtype=xp.float32)[0]-1
     for t in range(4):
@@ -48,16 +48,21 @@ def prior_outcomes(inner,h,action,xp,include_state=False,sequential=False):
         prev={'action':xp.repeat(noop[None],PARTICLES,axis=0)}
     # Encode the proposed intervention only after assimilating the prefix.
     proposed={'action':xp.repeat(action[None],PARTICLES,axis=0)}
+    states = [inner.feat2tensor(feat).reshape((PARTICLES,-1)).mean(0)] if state_path else []
     forecasts = []
     for step in range(4 if sequential else 1):
         controls = proposed if step == 0 else {'action':xp.repeat(noop[None],PARTICLES,axis=0)}
         dyn,(prior,_) = inner.dyn.imagine(dyn,controls,1,training=False,single=True)
         dec,_,prediction = inner.dec(dec,prior,xp.zeros((PARTICLES,),bool),training=False,single=True)
+        if state_path:
+            states.append(inner.feat2tensor(prior).reshape((PARTICLES,-1)).mean(0))
         width = 1 if sequential else 4
         raw = prediction['vector'].pred()[:,len(FEATURES):len(FEATURES)+width]
         forecasts.append(physical_outcomes(raw,inner.dec.symlog,xp))
     values = xp.concatenate(forecasts,axis=1)
     outputs = (values.mean(0), xp.isfinite(values).all())
+    if state_path:
+        return (*outputs,xp.stack(states))
     if include_state:
         state = inner.feat2tensor(prior).reshape((PARTICLES, -1)).mean(0)
         return (*outputs, state)
