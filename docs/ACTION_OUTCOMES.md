@@ -1164,3 +1164,24 @@ unchanged step-2 probe on independent data against both the fixed query cutoff
 and telemetry history before adopting it. These results describe linear readability
 on 16 fresh incidents at four service times and one checkpoint. All incidents and
 the lab restored; no incomplete measurements were retried.
+
+### Fresh confirmation of the frozen step-2 probe
+
+Run `e2ae43759442` tested the exact discovery probe, checkpoint, telemetry-history
+ridge and 95.3273 ms cutoff on 32 new incidents at the four discovery service
+times. Each service time had four repeats per burst order. The protocol selected
+step 2 before collection and required more true recovery calls than each control
+with no additional false calls. Recovery was assessed within eight seconds.
+
+| Frozen method | True calls / 24 recoveries | False calls / 8 nonrecoveries |
+|---|---:|---:|
+| Step-2 Dreamer probe | 10 | 1 |
+| Telemetry history | 12 | 0 |
+| Query-time cutoff | 16 | 0 |
+
+All eight 96 ms incidents recovered. Step 2 caught three there and the cutoff
+caught none. At 91 and 94 ms the cutoff caught all sixteen recoveries, versus
+seven for step 2. The probe also made one false call at 100 ms. Its discovery
+advantage did not repeat. Retain the query-time cutoff as the stronger tested
+control for this setting. All 32 cases finished without collection retries and
+the namespace restored.
